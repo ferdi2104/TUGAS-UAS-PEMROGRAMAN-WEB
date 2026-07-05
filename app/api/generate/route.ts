@@ -31,8 +31,13 @@ export async function POST(request: NextRequest) {
     const cleanedContent = extractTextFromFile(content);
 
     if (cleanedContent.length < 100) {
+      const isPDF = file.type === 'application/pdf';
       return NextResponse.json(
-        { error: 'Konten terlalu pendek. Minimal 100 karakter.' },
+        {
+          error: isPDF
+            ? 'Tidak dapat membaca teks dari PDF. Pastikan PDF berisi teks (bukan scan/gambar).'
+            : 'Konten terlalu pendek. Minimal 100 karakter.',
+        },
         { status: 400 }
       );
     }
