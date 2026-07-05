@@ -188,7 +188,7 @@ export async function addReviewRecord(
   interval: number,
   repetitions: number
 ) {
-  const { data, error } = await supabase
+  const { data, error } = await getClient()
     .from('review_history')
     .insert([
       {
