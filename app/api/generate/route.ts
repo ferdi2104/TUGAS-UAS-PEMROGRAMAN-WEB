@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { generateFlashcards, extractTextFromPDF } from '@lib/ai';
-import { extractTextFromFile } from '@lib/utils';
+import { extractTextFromFile, estimateNumCards } from '@lib/utils';
 import { getServiceSupabase } from '@lib/supabase';
 
 export const runtime = 'nodejs';
@@ -37,7 +37,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const flashcards = await generateFlashcards(cleanedContent, 10);
+    const numCards = estimateNumCards(cleanedContent.length);
+    const flashcards = await generateFlashcards(cleanedContent, numCards);
 
     if (!flashcards || flashcards.length === 0) {
       return NextResponse.json(

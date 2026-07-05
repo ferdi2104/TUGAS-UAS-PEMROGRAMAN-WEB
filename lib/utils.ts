@@ -24,9 +24,15 @@ export function generateUUID(): string {
 }
 
 export function extractTextFromFile(content: string): string {
-  // Remove extra whitespace and normalize text
   return content
     .trim()
     .replace(/\s+/g, ' ')
-    .substring(0, 50000); // Limit to 50k chars for API
+    .substring(0, 200000);
+}
+
+export function estimateNumCards(contentLength: number): number {
+  if (contentLength > 100000) return 25;
+  if (contentLength > 50000) return 20;
+  if (contentLength > 10000) return 15;
+  return 10;
 }

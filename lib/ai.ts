@@ -77,21 +77,27 @@ export async function extractTextFromPDF(buffer: Buffer): Promise<string> {
   try {
     const pdfjsLib = await import('pdfjs-dist');
     const uint8Array = new Uint8Array(buffer);
-    const pdf = await pdfjsLib.getDocument({ data: uint8Array }).promise;
+    const pdf = await pdfjsLib.getDocument({ data: uint8Array, useSystemFonts: true }).promise;
     const pages: string[] = [];
 
     for (let i = 1; i <= pdf.numPages; i++) {
-      const page = await pdf.getPage(i);
-      const content = await page.getTextContent();
-      const text = content.items
-        .map((item: any) => item.str)
-        .join(' ');
-      pages.push(text);
+      try {
+        const page = await pdf.getPage(i);
+        const content = await page.getTextContent();
+        const text = content.items
+          .map((item: any) => item.str)
+          .filter(Boolean)
+          .join(' ');
+        if (text.trim()) pages.push(`[Halaman ${i}]\n${text}`);
+      } catch {
+        pages.push(`[Halaman ${i} - tidak dapat diekstrak]`);
+      }
     }
 
-    return pages.join('\n').trim();
+    const result = pages.join('\n\n').trim();
+    return result || 'PDF tidak mengandung teks yang dapat diekstrak';
   } catch (error) {
     console.error('Error extracting PDF text:', error);
-    return buffer.toString('utf-8').replace(/[^\x20-\x7E\n]/g, ' ').trim();
+    return buffer.toString('utf-8').replace(/[^\x20-\x7E\n]/g, ' ').trim() || 'Gagal mengekstrak konten PDF';
   }
 }
