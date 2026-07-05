@@ -4,7 +4,7 @@ import { useState, ChangeEvent, FormEvent } from 'react';
 import { motion } from 'framer-motion';
 
 interface FileUploadProps {
-  onUpload?: (file: File, content: string) => Promise<void>;
+  onUpload?: (file: File) => Promise<void>;
 }
 
 export default function FileUpload({ onUpload }: FileUploadProps) {
@@ -67,8 +67,7 @@ export default function FileUpload({ onUpload }: FileUploadProps) {
 
     setIsLoading(true);
     try {
-      const content = await file.text();
-      await onUpload?.(file, content);
+      await onUpload?.(file);
     } catch (err) {
       setError('Gagal membaca file');
       console.error(err);

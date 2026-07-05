@@ -1,21 +1,21 @@
+export function calculateNextInterval(
+  currentInterval: number,
+  easinessFactor: number
+): number {
+  if (currentInterval === 0) {
+    return 1;
+  } else if (currentInterval === 1) {
+    return 3;
+  }
+  return Math.round(currentInterval * easinessFactor);
+}
+
 export function calculateNextReviewDate(
   currentDate: Date,
-  easinessFactor: number,
   interval: number
 ): Date {
-  let newInterval: number;
-
-  if (interval === 0) {
-    newInterval = 1;
-  } else if (interval === 1) {
-    newInterval = 3;
-  } else {
-    newInterval = Math.round(interval * easinessFactor);
-  }
-
   const nextDate = new Date(currentDate);
-  nextDate.setDate(nextDate.getDate() + newInterval);
-
+  nextDate.setDate(nextDate.getDate() + interval);
   return nextDate;
 }
 
@@ -29,7 +29,7 @@ export function calculateEasinessFactor(
 
 export interface CardReviewData {
   cardId: string;
-  quality: number; // 0-5 (0 = completely forgotten, 5 = perfect response)
+  quality: number;
   reviewDate: Date;
   easinessFactor: number;
   interval: number;
@@ -41,18 +41,14 @@ export function updateReviewData(
   quality: number
 ): CardReviewData {
   const newEF = calculateEasinessFactor(quality, current.easinessFactor);
-  const newInterval = calculateNextReviewDate(
-    new Date(),
-    newEF,
-    current.interval
-  ).getTime() - new Date().getTime();
+  const newInterval = calculateNextInterval(current.interval, newEF);
 
   return {
     ...current,
     quality,
     reviewDate: new Date(),
     easinessFactor: newEF,
-    interval: Math.round(newInterval / (1000 * 60 * 60 * 24)),
+    interval: newInterval,
     repetitions: current.repetitions + 1,
   };
 }

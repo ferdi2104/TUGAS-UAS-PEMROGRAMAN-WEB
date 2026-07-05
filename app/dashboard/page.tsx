@@ -30,19 +30,30 @@ export default function DashboardPage() {
   useEffect(() => {
     const stored = localStorage.getItem('flashcards');
     const docName = localStorage.getItem('documentName');
-    
+    const studyResults = localStorage.getItem('studyResults');
+
     if (stored) {
       const parsed = JSON.parse(stored);
       setFlashcards(parsed);
       setDocumentName(docName || 'Dokumen');
-      
-      // Calculate stats
-      setStats({
-        total: parsed.length,
-        learned: Math.floor(parsed.length * 0.3),
-        learning: Math.floor(parsed.length * 0.5),
-        mastered: Math.floor(parsed.length * 0.2),
-      });
+
+      // Real stats from study results
+      if (studyResults) {
+        const results = JSON.parse(studyResults);
+        setStats({
+          total: parsed.length,
+          learned: results.learned || 0,
+          learning: results.learning || 0,
+          mastered: results.mastered || 0,
+        });
+      } else {
+        setStats({
+          total: parsed.length,
+          learned: 0,
+          learning: 0,
+          mastered: 0,
+        });
+      }
     }
   }, []);
 
@@ -83,14 +94,14 @@ export default function DashboardPage() {
           variants={containerVariants}
         >
           {[
-            { label: 'Total Flashcard', value: stats.total, icon: '📚', color: 'blue' },
-            { label: 'Sudah Pelajari', value: stats.learned, icon: '✓', color: 'green' },
-            { label: 'Sedang Belajar', value: stats.learning, icon: '🔄', color: 'yellow' },
-            { label: 'Sudah Dikuasai', value: stats.mastered, icon: '⭐', color: 'purple' },
+            { label: 'Total Flashcard', value: stats.total, icon: '📚', bg: 'bg-blue-50', border: 'border-blue-200' },
+            { label: 'Sudah Dipelajari', value: stats.learned, icon: '✓', bg: 'bg-green-50', border: 'border-green-200' },
+            { label: 'Sedang Belajar', value: stats.learning, icon: '🔄', bg: 'bg-yellow-50', border: 'border-yellow-200' },
+            { label: 'Sudah Dikuasai', value: stats.mastered, icon: '⭐', bg: 'bg-purple-50', border: 'border-purple-200' },
           ].map((stat, idx) => (
             <motion.div
               key={idx}
-              className={`card bg-${stat.color}-50 border-2 border-${stat.color}-200`}
+              className={`card ${stat.bg} border-2 ${stat.border}`}
               variants={itemVariants}
               whileHover={{ scale: 1.05 }}
             >
@@ -108,28 +119,32 @@ export default function DashboardPage() {
             <div className="space-y-4">
               <div>
                 <div className="flex justify-between mb-2">
-                  <span className="text-sm text-gray-600">Kemajuan Hari Ini</span>
-                  <span className="text-sm font-semibold">60%</span>
+                  <span className="text-sm text-gray-600">Sudah Dipelajari</span>
+                  <span className="text-sm font-semibold">
+                    {stats.total > 0 ? Math.round((stats.learned / stats.total) * 100) : 0}%
+                  </span>
                 </div>
                 <div className="w-full bg-gray-200 rounded-full h-3">
                   <motion.div
                     className="bg-primary h-3 rounded-full"
                     initial={{ width: 0 }}
-                    animate={{ width: '60%' }}
+                    animate={{ width: stats.total > 0 ? `${(stats.learned / stats.total) * 100}%` : '0%' }}
                     transition={{ duration: 1 }}
                   />
                 </div>
               </div>
               <div>
                 <div className="flex justify-between mb-2">
-                  <span className="text-sm text-gray-600">Target Mingguan</span>
-                  <span className="text-sm font-semibold">40%</span>
+                  <span className="text-sm text-gray-600">Sudah Dikuasai</span>
+                  <span className="text-sm font-semibold">
+                    {stats.total > 0 ? Math.round((stats.mastered / stats.total) * 100) : 0}%
+                  </span>
                 </div>
                 <div className="w-full bg-gray-200 rounded-full h-3">
                   <motion.div
                     className="bg-secondary h-3 rounded-full"
                     initial={{ width: 0 }}
-                    animate={{ width: '40%' }}
+                    animate={{ width: stats.total > 0 ? `${(stats.mastered / stats.total) * 100}%` : '0%' }}
                     transition={{ duration: 1, delay: 0.2 }}
                   />
                 </div>

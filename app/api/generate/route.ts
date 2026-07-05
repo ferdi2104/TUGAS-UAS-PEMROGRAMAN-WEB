@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { generateFlashcards } from '@lib/ai';
+import { generateFlashcards, extractTextFromPDF } from '@lib/ai';
 import { extractTextFromFile } from '@lib/utils';
 
 export const runtime = 'nodejs';
@@ -9,16 +9,24 @@ export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData();
     const file = formData.get('file') as File;
-    const content = formData.get('content') as string;
 
-    if (!file || !content) {
+    if (!file) {
       return NextResponse.json(
-        { error: 'File dan content diperlukan' },
+        { error: 'File diperlukan' },
         { status: 400 }
       );
     }
 
-    // Extract dan bersihkan text
+    // Extract text from file server-side
+    const buffer = Buffer.from(await file.arrayBuffer());
+    let content = '';
+
+    if (file.type === 'application/pdf') {
+      content = await extractTextFromPDF(buffer);
+    } else {
+      content = buffer.toString('utf-8');
+    }
+
     const cleanedContent = extractTextFromFile(content);
 
     if (cleanedContent.length < 100) {
@@ -28,7 +36,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Generate flashcards menggunakan AI
     const flashcards = await generateFlashcards(cleanedContent, 10);
 
     if (!flashcards || flashcards.length === 0) {

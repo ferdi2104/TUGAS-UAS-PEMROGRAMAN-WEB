@@ -71,8 +71,24 @@ Respons HANYA berisi JSON, tanpa penjelasan tambahan.
 }
 
 export async function extractTextFromPDF(buffer: Buffer): Promise<string> {
-  // Note: Untuk implementasi lengkap, gunakan library seperti pdf-parse
-  // Untuk MVP ini, kita bisa menggunakan text ekstraksi sederhana
-  // atau delegasikan ke service eksternal
-  return '';
+  try {
+    const pdfjsLib = await import('pdfjs-dist');
+    const uint8Array = new Uint8Array(buffer);
+    const pdf = await pdfjsLib.getDocument({ data: uint8Array }).promise;
+    const pages: string[] = [];
+
+    for (let i = 1; i <= pdf.numPages; i++) {
+      const page = await pdf.getPage(i);
+      const content = await page.getTextContent();
+      const text = content.items
+        .map((item: any) => item.str)
+        .join(' ');
+      pages.push(text);
+    }
+
+    return pages.join('\n').trim();
+  } catch (error) {
+    console.error('Error extracting PDF text:', error);
+    return buffer.toString('utf-8').replace(/[^\x20-\x7E\n]/g, ' ').trim();
+  }
 }

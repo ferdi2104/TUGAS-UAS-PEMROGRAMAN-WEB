@@ -9,12 +9,11 @@ export default function UploadPage() {
   const router = useRouter();
   const [isProcessing, setIsProcessing] = useState(false);
 
-  const handleUpload = async (file: File, content: string) => {
+  const handleUpload = async (file: File) => {
     setIsProcessing(true);
     try {
       const formData = new FormData();
       formData.append('file', file);
-      formData.append('content', content);
 
       const response = await fetch('/api/generate', {
         method: 'POST',

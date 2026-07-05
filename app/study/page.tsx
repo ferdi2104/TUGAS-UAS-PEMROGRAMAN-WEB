@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import Flashcard from '@components/Flashcard';
 import { motion } from 'framer-motion';
 
-interface Flashcard {
+interface FlashcardData {
   id: string;
   question: string;
   answer: string;
@@ -14,7 +14,7 @@ interface Flashcard {
 
 export default function StudyPage() {
   const router = useRouter();
-  const [flashcards, setFlashcards] = useState<Flashcard[]>([]);
+  const [flashcards, setFlashcards] = useState<FlashcardData[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [stats, setStats] = useState({
     correct: 0,
@@ -35,15 +35,22 @@ export default function StudyPage() {
   }, []);
 
   const handleAnswer = (correct: boolean) => {
-    setStats({
+    const newStats = {
       ...stats,
       correct: correct ? stats.correct + 1 : stats.correct,
       incorrect: !correct ? stats.incorrect + 1 : stats.incorrect,
-    });
+    };
+    setStats(newStats);
 
     if (currentIndex < flashcards.length - 1) {
       setCurrentIndex(currentIndex + 1);
     } else {
+      // Save study results for dashboard
+      localStorage.setItem('studyResults', JSON.stringify({
+        learned: newStats.correct,
+        learning: newStats.total - newStats.correct - newStats.incorrect,
+        mastered: newStats.correct,
+      }));
       setIsFinished(true);
     }
   };
@@ -63,8 +70,8 @@ export default function StudyPage() {
   }
 
   if (isFinished) {
-    const percentage = Math.round((stats.correct / stats.total) * 100);
-    
+    const percentage = stats.total > 0 ? Math.round((stats.correct / stats.total) * 100) : 0;
+
     return (
       <motion.div
         className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 flex items-center justify-center px-4"
@@ -80,9 +87,9 @@ export default function StudyPage() {
           <div className="text-6xl mb-6">
             {percentage >= 70 ? '🎉' : percentage >= 50 ? '👍' : '📚'}
           </div>
-          
+
           <h2 className="text-3xl font-bold mb-4">Selesai!</h2>
-          
+
           <div className="bg-gray-50 rounded-lg p-6 mb-6 space-y-3">
             <div className="flex justify-between">
               <span className="text-gray-600">Total Kartu:</span>
