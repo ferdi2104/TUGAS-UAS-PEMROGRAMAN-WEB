@@ -1,0 +1,75 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String     @id @default(cuid())
+  email         String?    @unique
+  name          String?
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  documents     Document[]
+  progress      UserProgress[]
+  reviewHistory ReviewHistory[]
+}
+
+model Document {
+  id            String     @id @default(cuid())
+  fileName      String
+  fileSize      Int
+  content       String
+  userId        String?
+  user          User?      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  flashcards    Flashcard[]
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+}
+
+model Flashcard {
+  id            String     @id @default(cuid())
+  question      String
+  answer        String
+  difficulty    String     @default("medium")
+  documentId    String
+  document      Document   @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  progress      UserProgress[]
+  reviewHistory ReviewHistory[]
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+}
+
+model UserProgress {
+  id            String     @id @default(cuid())
+  userId        String
+  flashcardId   String
+  user          User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  flashcard     Flashcard  @relation(fields: [flashcardId], references: [id], onDelete: Cascade)
+  isLearned     Boolean    @default(false)
+  correctCount  Int        @default(0)
+  incorrectCount Int       @default(0)
+  lastReviewedAt DateTime?
+  nextReviewDate DateTime?
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+
+  @@unique([userId, flashcardId])
+}
+
+model ReviewHistory {
+  id            String     @id @default(cuid())
+  userId        String
+  flashcardId   String
+  user          User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  flashcard     Flashcard  @relation(fields: [flashcardId], references: [id], onDelete: Cascade)
+  quality       Int        @default(3) // 0-5 rating
+  easinessFactor Float     @default(2.5)
+  interval      Int        @default(0)
+  repetitions   Int        @default(0)
+  reviewedAt    DateTime   @default(now())
+  createdAt     DateTime   @default(now())
+}
