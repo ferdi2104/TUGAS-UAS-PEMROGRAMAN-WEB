@@ -2,35 +2,5 @@
   "buildCommand": "npm run build",
   "devCommand": "next dev",
   "installCommand": "npm install",
-  "framework": "nextjs",
-  "projectSettings": {
-    "sourceFilesOutsideRootDirectory": true
-  },
-  "env": [
-    {
-      "key": "GOOGLE_GENERATIVE_AI_API_KEY",
-      "description": "Google Gemini AI API Key from ai.google.dev",
-      "value": ""
-    },
-    {
-      "key": "NEXT_PUBLIC_SUPABASE_URL",
-      "description": "Supabase project URL",
-      "value": ""
-    },
-    {
-      "key": "NEXT_PUBLIC_SUPABASE_ANON_KEY",
-      "description": "Supabase anonymous key",
-      "value": ""
-    },
-    {
-      "key": "SUPABASE_SERVICE_ROLE_KEY",
-      "description": "Supabase service role key (keep secret)",
-      "value": ""
-    },
-    {
-      "key": "DATABASE_URL",
-      "description": "PostgreSQL connection string from Supabase",
-      "value": ""
-    }
-  ]
+  "framework": "nextjs"
 }
