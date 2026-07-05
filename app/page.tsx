@@ -1,15 +1,9 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 
 export default function HomePage() {
-  const [isLoaded, setIsLoaded] = useState(false);
-
-  useEffect(() => {
-    setIsLoaded(true);
-  }, []);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -34,7 +28,7 @@ export default function HomePage() {
     <motion.div
       className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50"
       initial="hidden"
-      animate={isLoaded ? 'visible' : 'hidden'}
+      animate="visible"
       variants={containerVariants}
     >
       {/* Hero Section */}

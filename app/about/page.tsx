@@ -1,6 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import Link from 'next/link';
 
 export default function AboutPage() {
   const containerVariants = {
@@ -142,9 +143,11 @@ export default function AboutPage() {
         >
           <h2 className="text-3xl font-bold mb-4">Siap Memulai?</h2>
           <p className="mb-8 text-lg">Ubah cara Anda belajar dengan StudyFlash AI</p>
-          <button className="bg-white text-primary font-bold py-3 px-8 rounded-lg hover:bg-gray-100 transition-colors">
-            Mulai Sekarang
-          </button>
+          <Link href="/upload">
+            <button className="bg-white text-primary font-bold py-3 px-8 rounded-lg hover:bg-gray-100 transition-colors">
+              Mulai Sekarang
+            </button>
+          </Link>
         </motion.section>
       </div>
     </motion.div>
