@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
+import { supabase } from '@lib/supabase';
 
 interface Flashcard {
   id: string;
@@ -28,33 +29,57 @@ export default function DashboardPage() {
   const [documentName, setDocumentName] = useState('');
 
   useEffect(() => {
-    const stored = localStorage.getItem('flashcards');
+    const docId = localStorage.getItem('documentId');
     const docName = localStorage.getItem('documentName');
     const studyResults = localStorage.getItem('studyResults');
 
-    if (stored) {
-      const parsed = JSON.parse(stored);
-      setFlashcards(parsed);
-      setDocumentName(docName || 'Dokumen');
+    async function loadFromDB() {
+      if (!docId) return false;
+      const { data: flashcardsData, error } = await supabase
+        .from('flashcards')
+        .select('id, question, answer')
+        .eq('document_id', docId);
+      if (error || !flashcardsData || flashcardsData.length === 0) return false;
+      setFlashcards(flashcardsData);
+      return true;
+    }
 
-      // Real stats from study results
-      if (studyResults) {
-        const results = JSON.parse(studyResults);
-        setStats({
-          total: parsed.length,
-          learned: results.learned || 0,
-          learning: results.learning || 0,
-          mastered: results.mastered || 0,
-        });
-      } else {
-        setStats({
-          total: parsed.length,
-          learned: 0,
-          learning: 0,
-          mastered: 0,
-        });
+    async function init() {
+      const loaded = await loadFromDB();
+      if (loaded) {
+        setDocumentName(docName || 'Dokumen');
+        if (studyResults) {
+          const results = JSON.parse(studyResults);
+          setStats({
+            total: flashcards.length,
+            learned: results.learned || 0,
+            learning: results.learning || 0,
+            mastered: results.mastered || 0,
+          });
+        }
+        return;
+      }
+
+      const stored = localStorage.getItem('flashcards');
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        setFlashcards(parsed);
+        setDocumentName(docName || 'Dokumen');
+        if (studyResults) {
+          const results = JSON.parse(studyResults);
+          setStats({
+            total: parsed.length,
+            learned: results.learned || 0,
+            learning: results.learning || 0,
+            mastered: results.mastered || 0,
+          });
+        } else {
+          setStats({ total: parsed.length, learned: 0, learning: 0, mastered: 0 });
+        }
       }
     }
+
+    init();
   }, []);
 
   const containerVariants = {
@@ -169,14 +194,16 @@ export default function DashboardPage() {
             </motion.button>
           </Link>
 
-          <motion.button
-            className="btn-secondary py-4 text-lg font-semibold flex items-center justify-center gap-2"
-            variants={itemVariants}
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-          >
-            🎓 Mode Quiz
-          </motion.button>
+          <Link href="/study" className="w-full">
+            <motion.button
+              className="btn-secondary py-4 text-lg font-semibold flex items-center justify-center gap-2 w-full"
+              variants={itemVariants}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              🎓 Mode Quiz
+            </motion.button>
+          </Link>
 
           <Link href="/upload" className="w-full">
             <motion.button

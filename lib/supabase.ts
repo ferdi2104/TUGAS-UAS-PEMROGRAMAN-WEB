@@ -156,6 +156,17 @@ export async function getUserStats(userId: string) {
 }
 
 // Review History Functions
+export function getServiceSupabase() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+  if (!url || !serviceKey || url.includes('your-project-id')) {
+    return null;
+  }
+
+  return createClient(url, serviceKey);
+}
+
 export async function addReviewRecord(
   userId: string,
   flashcardId: string,

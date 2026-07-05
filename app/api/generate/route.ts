@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { generateFlashcards, extractTextFromPDF } from '@lib/ai';
 import { extractTextFromFile } from '@lib/utils';
+import { getServiceSupabase } from '@lib/supabase';
 
 export const runtime = 'nodejs';
-export const maxDuration = 30;
+export const maxDuration = 60;
 
 export async function POST(request: NextRequest) {
   try {
@@ -45,11 +46,34 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    let documentId: string | null = null;
+    const supabase = getServiceSupabase();
+    if (supabase) {
+      const { data: doc, error: docError } = await supabase
+        .from('documents')
+        .insert({ file_name: file.name, file_size: file.size, content: cleanedContent })
+        .select()
+        .single();
+
+      if (!docError && doc) {
+        documentId = doc.id;
+        await supabase.from('flashcards').insert(
+          flashcards.map((fc) => ({
+            document_id: doc.id,
+            question: fc.question,
+            answer: fc.answer,
+            difficulty: fc.difficulty,
+          }))
+        );
+      }
+    }
+
     return NextResponse.json({
       success: true,
       flashcards,
       count: flashcards.length,
       fileName: file.name,
+      documentId,
     });
   } catch (error) {
     console.error('API Error:', error);

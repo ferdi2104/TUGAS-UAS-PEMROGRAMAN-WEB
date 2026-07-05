@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Flashcard from '@components/Flashcard';
 import { motion } from 'framer-motion';
+import { supabase } from '@lib/supabase';
 
 interface FlashcardData {
   id: string;
@@ -24,14 +25,35 @@ export default function StudyPage() {
   const [isFinished, setIsFinished] = useState(false);
 
   useEffect(() => {
-    const stored = localStorage.getItem('flashcards');
-    if (stored) {
-      const parsed = JSON.parse(stored);
-      setFlashcards(parsed);
-      setStats({ ...stats, total: parsed.length });
-    } else {
-      router.push('/upload');
+    const docId = localStorage.getItem('documentId');
+
+    async function loadFromDB() {
+      if (!docId) return false;
+      const { data, error } = await supabase
+        .from('flashcards')
+        .select('id, question, answer, difficulty')
+        .eq('document_id', docId);
+      if (error || !data || data.length === 0) return false;
+      setFlashcards(data);
+      setStats((prev) => ({ ...prev, total: data.length }));
+      return true;
     }
+
+    async function init() {
+      const loaded = await loadFromDB();
+      if (loaded) return;
+
+      const stored = localStorage.getItem('flashcards');
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        setFlashcards(parsed);
+        setStats((prev) => ({ ...prev, total: parsed.length }));
+      } else {
+        router.push('/upload');
+      }
+    }
+
+    init();
   }, []);
 
   const handleAnswer = (correct: boolean) => {

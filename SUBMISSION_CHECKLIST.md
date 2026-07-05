@@ -199,14 +199,6 @@
 - [ ] Performance optimization tips
 - [ ] Troubleshooting guide
 
-### docs/VIDEO_PRESENTATION_GUIDE.md
-- [ ] Timeline breakdown provided
-- [ ] Script written in detail
-- [ ] Slide templates included
-- [ ] Recording checklist
-- [ ] Post-production steps
-- [ ] Upload & submission instructions
-
 ### QUICKSTART.md
 - [ ] 5-minute quick start guide
 - [ ] Setup instructions
@@ -242,56 +234,6 @@
 
 ---
 
-## ✅ VIDEO PRESENTATION
-
-### Video Requirements
-- [ ] Duration: 10 minutes maximum
-- [ ] Format: MP4 (h.264)
-- [ ] Resolution: 1920x1080 (Full HD)
-- [ ] Framerate: 30fps
-- [ ] Audio: Clear & audible
-- [ ] Subtitles: Preferred (auto-generated OK)
-
-### Content Coverage (10 min breakdown)
-- [ ] **0:00-0:30** - Intro (name, title, university)
-- [ ] **0:30-2:00** - Problem & Solution (2 min)
-- [ ] **2:00-4:00** - Features Demo (2 min)
-  - [ ] Upload feature
-  - [ ] Generate flashcards
-  - [ ] Study mode
-  - [ ] Dashboard
-- [ ] **4:00-6:00** - Technical Architecture (2 min)
-  - [ ] Tech stack
-  - [ ] Database schema
-  - [ ] SM-2 algorithm
-- [ ] **6:00-8:00** - Business Model (2 min)
-  - [ ] Revenue streams
-  - [ ] Target market
-  - [ ] Growth strategy
-- [ ] **8:00-9:30** - Deployment & Results (1:30)
-  - [ ] Live site link
-  - [ ] Performance metrics
-- [ ] **9:30-10:00** - Conclusion & Q&A (0:30)
-  - [ ] Summary
-  - [ ] Contact info
-
-### Video Quality
-- [ ] Screen recording clear & readable
-- [ ] No major glitches or lag
-- [ ] Audio levels normalized
-- [ ] Color correction done
-- [ ] Transitions smooth
-- [ ] No personal info exposed
-- [ ] Professional appearance
-
-### Video File
-- [ ] Filename: `StudyFlash_AI_[Name]_[NIM]_Final.mp4`
-- [ ] File size: < 1GB
-- [ ] Uploaded to: YouTube/Google Drive/Vercel
-- [ ] Shareable link ready
-
----
-
 ## ✅ SUBMISSION PACKAGE
 
 ### Files to Submit
@@ -313,16 +255,7 @@
    - [ ] docs/SOP.md ✅
    - [ ] docs/SUPABASE_SETUP.md ✅
    - [ ] docs/VERCEL_DEPLOYMENT.md ✅
-   - [ ] docs/VIDEO_PRESENTATION_GUIDE.md ✅
-
-4. **Video Presentation**
-   - [ ] Max 10 minutes
-   - [ ] MP4 format
-   - [ ] 1080p quality
-   - [ ] Clear audio
-   - [ ] Subtitles (optional but recommended)
-
-5. **Supporting Files** (if required)
+4. **Supporting Files** (if required)
    - [ ] Presentation slides (PDF)
    - [ ] Database schema diagram (PNG/PDF)
    - [ ] Architecture diagram (PNG/PDF)
@@ -335,7 +268,6 @@ StudyFlash-AI-UAS-Submission/
 ├── README.txt (with links)
 ├── GITHUB_LINK.txt (https://github.com/...)
 ├── LIVE_SITE_LINK.txt (https://studyflash-ai.vercel.app)
-├── VIDEO_LINK.txt (YouTube/Drive link)
 ├── screenshots/
 │   ├── homepage.png
 │   ├── upload-feature.png
@@ -345,7 +277,7 @@ StudyFlash-AI-UAS-Submission/
 └── documentation/
     ├── DOCUMENTATION.pdf
     ├── SOP.pdf
-    └── VIDEO_GUIDE.pdf (optional)
+
 ```
 
 ---
@@ -405,7 +337,6 @@ Dosen: Budi Sulistyo Jati
 ```
 GitHub: https://github.com/yourusername/studyflash-ai
 Live Site: https://studyflash-ai.vercel.app
-Video: [YouTube/Drive link]
 Email: youremail@example.com
 ```
 
@@ -434,8 +365,7 @@ Email: youremail@example.com
 1. [ ] Complete all checklist items above
 2. [ ] Review all documentation
 3. [ ] Test live website one more time
-4. [ ] Record video presentation
-5. [ ] Prepare submission package
+4. [ ] Prepare submission package
 6. [ ] Email to profesor with links
 7. [ ] Print & sign if required
 8. [ ] Submit by deadline

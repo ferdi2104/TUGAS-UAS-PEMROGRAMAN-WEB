@@ -27,6 +27,9 @@ export default function UploadPage() {
       const data = await response.json();
       localStorage.setItem('flashcards', JSON.stringify(data.flashcards));
       localStorage.setItem('documentName', file.name);
+      if (data.documentId) {
+        localStorage.setItem('documentId', data.documentId);
+      }
       
       router.push('/dashboard');
     } catch (error) {

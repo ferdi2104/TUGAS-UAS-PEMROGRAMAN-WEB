@@ -42,10 +42,6 @@ Selamat datang! Berikut adalah panduan lengkap untuk menggunakan StudyFlash AI.
 - **[docs/SOP.md](./docs/SOP.md#8-troubleshooting-guide)** - Troubleshooting guide
 - **[QUICKSTART.md](./QUICKSTART.md#-troubleshooting-quick-reference)** - Quick fixes
 
-### Video & Presentation
-- **[docs/VIDEO_PRESENTATION_GUIDE.md](./docs/VIDEO_PRESENTATION_GUIDE.md)** - 10-min video guide
-- **[docs/VIDEO_PRESENTATION_GUIDE.md](./docs/VIDEO_PRESENTATION_GUIDE.md#-production-checklist)** - Recording checklist
-
 ### Submission
 - **[SUBMISSION_CHECKLIST.md](./SUBMISSION_CHECKLIST.md)** - Pre-submission verification
 - **[PROJECT_COMPLETION_SUMMARY.md](./PROJECT_COMPLETION_SUMMARY.md)** - Project status overview
@@ -118,11 +114,6 @@ Selamat datang! Berikut adalah panduan lengkap untuk menggunakan StudyFlash AI.
 1. [docs/VERCEL_DEPLOYMENT.md](./docs/VERCEL_DEPLOYMENT.md)
 2. [docs/SOP.md#4-sop-deployment](./docs/SOP.md#4-sop-deployment)
 3. Deploy!
-
-### "I need to record the video"
-1. [docs/VIDEO_PRESENTATION_GUIDE.md](./docs/VIDEO_PRESENTATION_GUIDE.md)
-2. Follow script & checklist
-3. Record & edit
 
 ### "I'm ready to submit"
 1. [SUBMISSION_CHECKLIST.md](./SUBMISSION_CHECKLIST.md) - Verify all
@@ -238,7 +229,7 @@ Selamat datang! Berikut adalah panduan lengkap untuk menggunakan StudyFlash AI.
 | How to deploy | docs/VERCEL_DEPLOYMENT.md |
 | Database help | docs/SUPABASE_SETUP.md |
 | Error fix | docs/SOP.md#8 |
-| Video guide | docs/VIDEO_PRESENTATION_GUIDE.md |
+
 | Full reference | docs/DOCUMENTATION.md |
 | Before submit | SUBMISSION_CHECKLIST.md |
 | Status check | PROJECT_COMPLETION_SUMMARY.md |
@@ -260,10 +251,6 @@ Selamat datang! Berikut adalah panduan lengkap untuk menggunakan StudyFlash AI.
 1. [docs/SOP.md](./docs/SOP.md) - All procedures
 2. [docs/DOCUMENTATION.md](./docs/DOCUMENTATION.md) - Technical details
 3. Source code in `/app`, `/components`, `/lib`
-
-### For Presentation
-1. [docs/VIDEO_PRESENTATION_GUIDE.md](./docs/VIDEO_PRESENTATION_GUIDE.md)
-2. [PROJECT_COMPLETION_SUMMARY.md](./PROJECT_COMPLETION_SUMMARY.md)
 
 ### Before Submission
 1. [SUBMISSION_CHECKLIST.md](./SUBMISSION_CHECKLIST.md) - Complete all items
