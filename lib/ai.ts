@@ -11,57 +11,64 @@ export interface GeneratedFlashcard {
   difficulty: 'easy' | 'medium' | 'hard';
 }
 
+const MODEL_NAME = 'gemini-1.5-pro';
+
 export async function generateFlashcards(
   content: string,
   numCards: number = 10
 ): Promise<GeneratedFlashcard[]> {
   try {
-    const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
+    const model = genAI.getGenerativeModel({
+      model: MODEL_NAME,
+      generationConfig: {
+        temperature: 0.7,
+        maxOutputTokens: 8192,
+      },
+    });
 
-    const prompt = `
-Berdasarkan konten berikut, buat ${numCards} flashcard untuk belajar.
-Setiap flashcard harus memiliki pertanyaan yang jelas dan jawaban yang ringkas.
-Buat dalam format JSON dengan struktur:
+    const prompt = `Anda adalah asisten pembuat flashcard. Buat ${numCards} flashcard untuk belajar dari konten berikut.
+
+Aturan:
+- Setiap flashcard memiliki pertanyaan spesifik dan jawaban ringkas
+- Variasikan tingkat kesulitan (easy, medium, hard)
+- Fokus pada konsep kunci, definisi, dan hubungan antar konsep
+
+Format JSON:
 {
   "flashcards": [
-    {
-      "question": "...",
-      "answer": "...",
-      "difficulty": "easy|medium|hard"
-    }
+    { "question": "...", "answer": "...", "difficulty": "easy|medium|hard" }
   ]
 }
 
 Konten:
 ${content}
 
-Pastikan:
-1. Pertanyaan singkat dan spesifik
-2. Jawaban jelas dan ringkas
-3. Mencakup konsep-konsep penting
-4. Variasi tingkat kesulitan
-
-Respons HANYA berisi JSON, tanpa penjelasan tambahan.
-    `;
+HANYA kirim JSON, tanpa teks lain.`;
 
     const result = await model.generateContent(prompt);
     const text = result.response.text();
 
-    // Parse JSON response
     const jsonMatch = text.match(/\{[\s\S]*\}/);
     if (!jsonMatch) {
-      throw new Error('Invalid response format');
+      const clean = text.replace(/```json|```/g, '').trim();
+      const fallback = clean.match(/\{[\s\S]*\}/);
+      if (!fallback) throw new Error('Invalid response format');
     }
 
-    const parsedData = JSON.parse(jsonMatch[0]);
-    
-    // Add IDs dan format
-    const flashcards: GeneratedFlashcard[] = parsedData.flashcards.map(
+    const parsedData = JSON.parse(jsonMatch ? jsonMatch[0] : text.replace(/```json|```/g, '').trim());
+
+    const flashcards: GeneratedFlashcard[] = (parsedData.flashcards || []).map(
       (card: Omit<GeneratedFlashcard, 'id'>, index: number) => ({
         id: `fc-${Date.now()}-${index}`,
-        ...card,
+        question: card.question || 'Pertanyaan tidak tersedia',
+        answer: card.answer || 'Jawaban tidak tersedia',
+        difficulty: card.difficulty || 'medium',
       })
     );
+
+    if (flashcards.length === 0) {
+      throw new Error('AI tidak menghasilkan flashcard');
+    }
 
     return flashcards;
   } catch (error) {
