@@ -34,7 +34,7 @@ export default function DashboardPage() {
     const studyResults = localStorage.getItem('studyResults');
 
     async function loadFromDB() {
-      if (!docId) return false;
+      if (!docId || !supabase) return false;
       const { data: flashcardsData, error } = await supabase
         .from('flashcards')
         .select('id, question, answer')

@@ -28,7 +28,7 @@ export default function StudyPage() {
     const docId = localStorage.getItem('documentId');
 
     async function loadFromDB() {
-      if (!docId) return false;
+      if (!docId || !supabase) return false;
       const { data, error } = await supabase
         .from('flashcards')
         .select('id, question, answer, difficulty')

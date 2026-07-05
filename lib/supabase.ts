@@ -1,13 +1,26 @@
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+function getSupabaseClient() {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+  if (!supabaseUrl || !supabaseAnonKey) {
+    return null;
+  }
+
+  return createClient(supabaseUrl, supabaseAnonKey);
+}
+
+export const supabase = getSupabaseClient();
+
+function getClient() {
+  if (!supabase) throw new Error('Supabase client not initialized. Set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY');
+  return supabase;
+}
 
 // User Functions
 export async function createUser(email: string, name: string) {
-  const { data, error } = await supabase
+  const { data, error } = await getClient()
     .from('users')
     .insert([{ email, name }])
     .select()
@@ -18,7 +31,7 @@ export async function createUser(email: string, name: string) {
 }
 
 export async function getUser(userId: string) {
-  const { data, error } = await supabase
+  const { data, error } = await getClient()
     .from('users')
     .select('*')
     .eq('id', userId)
@@ -30,7 +43,7 @@ export async function getUser(userId: string) {
 
 // Document Functions
 export async function uploadDocument(fileName: string, fileSize: number, content: string, userId?: string) {
-  const { data, error } = await supabase
+  const { data, error } = await getClient()
     .from('documents')
     .insert([{ file_name: fileName, file_size: fileSize, content, user_id: userId }])
     .select()
@@ -41,7 +54,7 @@ export async function uploadDocument(fileName: string, fileSize: number, content
 }
 
 export async function getDocuments(userId?: string) {
-  let query = supabase.from('documents').select('*');
+  let query = getClient().from('documents').select('*');
 
   if (userId) {
     query = query.eq('user_id', userId);
@@ -55,7 +68,7 @@ export async function getDocuments(userId?: string) {
 
 // Flashcard Functions
 export async function createFlashcards(flashcards: any[], documentId: string) {
-  const { data, error } = await supabase
+  const { data, error } = await getClient()
     .from('flashcards')
     .insert(
       flashcards.map(card => ({
@@ -72,7 +85,7 @@ export async function createFlashcards(flashcards: any[], documentId: string) {
 }
 
 export async function getFlashcards(documentId: string) {
-  const { data, error } = await supabase
+  const { data, error } = await getClient()
     .from('flashcards')
     .select('*')
     .eq('document_id', documentId);
@@ -83,7 +96,7 @@ export async function getFlashcards(documentId: string) {
 
 // Progress Functions
 export async function getUserProgress(userId: string, flashcardId: string) {
-  const { data, error } = await supabase
+  const { data, error } = await getClient()
     .from('user_progress')
     .select('*')
     .eq('user_id', userId)
@@ -101,7 +114,7 @@ export async function updateProgress(
   const { data: existing } = await getUserProgress(userId, flashcardId);
 
   if (existing) {
-    const { data, error } = await supabase
+    const { data, error } = await getClient()
       .from('user_progress')
       .update({
         correct_count: existing.correct_count + (isCorrect ? 1 : 0),
@@ -116,7 +129,7 @@ export async function updateProgress(
     if (error) throw error;
     return data;
   } else {
-    const { data, error } = await supabase
+    const { data, error } = await getClient()
       .from('user_progress')
       .insert([
         {
@@ -136,7 +149,7 @@ export async function updateProgress(
 }
 
 export async function getUserStats(userId: string) {
-  const { data, error } = await supabase
+  const { data, error } = await getClient()
     .from('user_progress')
     .select('*')
     .eq('user_id', userId);
