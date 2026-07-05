@@ -86,7 +86,10 @@ export default function StudyPage() {
   if (flashcards.length === 0) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <p>Loading...</p>
+        <div className="text-center">
+          <div className="animate-spin text-4xl mb-4">🔄</div>
+          <p className="text-gray-500">Memuat flashcard...</p>
+        </div>
       </div>
     );
   }

@@ -33,48 +33,44 @@ export default function DashboardPage() {
     const docName = localStorage.getItem('documentName');
     const studyResults = localStorage.getItem('studyResults');
 
-    async function loadFromDB() {
-      if (!docId || !supabase) return false;
-      const { data: flashcardsData, error } = await supabase
-        .from('flashcards')
-        .select('id, question, answer')
-        .eq('document_id', docId);
-      if (error || !flashcardsData || flashcardsData.length === 0) return false;
-      setFlashcards(flashcardsData);
-      return true;
-    }
-
     async function init() {
-      const loaded = await loadFromDB();
-      if (loaded) {
-        setDocumentName(docName || 'Dokumen');
-        if (studyResults) {
-          const results = JSON.parse(studyResults);
-          setStats({
-            total: flashcards.length,
-            learned: results.learned || 0,
-            learning: results.learning || 0,
-            mastered: results.mastered || 0,
-          });
+      let cards: Flashcard[] = [];
+      let loaded = false;
+
+      // Try loading from DB first
+      if (docId && supabase) {
+        const { data, error } = await supabase
+          .from('flashcards')
+          .select('id, question, answer')
+          .eq('document_id', docId);
+        if (!error && data && data.length > 0) {
+          cards = data;
+          loaded = true;
         }
-        return;
       }
 
-      const stored = localStorage.getItem('flashcards');
-      if (stored) {
-        const parsed = JSON.parse(stored);
-        setFlashcards(parsed);
+      // Fallback to localStorage
+      if (!loaded) {
+        const stored = localStorage.getItem('flashcards');
+        if (stored) {
+          cards = JSON.parse(stored);
+          loaded = true;
+        }
+      }
+
+      if (loaded) {
+        setFlashcards(cards);
         setDocumentName(docName || 'Dokumen');
         if (studyResults) {
           const results = JSON.parse(studyResults);
           setStats({
-            total: parsed.length,
+            total: cards.length,
             learned: results.learned || 0,
             learning: results.learning || 0,
             mastered: results.mastered || 0,
           });
         } else {
-          setStats({ total: parsed.length, learned: 0, learning: 0, mastered: 0 });
+          setStats({ total: cards.length, learned: 0, learning: 0, mastered: 0 });
         }
       }
     }
