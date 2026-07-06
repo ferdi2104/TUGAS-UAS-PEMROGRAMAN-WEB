@@ -55,25 +55,26 @@ export default function Flashcard({
           style={{ transformStyle: 'preserve-3d' }}
         >
           <div
-            className="absolute inset-0 bg-gradient-to-br from-blue-500 to-blue-600 text-white rounded-xl p-8 flex flex-col items-center justify-center text-center backface-hidden"
+            className="absolute inset-0 bg-gradient-to-br from-primary to-primary/80 text-on-primary rounded-xl p-8 flex flex-col items-center justify-center text-center backface-hidden border border-primary/30 shadow-[0_0_20px_rgba(255,45,120,0.2)]"
             style={{ backfaceVisibility: 'hidden' }}
           >
-            <p className="text-sm opacity-75 mb-4">Pertanyaan</p>
-            <p className="text-2xl font-semibold">{question}</p>
+            <p className="text-sm opacity-75 mb-4 font-label uppercase tracking-wider">Pertanyaan</p>
+            <p className="text-2xl font-bold font-headline">{question}</p>
+            <p className="text-xs opacity-50 mt-6 font-label uppercase tracking-wider">Click to reveal</p>
           </div>
 
           <div
-            className="absolute inset-0 bg-gradient-to-br from-green-500 to-green-600 text-white rounded-xl p-8 flex flex-col items-center justify-center text-center backface-hidden"
+            className="absolute inset-0 bg-gradient-to-br from-secondary to-secondary/80 text-on-secondary rounded-xl p-8 flex flex-col items-center justify-center text-center backface-hidden border border-secondary/30 shadow-[0_0_20px_rgba(0,255,204,0.2)]"
             style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}
           >
-            <p className="text-sm opacity-75 mb-4">Jawaban</p>
-            <p className="text-2xl font-semibold">{answer}</p>
+            <p className="text-sm opacity-75 mb-4 font-label uppercase tracking-wider">Jawaban</p>
+            <p className="text-2xl font-bold font-headline">{answer}</p>
           </div>
         </motion.div>
       </div>
 
       <div className="text-center mb-8">
-        <p className="text-gray-600">
+        <p className="text-on-surface-variant font-label text-sm">
           {isFlipped
             ? 'Apakah jawaban Anda benar?'
             : 'Klik kartu untuk melihat jawaban'}
@@ -83,20 +84,20 @@ export default function Flashcard({
       {isFlipped && (
         <div className="flex gap-4 justify-center">
           <motion.button
-            className="btn-danger"
+            className="bg-surface-container-highest border border-primary/30 text-primary font-label font-bold px-8 py-3 transition-all hover:bg-primary/10 active:scale-95"
             onClick={() => handleAnswer(false)}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
-            Salah ❌
+            Salah
           </motion.button>
           <motion.button
-            className="btn-secondary"
+            className="bg-secondary text-on-secondary font-label font-bold px-8 py-3 transition-all hover:shadow-[0_0_15px_rgba(0,255,204,0.4)] active:scale-95"
             onClick={() => handleAnswer(true)}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
-            Benar ✓
+            Benar
           </motion.button>
         </div>
       )}

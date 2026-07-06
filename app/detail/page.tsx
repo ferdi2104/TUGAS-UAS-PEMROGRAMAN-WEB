@@ -26,6 +26,14 @@ function DetailContent() {
   const [related, setRelated] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [playing, setPlaying] = useState(false);
+  const [commentText, setCommentText] = useState('');
+  const [commentUsername, setCommentUsername] = useState('');
+  const [posting, setPosting] = useState(false);
+
+  useEffect(() => {
+    const savedUsername = localStorage.getItem('commentUsername');
+    if (savedUsername) setCommentUsername(savedUsername);
+  }, []);
 
   useEffect(() => {
     async function fetchData() {
@@ -50,7 +58,8 @@ function DetailContent() {
 
           if (allMoviesRes.ok) {
             const allMovies = await allMoviesRes.json();
-            setRelated((allMovies || []).filter((m: any) => m.id !== movieData.id).slice(0, 3));
+            const movieList = Array.isArray(allMovies) ? allMovies : (allMovies.data || []);
+            setRelated(movieList.filter((m: any) => m.id !== movieData.id).slice(0, 3));
           }
         } else {
           setMovie(fallbackMovie);
@@ -62,6 +71,30 @@ function DetailContent() {
     }
     fetchData();
   }, [movieId]);
+
+  const postComment = async () => {
+    if (!commentText.trim() || !commentUsername.trim() || !movie) return;
+    setPosting(true);
+    try {
+      const res = await fetch('/api/comments', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          movieId: movie.id,
+          username: commentUsername.trim(),
+          content: commentText.trim(),
+        }),
+      });
+      if (res.ok) {
+        const newComment = await res.json();
+        setComments(prev => [newComment, ...prev]);
+        setCommentText('');
+        localStorage.setItem('commentUsername', commentUsername.trim());
+      }
+    } catch {} finally {
+      setPosting(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -164,9 +197,26 @@ function DetailContent() {
             </div>
             <div className="space-y-6">
               <div className="bg-surface-container-high p-4 rounded-xl border border-outline-variant focus-within:border-primary/50 transition-colors">
-                <textarea className="w-full bg-transparent border-none focus:ring-0 text-on-surface placeholder:text-on-surface-variant/40 resize-none h-20" placeholder="Upload your tactical review..."></textarea>
+                <input
+                  className="w-full bg-transparent border-b border-outline/20 focus:border-secondary/50 focus:ring-0 text-on-surface placeholder:text-on-surface-variant/40 pb-2 mb-3 text-sm"
+                  placeholder="Your callsign..."
+                  value={commentUsername}
+                  onChange={(e) => setCommentUsername(e.target.value)}
+                />
+                <textarea
+                  className="w-full bg-transparent border-none focus:ring-0 text-on-surface placeholder:text-on-surface-variant/40 resize-none h-20"
+                  placeholder="Upload your tactical review..."
+                  value={commentText}
+                  onChange={(e) => setCommentText(e.target.value)}
+                ></textarea>
                 <div className="flex justify-end mt-2">
-                  <button className="bg-primary/20 text-primary border border-primary/40 px-6 py-2 font-label text-sm font-bold hover:bg-primary hover:text-on-primary transition-all uppercase tracking-widest">Post Comment</button>
+                  <button
+                    onClick={postComment}
+                    disabled={posting || !commentText.trim() || !commentUsername.trim()}
+                    className="bg-primary/20 text-primary border border-primary/40 px-6 py-2 font-label text-sm font-bold hover:bg-primary hover:text-on-primary transition-all uppercase tracking-widest disabled:opacity-40 disabled:cursor-not-allowed"
+                  >
+                    {posting ? 'POSTING...' : 'Post Comment'}
+                  </button>
                 </div>
               </div>
               <div className="space-y-6">

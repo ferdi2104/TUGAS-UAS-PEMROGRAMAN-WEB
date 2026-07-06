@@ -1,7 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 
 const fallbackMovies = [
   { id: '1', title: 'DIGITAL HAVOC', year: 2024, runtime: '124 MIN', rating: 8.9, description: 'In the year 2099, a rogue AI takes control of the city\'s power grid.', genre: 'Action', imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDlz9aiMyCvD2uIKmJNtqjy-mDS1VeJuhfpgR3zrqLKCaxiTk8MUBgrU9W4wm9uExaX3Sfi6EDQ37QhzpaxMnge5qX2u9zyD2Dqob4KYMCz8a16hFklDtmpGeGiSdwT_yHBh1y8YUjZs_MF3JlZ_VANEqB5GFWJtwMq4k4khPDMFlBw_W0FJuFeSoryzAhgrRP8lwM8J1xBzH5Xfv2Wx2gawsV0ORKkB2blJTkdmJ1BzXCrxGOH6NzQoLwz5bAKyrSyf3nCfqsCtdg', tag: 'HOT' },
@@ -12,27 +13,79 @@ const fallbackMovies = [
   { id: '6', title: 'ECHOES OF CHROME', year: 2024, runtime: '131 MIN', rating: 8.3, description: 'A detective investigates crimes committed by digital ghosts.', genre: 'Thriller', imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuC5cFy8y8ALQM9DmVwnJgpwS0O-aCkKx-mbBsB7RR-L2O0V6loPbgi_e-3a-vJHDIDH_2bQRh2A18IYlY1dU62xBzKS_yuDjl7Zid52j9RiGzFUdPaMd2ktROuHkdJ7kyrJkMLJbnVG4lsqH6zlKPdFWcjEst2txtazrBsMEHQ7o7ddLKLuege3aK3eoYn8dlN3Q3GTPY9ldA3IDhCbwm3xFvoLwzEFjjihCJq55Rc55ANDJcaLeDab9-Ib6hGearUm943CvQKhq88' },
 ];
 
-export default function PencarianPage() {
+const allGenres = ['Action', 'Sci-Fi', 'Thriller', 'Horror', 'Comedy', 'Drama'];
+
+function PencarianContent() {
+  const searchParams = useSearchParams();
+  const initialSearch = searchParams.get('search') || '';
+
   const [movies, setMovies] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [total, setTotal] = useState(0);
+  const [page, setPage] = useState(1);
+  const [searchInput, setSearchInput] = useState(initialSearch);
+  const [activeGenre, setActiveGenre] = useState('');
+  const [yearFilter, setYearFilter] = useState<string[]>([]);
+  const limit = 12;
+
+  const yearRanges = [
+    { label: '2024 - Neo Era', value: '2024', filter: (y: number) => y >= 2024 },
+    { label: '2020 - 2023', value: '2020-2023', filter: (y: number) => y >= 2020 && y <= 2023 },
+    { label: 'Retro-Future (Pre-2020)', value: 'pre-2020', filter: (y: number) => y < 2020 },
+  ];
+
+  useEffect(() => {
+    setPage(1);
+  }, [searchInput, activeGenre, yearFilter]);
 
   useEffect(() => {
     async function fetchData() {
+      setLoading(true);
       try {
-        const res = await fetch('/api/movies');
+        const params = new URLSearchParams();
+        if (searchInput) params.set('search', searchInput);
+        if (activeGenre) params.set('genre', activeGenre);
+        params.set('page', String(page));
+        params.set('limit', String(limit));
+
+        const res = await fetch(`/api/movies?${params.toString()}`);
         if (res.ok) {
-          const data = await res.json();
-          setMovies(data && data.length > 0 ? data : fallbackMovies);
+          const result = await res.json();
+          let data = result.data || [];
+          const totalCount = result.total || 0;
+
+          if (yearFilter.length > 0) {
+            data = data.filter((m: any) =>
+              yearFilter.some(yf => {
+                const range = yearRanges.find(r => r.value === yf);
+                return range ? range.filter(m.year) : false;
+              })
+            );
+          }
+
+          setMovies(data.length > 0 ? data : fallbackMovies);
+          setTotal(totalCount);
         } else {
           setMovies(fallbackMovies);
+          setTotal(fallbackMovies.length);
         }
       } catch {
         setMovies(fallbackMovies);
+        setTotal(fallbackMovies.length);
       }
       setLoading(false);
     }
     fetchData();
-  }, []);
+  }, [page, searchInput, activeGenre, yearFilter]);
+
+  const totalPages = Math.max(1, Math.ceil(total / limit));
+  const displayMovies = movies.length > 0 ? movies : fallbackMovies;
+
+  const toggleYear = (value: string) => {
+    setYearFilter(prev =>
+      prev.includes(value) ? prev.filter(v => v !== value) : [...prev, value]
+    );
+  };
 
   if (loading) {
     return (
@@ -41,8 +94,6 @@ export default function PencarianPage() {
       </main>
     );
   }
-
-  const displayMovies = movies.length > 0 ? movies : fallbackMovies;
 
   return (
     <main className="pt-24 pb-12 px-6 min-h-screen grid-bg">
@@ -53,39 +104,63 @@ export default function PencarianPage() {
               <span className="material-symbols-outlined">filter_list</span>
               FILTERS
             </h2>
+
+            {/* Search Input */}
+            <div className="mb-6">
+              <label className="font-label text-xs text-secondary-fixed-dim uppercase tracking-widest mb-3 block">Search</label>
+              <div className="relative">
+                <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-sm">search</span>
+                <input
+                  className="w-full bg-surface-container-highest border border-outline/30 rounded-lg pl-9 pr-3 py-2 text-sm text-on-surface placeholder:text-on-surface-variant/50 focus:border-secondary focus:ring-1 focus:ring-secondary/50 transition-all"
+                  placeholder="Cari film..."
+                  value={searchInput}
+                  onChange={(e) => setSearchInput(e.target.value)}
+                />
+              </div>
+            </div>
+
+            {/* Year Filter */}
             <div className="mb-8">
               <label className="font-label text-xs text-secondary-fixed-dim uppercase tracking-widest mb-4 block">Release Year</label>
               <div className="space-y-2">
-                {['2024 - Neo Era', '2020 - 2023', 'Retro-Future (Pre-2020)'].map((year, i) => (
-                  <label key={i} className="flex items-center gap-3 cursor-pointer group">
-                    <input className="form-checkbox bg-surface-container-highest border-outline-variant text-secondary rounded-sm focus:ring-secondary/50" type="checkbox" defaultChecked={i === 1} />
-                    <span className="text-sm font-body text-on-surface-variant group-hover:text-secondary transition-colors">{year}</span>
+                {yearRanges.map((yr) => (
+                  <label key={yr.value} className="flex items-center gap-3 cursor-pointer group">
+                    <input
+                      className="form-checkbox bg-surface-container-highest border-outline-variant text-secondary rounded-sm focus:ring-secondary/50"
+                      type="checkbox"
+                      checked={yearFilter.includes(yr.value)}
+                      onChange={() => toggleYear(yr.value)}
+                    />
+                    <span className="text-sm font-body text-on-surface-variant group-hover:text-secondary transition-colors">{yr.label}</span>
                   </label>
                 ))}
               </div>
             </div>
+
+            {/* Genre Filter */}
             <div className="mb-8">
-              <label className="font-label text-xs text-secondary-fixed-dim uppercase tracking-widest mb-4 block">Sub-genre</label>
+              <label className="font-label text-xs text-secondary-fixed-dim uppercase tracking-widest mb-4 block">Genre</label>
               <div className="flex flex-wrap gap-2">
-                {['Cyber-Noir', 'High-Octane', 'Mecha', 'Synth-Slasher'].map((genre, i) => (
-                  <button key={i} className={`px-3 py-1 text-xs font-label ${i === 1 ? 'bg-secondary text-on-secondary' : 'bg-surface-container-highest border border-secondary/30 text-secondary hover:bg-secondary/10'} transition-colors rounded-full`}>{genre}</button>
+                <button
+                  onClick={() => setActiveGenre('')}
+                  className={`px-3 py-1 text-xs font-label transition-colors rounded-full ${
+                    !activeGenre ? 'bg-secondary text-on-secondary' : 'bg-surface-container-highest border border-secondary/30 text-secondary hover:bg-secondary/10'
+                  }`}
+                >
+                  All
+                </button>
+                {allGenres.map((g) => (
+                  <button
+                    key={g}
+                    onClick={() => setActiveGenre(activeGenre === g ? '' : g)}
+                    className={`px-3 py-1 text-xs font-label transition-colors rounded-full ${
+                      activeGenre === g ? 'bg-secondary text-on-secondary' : 'bg-surface-container-highest border border-secondary/30 text-secondary hover:bg-secondary/10'
+                    }`}
+                  >
+                    {g}
+                  </button>
                 ))}
               </div>
-            </div>
-            <div className="mb-4">
-              <label className="font-label text-xs text-secondary-fixed-dim uppercase tracking-widest mb-4 block">Action Intensity</label>
-              <input className="w-full h-1 bg-surface-container-highest rounded-lg appearance-none cursor-pointer accent-secondary" max="100" min="0" type="range" defaultValue={85} />
-              <div className="flex justify-between mt-2 text-[10px] font-label text-on-surface-variant">
-                <span>CHILL</span>
-                <span className="text-secondary neon-text-cyan">OVERLOAD</span>
-              </div>
-            </div>
-          </div>
-          <div className="relative overflow-hidden rounded-lg neon-border-pink p-6 group cursor-pointer">
-            <div className="relative z-10">
-              <h3 className="font-headline font-bold text-primary mb-2">NEON PRIME</h3>
-              <p className="text-xs text-on-surface-variant mb-4">Unlock extreme bandwidth and 8K action streams.</p>
-              <button className="w-full py-2 bg-primary/20 border border-primary text-primary text-xs font-label uppercase tracking-widest hover:bg-primary hover:text-on-primary transition-all">Upgrade Now</button>
             </div>
           </div>
         </aside>
@@ -93,12 +168,16 @@ export default function PencarianPage() {
         <div className="flex-1">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
             <div>
-              <h1 className="text-3xl font-black font-headline text-on-surface tracking-tight mb-1">HIGH-OCTANE <span className="text-primary neon-text-pink">RESULTS</span></h1>
-              <p className="text-sm font-label text-on-surface-variant uppercase tracking-widest">Showing {displayMovies.length} missions found in the archive</p>
-            </div>
-            <div className="flex items-center gap-4 bg-surface-container/80 p-1 rounded-lg border border-outline-variant">
-              <button className="p-2 text-primary bg-primary/10 rounded"><span className="material-symbols-outlined">grid_view</span></button>
-              <button className="p-2 text-on-surface-variant hover:text-secondary"><span className="material-symbols-outlined">view_list</span></button>
+              <h1 className="text-3xl font-black font-headline text-on-surface tracking-tight mb-1">
+                {searchInput ? (
+                  <>SEARCH: <span className="text-secondary neon-text-cyan">"{searchInput}"</span></>
+                ) : (
+                  <>HIGH-OCTANE <span className="text-primary neon-text-pink">RESULTS</span></>
+                )}
+              </h1>
+              <p className="text-sm font-label text-on-surface-variant uppercase tracking-widest">
+                {total > 0 ? `${total} missions found in the archive` : `${displayMovies.length} missions shown`}
+              </p>
             </div>
           </div>
 
@@ -131,15 +210,61 @@ export default function PencarianPage() {
             ))}
           </div>
 
-          <div className="mt-12 flex justify-center items-center gap-4">
-            <button className="w-10 h-10 flex items-center justify-center rounded border border-outline-variant text-on-surface-variant hover:border-secondary hover:text-secondary transition-all"><span className="material-symbols-outlined">chevron_left</span></button>
-            {[1, 2, 3].map((page) => (
-              <button key={page} className={`w-10 h-10 flex items-center justify-center rounded ${page === 1 ? 'bg-primary text-on-primary font-label font-bold shadow-[0_0_12px_rgba(255,45,120,0.4)]' : 'border border-outline-variant text-on-surface-variant hover:border-secondary hover:text-secondary'} transition-all`}>{page}</button>
-            ))}
-            <span className="text-on-surface-variant font-label px-2">...</span>
-            <button className="w-10 h-10 flex items-center justify-center rounded border border-outline-variant text-on-surface-variant hover:border-secondary hover:text-secondary transition-all">12</button>
-            <button className="w-10 h-10 flex items-center justify-center rounded border border-outline-variant text-on-surface-variant hover:border-secondary hover:text-secondary transition-all"><span className="material-symbols-outlined">chevron_right</span></button>
-          </div>
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="mt-12 flex justify-center items-center gap-2">
+              <button
+                onClick={() => setPage(Math.max(1, page - 1))}
+                disabled={page <= 1}
+                className="w-10 h-10 flex items-center justify-center rounded border border-outline-variant text-on-surface-variant hover:border-secondary hover:text-secondary transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+              >
+                <span className="material-symbols-outlined">chevron_left</span>
+              </button>
+              {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => {
+                let pageNum: number;
+                if (totalPages <= 5) {
+                  pageNum = i + 1;
+                } else if (page <= 3) {
+                  pageNum = i + 1;
+                } else if (page >= totalPages - 2) {
+                  pageNum = totalPages - 4 + i;
+                } else {
+                  pageNum = page - 2 + i;
+                }
+                return (
+                  <button
+                    key={pageNum}
+                    onClick={() => setPage(pageNum)}
+                    className={`w-10 h-10 flex items-center justify-center rounded transition-all ${
+                      page === pageNum
+                        ? 'bg-primary text-on-primary font-label font-bold shadow-[0_0_12px_rgba(255,45,120,0.4)]'
+                        : 'border border-outline-variant text-on-surface-variant hover:border-secondary hover:text-secondary'
+                    }`}
+                  >
+                    {pageNum}
+                  </button>
+                );
+              })}
+              {totalPages > 5 && page < totalPages - 2 && (
+                <span className="text-on-surface-variant font-label px-1">...</span>
+              )}
+              {totalPages > 5 && page < totalPages - 2 && (
+                <button
+                  onClick={() => setPage(totalPages)}
+                  className="w-10 h-10 flex items-center justify-center rounded border border-outline-variant text-on-surface-variant hover:border-secondary hover:text-secondary transition-all"
+                >
+                  {totalPages}
+                </button>
+              )}
+              <button
+                onClick={() => setPage(Math.min(totalPages, page + 1))}
+                disabled={page >= totalPages}
+                className="w-10 h-10 flex items-center justify-center rounded border border-outline-variant text-on-surface-variant hover:border-secondary hover:text-secondary transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+              >
+                <span className="material-symbols-outlined">chevron_right</span>
+              </button>
+            </div>
+          )}
         </div>
       </div>
 
@@ -162,5 +287,17 @@ export default function PencarianPage() {
 
       <div className="scanline-overlay fixed inset-0 opacity-10 pointer-events-none z-[100]" style={{ background: 'linear-gradient(to bottom, transparent 50%, rgba(0, 0, 0, 0.1) 50%)', backgroundSize: '100% 4px' }}></div>
     </main>
+  );
+}
+
+export default function PencarianPage() {
+  return (
+    <Suspense fallback={
+      <main className="pt-24 min-h-screen bg-background flex items-center justify-center">
+        <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+      </main>
+    }>
+      <PencarianContent />
+    </Suspense>
   );
 }

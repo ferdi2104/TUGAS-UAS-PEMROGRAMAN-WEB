@@ -67,7 +67,6 @@ export default function StudyPage() {
     if (currentIndex < flashcards.length - 1) {
       setCurrentIndex(currentIndex + 1);
     } else {
-      // Save study results for dashboard
       localStorage.setItem('studyResults', JSON.stringify({
         learned: newStats.correct,
         learning: newStats.total - newStats.correct - newStats.incorrect,
@@ -85,10 +84,10 @@ export default function StudyPage() {
 
   if (flashcards.length === 0) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-dark">
+      <div className="flex items-center justify-center min-h-screen bg-background pt-16">
         <div className="text-center">
-          <div className="animate-spin text-4xl mb-4">🔄</div>
-          <p className="text-muted">Memuat flashcard...</p>
+          <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-on-surface-variant font-label">Memuat flashcard...</p>
         </div>
       </div>
     );
@@ -99,44 +98,44 @@ export default function StudyPage() {
 
     return (
       <motion.div
-        className="min-h-screen flex items-center justify-center px-4"
+        className="min-h-screen flex items-center justify-center px-4 pt-16 bg-background"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
       >
         <motion.div
-          className="card p-12 text-center max-w-md"
+          className="bg-surface-container rounded-xl border border-outline/10 p-12 text-center max-w-md shadow-[0_0_40px_rgba(255,45,120,0.1)]"
           initial={{ scale: 0.8, y: 20 }}
           animate={{ scale: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <div className="text-6xl mb-6">
-            {percentage >= 70 ? '🎉' : percentage >= 50 ? '👍' : '📚'}
-          </div>
+          <span className="material-symbols-outlined text-6xl text-secondary mb-4" style={{ fontVariationSettings: "'FILL' 1" }}>
+            {percentage >= 70 ? 'stars' : percentage >= 50 ? 'thumb_up' : 'school'}
+          </span>
 
-          <h2 className="text-3xl font-bold mb-4 text-light">Selesai!</h2>
+          <h2 className="text-3xl font-black font-headline text-on-surface mb-6">Selesai!</h2>
 
-          <div className="bg-surface/50 rounded-lg p-6 mb-6 space-y-3">
+          <div className="bg-surface-container-high rounded-xl p-6 mb-6 space-y-3">
             <div className="flex justify-between">
-              <span className="text-muted">Total Kartu:</span>
-              <span className="font-bold">{stats.total}</span>
+              <span className="text-on-surface-variant font-label">Total Kartu:</span>
+              <span className="font-bold text-on-surface">{stats.total}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-secondary">Benar:</span>
+              <span className="text-secondary font-label">Benar:</span>
               <span className="font-bold text-secondary">{stats.correct}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-red-400">Salah:</span>
-              <span className="font-bold text-red-400">{stats.incorrect}</span>
+              <span className="text-primary font-label">Salah:</span>
+              <span className="font-bold text-primary">{stats.incorrect}</span>
             </div>
-            <div className="border-t pt-3 flex justify-between">
-              <span className="text-muted">Skor:</span>
-              <span className="font-bold text-lg text-primary">{percentage}%</span>
+            <div className="border-t border-outline/20 pt-3 flex justify-between">
+              <span className="text-on-surface-variant font-label">Skor:</span>
+              <span className="font-bold text-lg text-secondary">{percentage}%</span>
             </div>
           </div>
 
           <div className="flex gap-4">
             <motion.button
-              className="btn-primary flex-1"
+              className="flex-1 bg-primary text-on-primary font-label font-bold py-3 transition-all hover:shadow-[0_0_15px_rgba(255,45,120,0.5)] active:scale-95"
               onClick={restartStudy}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -144,7 +143,7 @@ export default function StudyPage() {
               Ulang
             </motion.button>
             <motion.button
-              className="btn-outline flex-1"
+              className="flex-1 bg-surface-container-highest border border-outline/30 text-on-surface font-label font-bold py-3 transition-all hover:bg-surface-variant active:scale-95"
               onClick={() => router.push('/dashboard')}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -162,25 +161,20 @@ export default function StudyPage() {
 
   return (
     <motion.div
-      className="min-h-screen py-12 px-4"
+      className="min-h-screen py-12 px-4 pt-24 bg-background"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3 }}
     >
       <div className="max-w-4xl mx-auto">
-        {/* Header */}
-        <motion.div
-          className="mb-8"
-          initial={{ y: -20 }}
-          animate={{ y: 0 }}
-        >
+        <motion.div className="mb-8" initial={{ y: -20 }} animate={{ y: 0 }}>
           <div className="flex justify-between items-center mb-4">
             <div>
-              <h1 className="text-3xl font-bold text-light">Belajar Sekarang</h1>
-              <p className="text-muted">Kartu {currentIndex + 1} dari {flashcards.length}</p>
+              <h1 className="text-3xl font-black font-headline text-on-surface">Belajar Sekarang</h1>
+              <p className="text-on-surface-variant font-label text-sm mt-1">Kartu {currentIndex + 1} dari {flashcards.length}</p>
             </div>
             <motion.button
-              className="btn-outline"
+              className="bg-surface-container-highest border border-outline/30 text-on-surface font-label font-bold px-5 py-2 text-sm transition-all hover:bg-surface-variant active:scale-95"
               onClick={() => router.push('/dashboard')}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -189,13 +183,12 @@ export default function StudyPage() {
             </motion.button>
           </div>
 
-          {/* Progress Bar */}
-          <div className="card">
-            <div className="flex justify-between text-sm text-muted mb-2">
+          <div className="bg-surface-container rounded-xl border border-outline/10 p-4">
+            <div className="flex justify-between text-sm text-on-surface-variant font-label mb-2">
               <span>Progress</span>
               <span>{Math.round(progress)}%</span>
             </div>
-            <div className="w-full bg-border rounded-full h-2">
+            <div className="w-full bg-surface-container-highest rounded-full h-2">
               <motion.div
                 className="bg-gradient-to-r from-primary to-secondary h-2 rounded-full"
                 initial={{ width: 0 }}
@@ -206,28 +199,26 @@ export default function StudyPage() {
           </div>
         </motion.div>
 
-        {/* Stats */}
         <motion.div
           className="grid grid-cols-3 gap-4 mb-8"
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.1 }}
         >
-          <div className="card bg-secondary/10 border-2 border-secondary/30 text-center">
-            <p className="text-2xl font-bold text-secondary">{stats.correct}</p>
-            <p className="text-sm text-muted">Benar</p>
+          <div className="bg-surface-container rounded-xl border-2 border-secondary/30 p-4 text-center">
+            <p className="text-2xl font-bold text-secondary font-headline">{stats.correct}</p>
+            <p className="text-xs font-label text-on-surface-variant uppercase tracking-wider mt-1">Benar</p>
           </div>
-          <div className="card bg-primary/10 border-2 border-primary/30 text-center">
-            <p className="text-2xl font-bold text-primary">{currentIndex + 1}</p>
-            <p className="text-sm text-muted">Kartu</p>
+          <div className="bg-surface-container rounded-xl border-2 border-primary/30 p-4 text-center">
+            <p className="text-2xl font-bold text-primary font-headline">{currentIndex + 1}</p>
+            <p className="text-xs font-label text-on-surface-variant uppercase tracking-wider mt-1">Kartu</p>
           </div>
-          <div className="card bg-red-400/10 border-2 border-red-400/30 text-center">
-            <p className="text-2xl font-bold text-red-400">{stats.incorrect}</p>
-            <p className="text-sm text-muted">Salah</p>
+          <div className="bg-surface-container rounded-xl border-2 border-tertiary/30 p-4 text-center">
+            <p className="text-2xl font-bold text-tertiary font-headline">{stats.incorrect}</p>
+            <p className="text-xs font-label text-on-surface-variant uppercase tracking-wider mt-1">Salah</p>
           </div>
         </motion.div>
 
-        {/* Flashcard */}
         <motion.div
           className="mb-8"
           initial={{ opacity: 0, scale: 0.9 }}
@@ -243,7 +234,6 @@ export default function StudyPage() {
           />
         </motion.div>
 
-        {/* Navigation */}
         <motion.div
           className="flex justify-between items-center"
           initial={{ y: 20, opacity: 0 }}
@@ -251,7 +241,7 @@ export default function StudyPage() {
           transition={{ delay: 0.2 }}
         >
           <motion.button
-            className="btn-outline"
+            className="bg-surface-container-highest border border-outline/30 text-on-surface font-label font-bold px-5 py-2 text-sm transition-all hover:bg-surface-variant active:scale-95 disabled:opacity-30 disabled:cursor-not-allowed"
             onClick={() => setCurrentIndex(Math.max(0, currentIndex - 1))}
             disabled={currentIndex === 0}
             whileHover={{ scale: 1.05 }}
@@ -260,12 +250,12 @@ export default function StudyPage() {
             ← Sebelumnya
           </motion.button>
 
-          <span className="text-muted text-sm">
+          <span className="text-on-surface-variant font-label text-sm">
             {currentIndex + 1} / {flashcards.length}
           </span>
 
           <motion.button
-            className="btn-primary"
+            className="bg-primary text-on-primary font-label font-bold px-5 py-2 text-sm transition-all hover:shadow-[0_0_15px_rgba(255,45,120,0.5)] active:scale-95 disabled:opacity-30 disabled:cursor-not-allowed"
             onClick={() => setCurrentIndex(Math.min(flashcards.length - 1, currentIndex + 1))}
             disabled={currentIndex === flashcards.length - 1}
             whileHover={{ scale: 1.05 }}

@@ -33,7 +33,7 @@ export default function UploadPage() {
       if (data.documentId) {
         localStorage.setItem('documentId', data.documentId);
       }
-      
+
       router.push('/dashboard');
     } catch (error) {
       console.error('Error:', error);
@@ -45,17 +45,17 @@ export default function UploadPage() {
 
   return (
     <motion.div
-      className="min-h-screen py-12 px-4"
+      className="min-h-screen py-12 px-4 pt-24 bg-background"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3 }}
     >
       <div className="max-w-4xl mx-auto">
-        <motion.div className="mb-12" initial={{ y: -20 }} animate={{ y: 0 }}>
-          <h1 className="text-4xl font-bold text-center text-light mb-4">
+        <motion.div className="mb-12 text-center" initial={{ y: -20 }} animate={{ y: 0 }}>
+          <h1 className="text-4xl font-black font-headline text-on-surface mb-4">
             Upload Catatan Anda
           </h1>
-          <p className="text-center text-muted text-lg">
+          <p className="text-on-surface-variant font-body text-lg">
             Ubah catatan menjadi flashcard interaktif dengan bantuan AI
           </p>
         </motion.div>
@@ -66,37 +66,41 @@ export default function UploadPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
           >
-            <div className="animate-spin">
-              <div className="text-6xl">🔄</div>
-            </div>
-            <p className="mt-4 text-lg text-muted">Memproses catatan Anda...</p>
-            <p className="text-sm text-muted/70 mt-2">Ini mungkin memakan waktu beberapa detik</p>
+            <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mb-6"></div>
+            <p className="text-lg font-label text-on-surface-variant">Memproses catatan Anda...</p>
+            <p className="text-sm text-on-surface-variant/60 mt-2">Ini mungkin memakan waktu beberapa detik</p>
           </motion.div>
         ) : (
           <FileUpload onUpload={handleUpload} />
         )}
 
         <motion.div
-          className="mt-16 grid grid-cols-1 md:grid-cols-2 gap-8"
+          className="mt-16 grid grid-cols-1 md:grid-cols-2 gap-6"
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.2 }}
         >
-          <div className="card">
-            <h3 className="font-bold text-lg mb-4">💡 Format yang Didukung</h3>
-            <ul className="space-y-2 text-muted">
-              <li>• PDF Documents</li>
-              <li>• Text Files (.txt)</li>
-              <li>• Markdown Files (.md)</li>
+          <div className="bg-surface-container rounded-xl border border-outline/10 p-6">
+            <h3 className="font-headline font-bold text-lg text-on-surface mb-4 flex items-center gap-2">
+              <span className="material-symbols-outlined text-secondary">lightbulb</span>
+              Format yang Didukung
+            </h3>
+            <ul className="space-y-2 text-on-surface-variant font-body">
+              <li className="flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-secondary"></span> PDF Documents</li>
+              <li className="flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-secondary"></span> Text Files (.txt)</li>
+              <li className="flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-secondary"></span> Markdown Files (.md)</li>
             </ul>
           </div>
 
-          <div className="card">
-            <h3 className="font-bold text-lg mb-4">⚡ Tips Optimal</h3>
-            <ul className="space-y-2 text-muted">
-              <li>• Gunakan catatan yang terstruktur</li>
-              <li>• Pisahkan konsep dengan jelas</li>
-              <li>• File maksimal 10MB</li>
+          <div className="bg-surface-container rounded-xl border border-outline/10 p-6">
+            <h3 className="font-headline font-bold text-lg text-on-surface mb-4 flex items-center gap-2">
+              <span className="material-symbols-outlined text-tertiary">bolt</span>
+              Tips Optimal
+            </h3>
+            <ul className="space-y-2 text-on-surface-variant font-body">
+              <li className="flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-tertiary"></span> Gunakan catatan yang terstruktur</li>
+              <li className="flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-tertiary"></span> Pisahkan konsep dengan jelas</li>
+              <li className="flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-tertiary"></span> File maksimal 10MB</li>
             </ul>
           </div>
         </motion.div>

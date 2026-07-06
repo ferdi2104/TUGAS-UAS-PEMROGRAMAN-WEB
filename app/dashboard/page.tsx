@@ -37,7 +37,6 @@ export default function DashboardPage() {
       let cards: Flashcard[] = [];
       let loaded = false;
 
-      // Try loading from DB first
       if (docId && supabase) {
         const { data, error } = await supabase
           .from('flashcards')
@@ -49,7 +48,6 @@ export default function DashboardPage() {
         }
       }
 
-      // Fallback to localStorage
       if (!loaded) {
         const stored = localStorage.getItem('flashcards');
         if (stored) {
@@ -82,9 +80,7 @@ export default function DashboardPage() {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-      },
+      transition: { staggerChildren: 0.1 },
     },
   };
 
@@ -93,59 +89,74 @@ export default function DashboardPage() {
     visible: { opacity: 1, y: 0 },
   };
 
+  if (!flashcards.length) {
+    return (
+      <motion.div
+        className="min-h-screen py-12 px-4 pt-24 bg-background"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+      >
+        <div className="max-w-6xl mx-auto text-center py-20">
+          <span className="material-symbols-outlined text-6xl text-on-surface-variant/30 mb-4">school</span>
+          <h1 className="text-3xl font-black font-headline text-on-surface mb-2">Belum Ada Data</h1>
+          <p className="text-on-surface-variant font-body mb-8">Upload catatan atau dokumen kamu untuk memulai belajar.</p>
+          <Link href="/upload">
+            <button className="bg-primary text-on-primary font-label font-bold px-8 py-3 transition-all hover:shadow-[0_0_15px_rgba(255,45,120,0.5)] active:scale-95">
+              UPLOAD NOW
+            </button>
+          </Link>
+        </div>
+      </motion.div>
+    );
+  }
+
   return (
     <motion.div
-      className="min-h-screen py-12 px-4"
+      className="min-h-screen py-12 px-4 pt-24 bg-background"
       initial="hidden"
       animate="visible"
       variants={containerVariants}
     >
       <div className="max-w-6xl mx-auto">
-        {/* Header */}
         <motion.div className="mb-12" variants={itemVariants}>
-          <h1 className="text-4xl font-bold mb-2 text-light">Dashboard Belajar</h1>
-          <p className="text-muted">
-            Dokumen: <span className="font-semibold text-light">{documentName}</span>
+          <h1 className="text-4xl font-black font-headline text-on-surface mb-2">Dashboard Belajar</h1>
+          <p className="text-on-surface-variant font-body">
+            Dokumen: <span className="font-bold text-secondary">{documentName}</span>
           </p>
         </motion.div>
 
-        {/* Stats Grid */}
-        <motion.div
-          className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12"
-          variants={containerVariants}
-        >
+        <motion.div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12" variants={containerVariants}>
           {[
-            { label: 'Total Flashcard', value: stats.total, icon: '📚', bg: 'bg-primary/10', border: 'border-primary/30' },
-            { label: 'Sudah Dipelajari', value: stats.learned, icon: '✓', bg: 'bg-secondary/10', border: 'border-secondary/30' },
-            { label: 'Sedang Belajar', value: stats.learning, icon: '🔄', bg: 'bg-warning/10', border: 'border-warning/30' },
-            { label: 'Sudah Dikuasai', value: stats.mastered, icon: '⭐', bg: 'bg-accent/10', border: 'border-accent/30' },
+            { label: 'Total Flashcard', value: stats.total, icon: 'menu_book', color: 'text-primary', border: 'border-primary/30' },
+            { label: 'Sudah Dipelajari', value: stats.learned, icon: 'check_circle', color: 'text-secondary', border: 'border-secondary/30' },
+            { label: 'Sedang Belajar', value: stats.learning, icon: 'sync', color: 'text-tertiary', border: 'border-tertiary/30' },
+            { label: 'Sudah Dikuasai', value: stats.mastered, icon: 'stars', color: 'text-primary', border: 'border-primary/30' },
           ].map((stat, idx) => (
             <motion.div
               key={idx}
-              className={`card ${stat.bg} border-2 ${stat.border}`}
+              className={`bg-surface-container rounded-xl border-2 ${stat.border} p-5`}
               variants={itemVariants}
               whileHover={{ scale: 1.05 }}
             >
-              <div className="text-3xl mb-2">{stat.icon}</div>
-              <p className="text-muted text-sm mb-1">{stat.label}</p>
-              <p className="text-3xl font-bold text-light">{stat.value}</p>
+              <span className={`material-symbols-outlined text-3xl mb-2 ${stat.color}`} style={{ fontVariationSettings: "'FILL' 1" }}>{stat.icon}</span>
+              <p className="text-on-surface-variant text-sm font-label mb-1 uppercase tracking-wider">{stat.label}</p>
+              <p className="text-3xl font-bold font-headline text-on-surface">{stat.value}</p>
             </motion.div>
           ))}
         </motion.div>
 
-        {/* Progress Bar */}
         <motion.div className="mb-12" variants={itemVariants}>
-          <div className="card">
-            <h3 className="font-bold text-lg mb-4 text-light">Progress Pembelajaran</h3>
+          <div className="bg-surface-container rounded-xl border border-outline/10 p-6">
+            <h3 className="font-headline font-bold text-lg text-on-surface mb-4">Progress Pembelajaran</h3>
             <div className="space-y-4">
               <div>
                 <div className="flex justify-between mb-2">
-                  <span className="text-sm text-muted">Sudah Dipelajari</span>
-                  <span className="text-sm font-semibold">
+                  <span className="text-sm text-on-surface-variant font-label">Sudah Dipelajari</span>
+                  <span className="text-sm font-bold text-on-surface">
                     {stats.total > 0 ? Math.round((stats.learned / stats.total) * 100) : 0}%
                   </span>
                 </div>
-                <div className="w-full bg-gray-200 rounded-full h-3">
+                <div className="w-full bg-surface-container-highest rounded-full h-3">
                   <motion.div
                     className="bg-primary h-3 rounded-full"
                     initial={{ width: 0 }}
@@ -156,12 +167,12 @@ export default function DashboardPage() {
               </div>
               <div>
                 <div className="flex justify-between mb-2">
-                  <span className="text-sm text-muted">Sudah Dikuasai</span>
-                  <span className="text-sm font-semibold">
+                  <span className="text-sm text-on-surface-variant font-label">Sudah Dikuasai</span>
+                  <span className="text-sm font-bold text-on-surface">
                     {stats.total > 0 ? Math.round((stats.mastered / stats.total) * 100) : 0}%
                   </span>
                 </div>
-                <div className="w-full bg-gray-200 rounded-full h-3">
+                <div className="w-full bg-surface-container-highest rounded-full h-3">
                   <motion.div
                     className="bg-secondary h-3 rounded-full"
                     initial={{ width: 0 }}
@@ -174,63 +185,56 @@ export default function DashboardPage() {
           </div>
         </motion.div>
 
-        {/* Action Buttons */}
-        <motion.div
-          className="grid grid-cols-1 md:grid-cols-3 gap-6"
-          variants={containerVariants}
-        >
-          <Link href="/study" className="w-full">
+        <motion.div className="grid grid-cols-1 md:grid-cols-3 gap-6" variants={containerVariants}>
+          <Link href="/study">
             <motion.button
-              className="btn-primary w-full py-4 text-lg font-semibold flex items-center justify-center gap-2"
+              className="w-full bg-primary text-on-primary font-label font-bold py-4 text-lg transition-all hover:shadow-[0_0_20px_rgba(255,45,120,0.5)] active:scale-95"
               variants={itemVariants}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
             >
-              🎴 Belajar Flashcard
+              <span className="material-symbols-outlined align-middle mr-2" style={{ fontVariationSettings: "'FILL' 1" }}>school</span>
+              Belajar Flashcard
             </motion.button>
           </Link>
-
-          <Link href="/study" className="w-full">
+          <Link href="/study">
             <motion.button
-              className="btn-secondary py-4 text-lg font-semibold flex items-center justify-center gap-2 w-full"
+              className="w-full bg-surface-container-highest border border-secondary/30 text-secondary font-label font-bold py-4 text-lg transition-all hover:bg-secondary/10 active:scale-95"
               variants={itemVariants}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
             >
-              🎓 Mode Quiz
+              <span className="material-symbols-outlined align-middle mr-2">quiz</span>
+              Mode Quiz
             </motion.button>
           </Link>
-
-          <Link href="/upload" className="w-full">
+          <Link href="/upload">
             <motion.button
-              className="btn-outline py-4 text-lg font-semibold flex items-center justify-center gap-2"
+              className="w-full bg-surface-container-highest border border-outline/30 text-on-surface font-label font-bold py-4 text-lg transition-all hover:bg-surface-variant active:scale-95"
               variants={itemVariants}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
             >
-              📁 Upload Baru
+              <span className="material-symbols-outlined align-middle mr-2">upload_file</span>
+              Upload Baru
             </motion.button>
           </Link>
         </motion.div>
 
-        {/* Recent Flashcards Preview */}
         <motion.div className="mt-12" variants={itemVariants}>
-          <h3 className="font-bold text-xl mb-6 text-light">Preview Flashcard</h3>
-          <motion.div
-            className="grid grid-cols-1 md:grid-cols-2 gap-6"
-            variants={containerVariants}
-          >
+          <h3 className="font-headline font-bold text-xl text-on-surface mb-6">Preview Flashcard</h3>
+          <motion.div className="grid grid-cols-1 md:grid-cols-2 gap-6" variants={containerVariants}>
             {flashcards.slice(0, 4).map((card) => (
               <motion.div
                 key={card.id}
-                className="card cursor-pointer hover:shadow-xl transition-shadow"
+                className="bg-surface-container rounded-xl border border-outline/10 p-5 hover:border-primary/30 transition-all cursor-pointer"
                 variants={itemVariants}
                 whileHover={{ y: -5 }}
               >
-                <p className="text-sm text-muted/70 mb-2">Pertanyaan</p>
-                <p className="font-semibold mb-4 line-clamp-2 text-light">{card.question}</p>
-                <p className="text-sm text-muted/70 mb-2">Jawaban</p>
-                <p className="text-muted line-clamp-2">{card.answer}</p>
+                <p className="text-xs font-label text-on-surface-variant uppercase tracking-wider mb-2">Pertanyaan</p>
+                <p className="font-semibold text-on-surface mb-4 line-clamp-2">{card.question}</p>
+                <p className="text-xs font-label text-on-surface-variant uppercase tracking-wider mb-2">Jawaban</p>
+                <p className="text-on-surface-variant line-clamp-2 font-body">{card.answer}</p>
               </motion.div>
             ))}
           </motion.div>

@@ -147,32 +147,55 @@ export default function HomePage() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 grid-rows-2 gap-4 h-auto md:h-[600px]">
             <div className="md:col-span-2 md:row-span-2 group relative overflow-hidden rounded-xl border border-secondary/30 bg-surface-container flex flex-col justify-end p-8 transition-all hover:shadow-[0_0_30px_rgba(0,255,204,0.1)]">
-              <img className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt="Orbital station" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDn2bMS6xiz9ElVmbARrNpB9ixSs7ZDmKAnRSHuQhWv8FcZkcBz0JVcNN0HBK_zrWwUzzcvkUZXbKEN3YDp3UAlCYCdtBNco5Ve8F47WCBXi7RmkM4z8BEMHMBZoGXT8qRnTw2jHtxlOBCJOrdUdE9Ujk8uSi0QwYGFs-Vq3KwmAftS86EiGN6ZhAsyt6vMl0zKyYGFL_kB-fEXHny13ohfac78Q5RQ73xaJvIQlrSo6er8k29uJeqHa5HtI7G0iHKm5LNZusACL_w" />
+              <img className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt="Student plan" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDn2bMS6xiz9ElVmbARrNpB9ixSs7ZDmKAnRSHuQhWv8FcZkcBz0JVcNN0HBK_zrWwUzzcvkUZXbKEN3YDp3UAlCYCdtBNco5Ve8F47WCBXi7RmkM4z8BEMHMBZoGXT8qRnTw2jHtxlOBCJOrdUdE9Ujk8uSi0QwYGFs-Vq3KwmAftS86EiGN6ZhAsyt6vMl0zKyYGFL_kB-fEXHny13ohfac78Q5RQ73xaJvIQlrSo6er8k29uJeqHa5HtI7G0iHKm5LNZusACL_w" />
               <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent"></div>
               <div className="relative z-10">
                 <div className="flex items-center gap-2 mb-2 text-secondary">
-                  <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
-                  <span className="font-label text-sm font-bold uppercase tracking-widest">Premium Student Access</span>
+                  <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>verified</span>
+                  <span className="font-label text-sm font-bold uppercase tracking-widest">Student Free Tier</span>
                 </div>
-                <h3 className="text-4xl font-black font-headline mb-4">ORBITAL ZERO</h3>
-                <Link href="/detail">
-                  <button className="bg-secondary text-on-secondary font-bold font-label px-6 py-3 transition-all hover:scale-105 active:scale-95">START STREAMING</button>
+                <h3 className="text-4xl font-black font-headline mb-2">GRATIS untuk Mahasiswa</h3>
+                <p className="text-on-surface-variant mb-4 max-w-lg">Cukup verifikasi email .ac.id / .edu kamu dan nikmati streaming gratis tanpa iklan.</p>
+                <div className="flex flex-wrap gap-4 mb-6">
+                  <div className="flex items-center gap-1 text-sm">
+                    <span className="material-symbols-outlined text-secondary text-sm">check</span>
+                    <span>720p HD</span>
+                  </div>
+                  <div className="flex items-center gap-1 text-sm">
+                    <span className="material-symbols-outlined text-secondary text-sm">check</span>
+                    <span>Bebas Iklan</span>
+                  </div>
+                  <div className="flex items-center gap-1 text-sm">
+                    <span className="material-symbols-outlined text-secondary text-sm">check</span>
+                    <span>10 Film/bulan</span>
+                  </div>
+                </div>
+                <Link href="/upload">
+                  <button className="bg-secondary text-on-secondary font-bold font-label px-6 py-3 transition-all hover:scale-105 active:scale-95">VERIFIKASI SEKARANG</button>
                 </Link>
               </div>
             </div>
-            <div className="group relative overflow-hidden rounded-xl border border-white/10 bg-surface-container p-6 transition-all hover:border-primary/50">
-              <img className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-80 transition-opacity" alt="Mech" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB9RGh1_0PdjgVPLPkcxIwUezSN2V7gTJcw-NuyO87k7xP6hqFPguZYSZkiYgfVK1RDsS5_ihAWBy2OfZYzZATPoLTXLe3V9ecCXQx5kM36BWbpaiEkLWArHRIcdQVBMbc4N8UR1dQMCUk90djeDM8Q9RW0_HeQEoOdDgyiWmhq57MDHecHsHNCdcW65He6ORn9aEaebXshjxxC3M4JqBFEJXUgdEIDO9cjQRPIx-8ZwVuejejRr8LbT5DabVcrB9Bo2Ou9-xPsw28" />
-              <div className="relative z-10 h-full flex flex-col justify-end">
-                <h4 className="font-headline font-bold text-xl mb-1">Mech Warriors</h4>
-                <p className="text-xs text-on-surface-variant font-label uppercase">Weekly Student Release</p>
+            <div className="group relative overflow-hidden rounded-xl bg-surface-container border border-primary/20 p-6 transition-all hover:border-primary/60 hover:-translate-y-1 flex flex-col justify-between">
+              <div>
+                <div className="w-10 h-10 rounded-lg bg-primary/20 flex items-center justify-center mb-3">
+                  <span className="material-symbols-outlined text-primary">leaderboard</span>
+                </div>
+                <h4 className="font-headline font-bold text-lg mb-1">University Rankings</h4>
+                <p className="text-sm text-on-surface-variant">UMY, UGM, dan 20+ kampus lain bersaing di papan peringkat mingguan.</p>
               </div>
+              <div className="mt-4 text-xs text-secondary font-label uppercase tracking-widest">Coming Soon</div>
             </div>
-            <div className="group relative overflow-hidden rounded-xl border border-white/10 bg-surface-container p-6 transition-all hover:border-tertiary/50">
-              <img className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-80 transition-opacity" alt="Hacker" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBIwGBrIi84RytaP612f3szTvKZpaXWVytjQ3vGOtXUwZQm8XDyF4NpeoQhEsIcAwinvjp4WVTVlvm6SJPQip-YOybQ_dHeWV9PazBhGbW5u4m_aiTgbpPHfjUN39S6yrG76OX6onUTSFSRlINfhcGlrxpDnJAbD5AYfc--DlHQVExXMWaJIemVrrlINrG9BBTztRjoSxcCG_TnTxUXOu2xcNUeE17j462Kfwza3iSxwSJUn8TdbPOGA24Xcul3RdMmxvsF21Edus4" />
-              <div className="relative z-10 h-full flex flex-col justify-end">
-                <h4 className="font-headline font-bold text-xl mb-1">The Firewall</h4>
-                <p className="text-xs text-on-surface-variant font-label uppercase">Unlocked: 1080p</p>
+            <div className="group relative overflow-hidden rounded-xl bg-surface-container border border-tertiary/20 p-6 transition-all hover:border-tertiary/60 hover:-translate-y-1 flex flex-col justify-between">
+              <div>
+                <div className="w-10 h-10 rounded-lg bg-tertiary/20 flex items-center justify-center mb-3">
+                  <span className="material-symbols-outlined text-tertiary">groups</span>
+                </div>
+                <h4 className="font-headline font-bold text-lg mb-1">Community Picks</h4>
+                <p className="text-sm text-on-surface-variant">Rekomendasi film dari sesama mahasiswa. Vote & request film favoritmu.</p>
               </div>
+              <Link href="/kategori">
+                <button className="mt-4 text-xs text-tertiary font-label uppercase tracking-widest flex items-center gap-1 hover:gap-2 transition-all">Explore <span className="material-symbols-outlined text-sm">arrow_forward</span></button>
+              </Link>
             </div>
           </div>
         </div>
