@@ -7,15 +7,15 @@ import Link from 'next/link';
 
 const fallbackMovie = {
   id: '1',
-  title: 'CYBER REVENGE: VOID',
-  description: 'In the year 2099, a disenfranchised tech-prodigy turned mercenary discovers a conspiracy buried deep within the NEON-ACTION megacity\'s neural network.',
+  title: 'Jackie Chan: International Justice',
+  description: 'Jackie Chan and a female assassin team up to take down international crime syndicates in this action-packed blockbuster.',
   year: 2024,
-  runtime: '124 Mins',
-  rating: 9.2,
-  genre: 'Action / Sci-Fi',
-  imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCDVSjG6XFM5Sk7dSEaz8iUWOIL4yHTkgbd0ZCcgMf9TqK6R-hB-Bq7bDH6HjjbSMChqFz9r9mCw9kcJCy5DSTGXlXFNHecH4udIBUrBzXObAXpfmDh6F5zgkXLCeR4VBymA5tSCAxJgirIKSeR6dKhMaca5x47LXmMUEogqzlHHUSqpcuTkhHkPNylmn_hCE-6zYUs8VhbOe4rzJMWoyzbkulRBVi-be7UyJf99e4sMqmRNflTKKLyr3r86up-lmMS4XXDUaHEndE',
-  videoUrl: 'https://www.youtube.com/watch?v=Tg7wNK35Aso',
-  tag: 'Premium Action',
+  runtime: '120 Mins',
+  rating: 8.5,
+  genre: 'Action',
+  imageUrl: 'https://img.youtube.com/vi/xghsjPvOjZA/maxresdefault.jpg',
+  videoUrl: 'https://www.youtube.com/watch?v=xghsjPvOjZA',
+  tag: 'Featured',
 };
 
 function DetailContent() {
