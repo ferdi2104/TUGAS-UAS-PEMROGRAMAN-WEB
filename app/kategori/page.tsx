@@ -1,6 +1,42 @@
 'use client';
 
+import { useState, useEffect } from 'react';
+import Link from 'next/link';
+
+const fallbackCategories = [
+  { name: 'High-Octane', icon: 'directions_car', description: 'Extreme speed, explosive pursuits, and relentless momentum across urban landscapes.', color: 'primary', tag: 'Primary Core' },
+  { name: 'Martial Arts', icon: 'swords', description: null, color: 'tertiary', tag: 'Traditional Combat' },
+  { name: 'Cyberpunk', icon: 'language', description: null, color: 'secondary', tag: 'Dystopian Tech' },
+  { name: 'Heist', icon: 'lock', description: 'Strategic infiltration and high-stakes precision strikes.', color: 'primary', tag: 'Tactical Ops' },
+  { name: 'Revenge', icon: 'gavel', description: null, color: 'primary', tag: 'Personal War' },
+  { name: 'Superhuman', icon: 'bolt', description: null, color: 'tertiary', tag: 'Augmented Power' },
+];
+
 export default function KategoriPage() {
+  const [categories, setCategories] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const res = await fetch('/api/categories');
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.length > 0) setCategories(data);
+          else setCategories(fallbackCategories);
+        } else {
+          setCategories(fallbackCategories);
+        }
+      } catch {
+        setCategories(fallbackCategories);
+      }
+      setLoading(false);
+    }
+    fetchData();
+  }, []);
+
+  const display = categories.length > 0 ? categories : fallbackCategories;
+
   return (
     <main className="pt-24 pb-20 relative overflow-hidden min-h-screen">
       <div className="absolute inset-0 grid-bg pointer-events-none opacity-20"></div>
@@ -18,80 +54,26 @@ export default function KategoriPage() {
 
       <section className="container mx-auto px-6 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          {/* High-Octane */}
-          <div className="md:col-span-2 md:row-span-2 category-card group cursor-pointer relative overflow-hidden rounded-xl h-[400px] md:h-auto">
-            <div className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110" style={{ backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuB7j1ZSl33I8czO3bDqxDz6ZExv6LarsLUP3I-kQ69Q_F6APPcmiKDh-hj3P4uB5EEQ2z1JxnoycZHJbMp6v_NRYORvXofshC4tJ1VEOYvG8FhvLUfimrAGEBukOb8DybixRrjUf501MO_u88pUUL5OmN22k1-rnwGRYF6_GuOkIDzbR4HdOuVe-bikY_-kWM711Xxa7z6urkNenp0KRi67eDg1Eag9RZRNtZwInIIuFzwPSnbFS-8BnNDKNR6wOs843tPyJIfl9Dc')" }}></div>
-            <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent opacity-90"></div>
-            <div className="absolute inset-0 border border-primary/30 rounded-xl transition-all duration-300 group-hover:border-primary group-hover:shadow-[0_0_16px_rgba(255,45,120,0.4)]"></div>
-            <div className="absolute bottom-0 p-8 w-full">
-              <div className="flex justify-between items-end">
-                <div>
-                  <span className="font-label text-primary text-xs font-bold uppercase tracking-[0.2em] block mb-2">Primary Core</span>
-                  <h3 className="text-4xl font-headline font-bold text-on-surface tracking-tight mb-2">High-Octane</h3>
-                  <p className="text-on-surface-variant max-w-sm">Extreme speed, explosive pursuits, and relentless momentum across urban landscapes.</p>
+          {display.map((cat: any, i: number) => {
+            const isLarge = i === 0;
+            const isWide = i === 3;
+            const heights = isLarge ? 'h-[400px] md:h-auto md:col-span-2 md:row-span-2' : isWide ? 'h-[250px] md:col-span-2' : 'h-[300px]';
+            return (
+              <Link key={cat.id || i} href="/pencarian" className={`${heights} category-card group cursor-pointer relative overflow-hidden rounded-xl`}>
+                <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent opacity-80"></div>
+                <div className={`absolute inset-0 border ${cat.color === 'secondary' ? 'border-secondary/30 group-hover:border-secondary' : 'border-primary/30 group-hover:border-primary group-hover:shadow-[0_0_16px_rgba(255,45,120,0.4)]'} rounded-xl transition-all duration-300`}></div>
+                <div className={`absolute bottom-0 ${isLarge || isWide ? 'p-8' : 'p-6'} w-full`}>
+                  {cat.tag && (
+                    <span className={`font-label ${cat.color === 'secondary' ? 'text-secondary' : cat.color === 'tertiary' ? 'text-tertiary' : 'text-primary'} text-xs font-bold uppercase tracking-[0.2em] block mb-1`}>
+                      {cat.tag || cat.color}
+                    </span>
+                  )}
+                  <h3 className={`${isLarge ? 'text-4xl' : 'text-2xl'} font-headline font-bold text-on-surface tracking-tight`}>{cat.name}</h3>
+                  {cat.description && <p className="text-on-surface-variant text-sm mt-2 max-w-sm">{cat.description}</p>}
                 </div>
-                <span className="material-symbols-outlined text-secondary text-4xl group-hover:translate-x-2 transition-transform duration-300">arrow_forward</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Martial Arts */}
-          <div className="category-card group cursor-pointer relative overflow-hidden rounded-xl h-[300px]">
-            <div className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110" style={{ backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuBEUQZaiNuac_p3nejwW53InYTTT7COSBU-m3SQ_di6g_XdNrptHq3mpShdVGJv5vZtQt13WosLRkqlRlRi2tX9SqEfhgse_-4fPuNWxyC8P0HnMOo-yaaG3BMUKJXZxvvX0lekRRDWdLqWpoB_iU5-O2sxaemj7jKBBlMnOMLNIxoe8hfVbWv3pMz8-x7QoSvFVlV6CR0EmGJfyqxbl6ecw0AJLxkqlydmLNN4khpqrAYXv7eTzr9bMtJgg3CJ-x7QV0MM0y3_Kq8')" }}></div>
-            <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent opacity-80"></div>
-            <div className="absolute inset-0 border border-secondary/30 rounded-xl transition-all duration-300 group-hover:border-secondary group-hover:shadow-[0_0_16px_rgba(0,255,204,0.4)]"></div>
-            <div className="absolute bottom-0 p-6 w-full">
-              <span className="font-label text-tertiary text-xs font-bold uppercase tracking-[0.2em] block mb-1">Traditional Combat</span>
-              <h3 className="text-2xl font-headline font-bold text-on-surface tracking-tight">Martial Arts</h3>
-            </div>
-          </div>
-
-          {/* Cyberpunk */}
-          <div className="category-card group cursor-pointer relative overflow-hidden rounded-xl h-[300px]">
-            <div className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110" style={{ backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuDnedHPYXyXCM1z5Pjpa3bgGZxd2Xt5vjsnYfZhMhpQu-ASj0zLzIXg1dvvda6OBvVfqZXX3SV8Dvu0aPlSLxQosfdkYZiyrgH5BwyY7NgmTzMI3oJx6cHjVaLO3iXj_phP2RsUM2Z6v0umHoD45yS9y3dIRR_OYaTuwxxkrWADJng4oxImTkMe_4AwiS2ghoVcL635hwLBen7PrPFd4pt4c9NAv0hMpcpBB8Rqz6q607E6SUJzqiPP2xctcQtWLbo5dimorvYKRjQ')" }}></div>
-            <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent opacity-80"></div>
-            <div className="absolute inset-0 border border-secondary/30 rounded-xl transition-all duration-300 group-hover:border-secondary"></div>
-            <div className="absolute bottom-0 p-6 w-full">
-              <span className="font-label text-secondary text-xs font-bold uppercase tracking-[0.2em] block mb-1">Dystopian Tech</span>
-              <h3 className="text-2xl font-headline font-bold text-on-surface tracking-tight">Cyberpunk</h3>
-            </div>
-          </div>
-
-          {/* Heist */}
-          <div className="md:col-span-2 category-card group cursor-pointer relative overflow-hidden rounded-xl h-[250px]">
-            <div className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110" style={{ backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuCh8mrbaeUD8GBrv_uwhU7pG5TKIt6rUP9wtCLeUOcRv0eFdXEi63GNZ00AOTnx69rOJ0GJFfyC1YId2nrGGjpI0KPZkHOl98zntOnqM74vH4ayY6ghdhLzlw9br5r4a4QBM0_V3yT76WxNDBUgMxKq_GSUYqG5ZZoxnfbkjeLED8D7WGcz1OV8180L90Nd1aHVEM_4aL91BP5_L8OTJRpdmjDBasGE2jgLsL0EUkMV_0QL97pD4BpPYMQ-jRTUtEe6hiTlvX_bOZ0')" }}></div>
-            <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent opacity-80"></div>
-            <div className="absolute inset-0 border border-primary/30 rounded-xl transition-all duration-300 group-hover:border-primary group-hover:shadow-[0_0_16px_rgba(255,45,120,0.4)]"></div>
-            <div className="absolute bottom-0 p-8 w-full flex items-center justify-between">
-              <div>
-                <span className="font-label text-primary text-xs font-bold uppercase tracking-[0.2em] block mb-1">Tactical Ops</span>
-                <h3 className="text-3xl font-headline font-bold text-on-surface tracking-tight">Heist</h3>
-              </div>
-              <p className="text-on-surface-variant text-sm hidden md:block max-w-[200px]">Strategic infiltration and high-stakes precision strikes.</p>
-            </div>
-          </div>
-
-          {/* Revenge */}
-          <div className="category-card group cursor-pointer relative overflow-hidden rounded-xl h-[300px]">
-            <div className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110" style={{ backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuC6kSsYhnz0KBojy9MA6q0MHvka0t1H0PneVC8FVjNwvc9cabOlwdhRaVfTX56iSTYRJYo1GBg7o94EnJ8mX2C3fxaQ8bUMTcCmdyrbhvjSCWol3d02rkhStKIPEHfWcTXdqC-inlSoWRupVBIioOJVuogTx7FY4z8jesnjxsjK3sxIWl02sI2TdCvSZTBzBE2LrbL3A0qtfjb0zNN0r7Z7Gdin4KIGnuYkOVgSHF4F_OVh4ZzllzsndAnbzIQNiXQmNwro4xSgVqo')" }}></div>
-            <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent opacity-80"></div>
-            <div className="absolute inset-0 border border-primary/30 rounded-xl transition-all duration-300 group-hover:border-primary"></div>
-            <div className="absolute bottom-0 p-6 w-full">
-              <span className="font-label text-primary text-xs font-bold uppercase tracking-[0.2em] block mb-1">Personal War</span>
-              <h3 className="text-2xl font-headline font-bold text-on-surface tracking-tight">Revenge</h3>
-            </div>
-          </div>
-
-          {/* Superhuman */}
-          <div className="category-card group cursor-pointer relative overflow-hidden rounded-xl h-[300px]">
-            <div className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110" style={{ backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuCtpwjeDiiWOyVCgBAlrLg8HOEglrQpkrz7RoRPRKQx8OqtWbGNcbIPbTeRdAQ8JP3NJ2KCwMVyTkALOmysMkdCg36_-MpPk7_27Q8hUqCXSzQYasQjazcj_Mu_YwovEVogdOf2UEDCL1kbm6a0Kqw-B16HW48RpZ4F-Avofgrx36waMhRvU4DOC5bOPUO6bgZ5F3bGAw_4kQ_HnRI4ty_fJGNqn11xfRYZLXu69HuJpcDdqsVX3Zp8FoqsrNG_BbUHQN_fmubvoQ0')" }}></div>
-            <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent opacity-80"></div>
-            <div className="absolute inset-0 border border-tertiary/30 rounded-xl transition-all duration-300 group-hover:border-tertiary"></div>
-            <div className="absolute bottom-0 p-6 w-full">
-              <span className="font-label text-tertiary text-xs font-bold uppercase tracking-[0.2em] block mb-1">Augmented Power</span>
-              <h3 className="text-2xl font-headline font-bold text-on-surface tracking-tight">Superhuman</h3>
-            </div>
-          </div>
+              </Link>
+            );
+          })}
         </div>
       </section>
 

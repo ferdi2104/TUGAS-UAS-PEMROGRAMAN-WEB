@@ -73,3 +73,39 @@ model ReviewHistory {
   reviewedAt    DateTime   @default(now())
   createdAt     DateTime   @default(now())
 }
+
+model Movie {
+  id          String    @id @default(cuid())
+  title       String
+  description String
+  year        Int
+  runtime     String
+  rating      Float
+  genre       String
+  subgenre    String?
+  imageUrl    String
+  tag         String?
+  featured    Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  comments    Comment[]
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  movieId   String
+  movie     Movie    @relation(fields: [movieId], references: [id], onDelete: Cascade)
+  username  String
+  content   String
+  likes     Int      @default(0)
+  createdAt DateTime @default(now())
+}
+
+model Category {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  icon        String
+  description String?
+  color       String?
+  createdAt   DateTime @default(now())
+}

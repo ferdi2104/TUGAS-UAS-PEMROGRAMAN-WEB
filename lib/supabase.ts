@@ -206,3 +206,94 @@ export async function addReviewRecord(
   if (error) throw error;
   return data;
 }
+
+// ========================
+// CINEMA / NEON-ACTION FUNCTIONS
+// ========================
+
+export async function getMovies() {
+  const { data, error } = await getClient()
+    .from('movies')
+    .select('*')
+    .order('createdAt', { ascending: false });
+
+  if (error) throw error;
+  return data;
+}
+
+export async function getMovie(id: string) {
+  const { data, error } = await getClient()
+    .from('movies')
+    .select('*')
+    .eq('id', id)
+    .single();
+
+  if (error) throw error;
+  return data;
+}
+
+export async function getFeaturedMovies() {
+  const { data, error } = await getClient()
+    .from('movies')
+    .select('*')
+    .eq('featured', true)
+    .limit(1)
+    .single();
+
+  if (error) return null;
+  return data;
+}
+
+export async function getTrendingMovies() {
+  const { data, error } = await getClient()
+    .from('movies')
+    .select('*')
+    .order('rating', { ascending: false })
+    .limit(5);
+
+  if (error) throw error;
+  return data;
+}
+
+export async function getComments(movieId: string) {
+  const { data, error } = await getClient()
+    .from('comments')
+    .select('*')
+    .eq('movieId', movieId)
+    .order('createdAt', { ascending: false });
+
+  if (error) throw error;
+  return data;
+}
+
+export async function addComment(movieId: string, username: string, content: string) {
+  const { data, error } = await getClient()
+    .from('comments')
+    .insert([{ movieId, username, content }])
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data;
+}
+
+export async function getCategories() {
+  const { data, error } = await getClient()
+    .from('categories')
+    .select('*')
+    .order('name', { ascending: true });
+
+  if (error) throw error;
+  return data;
+}
+
+export async function getMoviesByGenre(genre: string) {
+  const { data, error } = await getClient()
+    .from('movies')
+    .select('*')
+    .eq('genre', genre)
+    .order('rating', { ascending: false });
+
+  if (error) throw error;
+  return data;
+}

@@ -1,6 +1,76 @@
 'use client';
 
+import { useState, useEffect } from 'react';
+import Link from 'next/link';
+
+const fallbackTrending = [
+  { title: 'Circuit Breaker', match: '98%', tags: ['4K', 'Action'], img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuD34hdsZ7WlqMt5gi2k57X5JaGfLoCGlbeB2hnOUZPNaQLoAZKzlAFLfpJHF3PHx_3rROHb9KzBCICibYEU0kBQ6rDAjPSJm_fqmdmLNzvrlkPU2DzKrqFgXy6JCR6x2dov1hMXnfEzbC9XpOYOa8azVTofXp53yhIHVbP3ZtzPm5-uQcsnK4ODt1adNUDY5r389AnkAD2SCfhAGtiUqP5Z0xDOW9Lsni0k_RL5OUvyTsWiYUxAXvCLpTf10qKxulPUycg9n8uRrlU', id: '1' },
+  { title: 'Sector Silence', match: '94%', tags: ['HD', 'Sci-Fi'], img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAueV56eM9h5b_MnpeCeF9acNCXNtfyffMKZB-0vUr9fSfjNF-tdB7n0qgO1PMyzzdHdw1zgyqs_PGWu-T6AWICLx687I7qsaIoYAtTQ1lGN_dcqxCMDjUGzmbwLzQnIXtwW_AKkTEF0W-b-tmuS8loD_n8PA83dxSYdHIYCAIdnsIu6ObnKu78CnuoXeLNC6oFdcle9NML7GMVgC4QFK-2VsXb0fp5k9fkLjWrPMjpsBEeadPFe91QNJfqGmvT9G5n0xpl5ZjCHtw', id: '2' },
+  { title: 'Glitch Strike', match: '91%', tags: ['Action'], img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBk4TYfkmWBxaXPoKkYG_5nL1e-fh6s-3SchTMr7DqN0gnVCanmoXODO_XJjQ1NvMJ3qkAKYGeFcKwZgi5iO6oMux8R4WEhuc0DAzQsoPXPUx8aS_y-ECsr5d6yTViZmK5Xq9kfFG06ffaiazoQb6mTHaBnRhG66Y4nAK6yghaQf6y5WR_1PEZUKUNInr1PK_9AYnN1G2ZbLPulfdQRSgM3QDCnyf98cG7CnZdY2kUIpJNOqEzGgU082F-BFnuypAFxGP7bAarCDKU', id: '3' },
+  { title: 'The Uplink', match: '89%', tags: ['Thriller'], img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDefz6F5XgZFkzQYY6GedMZz3qBsEE-4MZMEDT-403AH11pcac1mMugQy1Ko-qvG3003Q_eLgaLdte3t9G7YW6r-IMDMITAMWQblNNDhcX533q3ZpCbheQBLa49HpOqiO1uG7NxSikJjiLnVrrlp9A4G3Ruf43VQZtMFIJC-hN6nmKvTuQEX1H1UsZWw1lWeeYVb0opkJRAfwZcYBIOWC8tyK0YVhSsZS1EtKhLEZKoQTUMGH79Y9j52HAo7KfKkkuhkYRdB5QE108', id: '4' },
+  { title: 'Velocity Prime', match: '87%', tags: ['Action'], img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCH8QHCHuTyQQ7GE3qNfk-PqjJ4uojN0AfKgZAMmO4W-AiLoodpApAhX9WY2iw3CgLfeShH0xwhkx9xUDUGjnof-lMkKQm9QzhWMvewxOhpa6sYcvkZhZBO4XEOSGansmJSi_9oyjYKOTxZ6EtLcFmezmag5hY5iYLIJCcdY_XXS9noKLTf7vqIgZOzO_TfkedNsC5zif1Gtean-ng_2598SorheAYyMfMgwZSb_cSx_-dHH7WwxZo_QrhQmfTUJngYzTNIeTR9EP0', id: '5' },
+];
+
+const fallbackCategories = [
+  { icon: 'directions_car', label: 'High-Speed', color: 'secondary' },
+  { icon: 'swords', label: 'Samurai-Punk', color: 'primary' },
+  { icon: 'explosion', label: 'Explosive', color: 'tertiary' },
+  { icon: 'rocket_launch', label: 'Deep Space', color: 'secondary' },
+  { icon: 'precision_manufacturing', label: 'Cyber-Mech', color: 'primary' },
+  { icon: 'terminal', label: 'Hacker-Thrill', color: 'tertiary' },
+];
+
 export default function HomePage() {
+  const [trending, setTrending] = useState<any[]>([]);
+  const [categories, setCategories] = useState<any[]>([]);
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const [trendingRes, catRes] = await Promise.all([
+          fetch('/api/movies?trending=true'),
+          fetch('/api/categories'),
+        ]);
+
+        if (trendingRes.ok) {
+          const data = await trendingRes.json();
+          if (data && data.length > 0) setTrending(data);
+          else setTrending(fallbackTrending);
+        } else {
+          setTrending(fallbackTrending);
+        }
+
+        if (catRes.ok) {
+          const data = await catRes.json();
+          if (data && data.length > 0) setCategories(data);
+          else setCategories(fallbackCategories);
+        } else {
+          setCategories(fallbackCategories);
+        }
+      } catch {
+        setTrending(fallbackTrending);
+        setCategories(fallbackCategories);
+      }
+      setLoaded(true);
+    }
+    fetchData();
+  }, []);
+
+  if (!loaded) {
+    return (
+      <main className="pt-16 min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-on-surface-variant font-label">ACCESSING MAINFRAME...</p>
+        </div>
+      </main>
+    );
+  }
+
+  const displayTrending = trending.length > 0 ? trending : fallbackTrending;
+  const displayCategories = categories.length > 0 ? categories : fallbackCategories;
+
   return (
     <main>
       {/* Hero Section */}
@@ -8,11 +78,7 @@ export default function HomePage() {
         <div className="absolute inset-0 z-0">
           <div className="absolute inset-0 bg-gradient-to-r from-background via-background/40 to-transparent z-10"></div>
           <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent z-10"></div>
-          <img
-            className="w-full h-full object-cover scale-105"
-            alt="Cinematic cyberpunk city"
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuBqebPZKNupem9YckkgsWR1t1ke98XXnVtxyscYWxJasM8WPe-fl4owRHV9BHaB7CvL-UrHz0Xzo98hiLu8-lR0D9g4AUw81RTkyPpWwalYiTrIXCrbP0O5RXSeRn9_r958cXJ2joQjZVzdVH1500ytvRX97Zowi8zrygaDRuVOfw2BY5py18TQ-xUZXefm34-yXrtnp5ELGiJDj8UX9EHnpOmT3AMxzitHPRfug9LAiHZHC-cPNvPhsLNbK0Ypn7wyhZKHyopEMNA"
-          />
+          <img className="w-full h-full object-cover scale-105" alt="Cinematic cyberpunk city" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBqebPZKNupem9YckkgsWR1t1ke98XXnVtxyscYWxJasM8WPe-fl4owRHV9BHaB7CvL-UrHz0Xzo98hiLu8-lR0D9g4AUw81RTkyPpWwalYiTrIXCrbP0O5RXSeRn9_r958cXJ2joQjZVzdVH1500ytvRX97Zowi8zrygaDRuVOfw2BY5py18TQ-xUZXefm34-yXrtnp5ELGiJDj8UX9EHnpOmT3AMxzitHPRfug9LAiHZHC-cPNvPhsLNbK0Ypn7wyhZKHyopEMNA" />
         </div>
         <div className="relative z-20 px-6 lg:px-12 max-w-4xl">
           <div className="inline-flex items-center gap-2 bg-primary/20 border border-primary/40 px-3 py-1 rounded-full mb-6 backdrop-blur-sm">
@@ -26,10 +92,12 @@ export default function HomePage() {
             In the heart of Sector 7, a rogue courier must outrun a corporate death squad through the vertical slums of Neo-Tokyo. High-octane action meets raw synth-wave aesthetics.
           </p>
           <div className="flex flex-wrap gap-4">
-            <button className="bg-primary text-on-primary font-bold font-label px-8 py-4 flex items-center gap-3 transition-all hover:scale-105 hover:shadow-[0_0_20px_rgba(255,45,120,0.5)] active:scale-95 group">
-              <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>play_arrow</span>
-              WATCH FREE
-            </button>
+            <Link href="/detail">
+              <button className="bg-primary text-on-primary font-bold font-label px-8 py-4 flex items-center gap-3 transition-all hover:scale-105 hover:shadow-[0_0_20px_rgba(255,45,120,0.5)] active:scale-95 group">
+                <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>play_arrow</span>
+                WATCH FREE
+              </button>
+            </Link>
             <button className="bg-surface-container-highest/60 backdrop-blur-md border border-outline/30 text-on-surface font-bold font-label px-8 py-4 flex items-center gap-3 transition-all hover:bg-surface-container-highest active:scale-95">
               <span className="material-symbols-outlined">add</span>
               MY LIST
@@ -50,30 +118,22 @@ export default function HomePage() {
             <h2 className="text-3xl font-bold font-headline tracking-tight text-white mb-2">Trending Now</h2>
             <div className="h-1 w-24 bg-primary rounded-full"></div>
           </div>
-          <a className="text-secondary font-label text-sm flex items-center gap-2 hover:underline" href="/pencarian">
+          <Link className="text-secondary font-label text-sm flex items-center gap-2 hover:underline" href="/pencarian">
             EXPLORE ALL <span className="material-symbols-outlined text-sm">arrow_forward</span>
-          </a>
+          </Link>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6 relative z-10">
-          {[
-            { title: 'Circuit Breaker', match: '98%', tags: ['4K', 'Action'], img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuD34hdsZ7WlqMt5gi2k57X5JaGfLoCGlbeB2hnOUZPNaQLoAZKzlAFLfpJHF3PHx_3rROHb9KzBCICibYEU0kBQ6rDAjPSJm_fqmdmLNzvrlkPU2DzKrqFgXy6JCR6x2dov1hMXnfEzbC9XpOYOa8azVTofXp53yhIHVbP3ZtzPm5-uQcsnK4ODt1adNUDY5r389AnkAD2SCfhAGtiUqP5Z0xDOW9Lsni0k_RL5OUvyTsWiYUxAXvCLpTf10qKxulPUycg9n8uRrlU' },
-            { title: 'Sector Silence', match: '94%', tags: ['HD', 'Sci-Fi'], img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAueV56eM9h5b_MnpeCeF9acNCXNtfyffMKZB-0vUr9fSfjNF-tdB7n0qgO1PMyzzdHdw1zgyqs_PGWu-T6AWICLx687I7qsaIoYAtTQ1lGN_dcqxCMDjUGzmbwLzQnIXtwW_AKkTEF0W-b-tmuS8loD_n8PA83dxSYdHIYCAIdnsIu6ObnKu78CnuoXeLNC6oFdcle9NML7GMVgC4QFK-2VsXb0fp5k9fkLjWrPMjpsBEeadPFe91QNJfqGmvT9G5n0xpl5ZjCHtw' },
-            { title: 'Glitch Strike', match: '91%', tags: ['Action'], img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBk4TYfkmWBxaXPoKkYG_5nL1e-fh6s-3SchTMr7DqN0gnVCanmoXODO_XJjQ1NvMJ3qkAKYGeFcKwZgi5iO6oMux8R4WEhuc0DAzQsoPXPUx8aS_y-ECsr5d6yTViZmK5Xq9kfFG06ffaiazoQb6mTHaBnRhG66Y4nAK6yghaQf6y5WR_1PEZUKUNInr1PK_9AYnN1G2ZbLPulfdQRSgM3QDCnyf98cG7CnZdY2kUIpJNOqEzGgU082F-BFnuypAFxGP7bAarCDKU' },
-            { title: 'The Uplink', match: '89%', tags: ['Thriller'], img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDefz6F5XgZFkzQYY6GedMZz3qBsEE-4MZMEDT-403AH11pcac1mMugQy1Ko-qvG3003Q_eLgaLdte3t9G7YW6r-IMDMITAMWQblNNDhcX533q3ZpCbheQBLa49HpOqiO1uG7NxSikJjiLnVrrlp9A4G3Ruf43VQZtMFIJC-hN6nmKvTuQEX1H1UsZWw1lWeeYVb0opkJRAfwZcYBIOWC8tyK0YVhSsZS1EtKhLEZKoQTUMGH79Y9j52HAo7KfKkkuhkYRdB5QE108' },
-            { title: 'Velocity Prime', match: '87%', tags: ['Action'], img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCH8QHCHuTyQQ7GE3qNfk-PqjJ4uojN0AfKgZAMmO4W-AiLoodpApAhX9WY2iw3CgLfeShH0xwhkx9xUDUGjnof-lMkKQm9QzhWMvewxOhpa6sYcvkZhZBO4XEOSGansmJSi_9oyjYKOTxZ6EtLcFmezmag5hY5iYLIJCcdY_XXS9noKLTf7vqIgZOzO_TfkedNsC5zif1Gtean-ng_2598SorheAYyMfMgwZSb_cSx_-dHH7WwxZo_QrhQmfTUJngYzTNIeTR9EP0' },
-          ].map((movie, i) => (
-            <a key={i} href="/detail" className="group relative aspect-[2/3] bg-surface-container rounded-lg overflow-hidden border border-white/5 transition-all hover:border-primary/50 hover:-translate-y-2 cursor-pointer">
-              <img className="w-full h-full object-cover" alt={movie.title} src={movie.img} />
+          {displayTrending.slice(0, 5).map((movie: any, i: number) => (
+            <Link key={i} href={`/detail?id=${movie.id}`} className="group relative aspect-[2/3] bg-surface-container rounded-lg overflow-hidden border border-white/5 transition-all hover:border-primary/50 hover:-translate-y-2 cursor-pointer">
+              <img className="w-full h-full object-cover" alt={movie.title} src={movie.img || movie.imageUrl} />
               <div className="absolute inset-0 bg-gradient-to-t from-background to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-4">
-                <span className="text-primary font-bold text-sm mb-1">{movie.match} Match</span>
+                <span className="text-primary font-bold text-sm mb-1">{movie.rating || movie.match} Match</span>
                 <h3 className="font-headline font-bold text-lg leading-tight">{movie.title}</h3>
                 <div className="flex gap-2 mt-2">
-                  {movie.tags.map((tag, j) => (
-                    <span key={j} className="text-[10px] bg-white/10 px-1.5 py-0.5 rounded uppercase font-label">{tag}</span>
-                  ))}
+                  <span className="text-[10px] bg-white/10 px-1.5 py-0.5 rounded uppercase font-label">{movie.genre || (movie.tags?.[0]) || 'Action'}</span>
                 </div>
               </div>
-            </a>
+            </Link>
           ))}
         </div>
       </section>
@@ -95,7 +155,9 @@ export default function HomePage() {
                   <span className="font-label text-sm font-bold uppercase tracking-widest">Premium Student Access</span>
                 </div>
                 <h3 className="text-4xl font-black font-headline mb-4">ORBITAL ZERO</h3>
-                <button className="bg-secondary text-on-secondary font-bold font-label px-6 py-3 transition-all hover:scale-105 active:scale-95">START STREAMING</button>
+                <Link href="/detail">
+                  <button className="bg-secondary text-on-secondary font-bold font-label px-6 py-3 transition-all hover:scale-105 active:scale-95">START STREAMING</button>
+                </Link>
               </div>
             </div>
             <div className="group relative overflow-hidden rounded-xl border border-white/10 bg-surface-container p-6 transition-all hover:border-primary/50">
@@ -123,18 +185,11 @@ export default function HomePage() {
           Action Sub-genres
         </h2>
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-          {[
-            { icon: 'directions_car', label: 'High-Speed', href: '/kategori' },
-            { icon: 'swords', label: 'Samurai-Punk', href: '/kategori' },
-            { icon: 'explosion', label: 'Explosive', href: '/kategori' },
-            { icon: 'rocket_launch', label: 'Deep Space', href: '/kategori' },
-            { icon: 'precision_manufacturing', label: 'Cyber-Mech', href: '/kategori' },
-            { icon: 'terminal', label: 'Hacker-Thrill', href: '/kategori' },
-          ].map((item, i) => (
-            <a key={i} href={item.href} className="group relative py-12 flex flex-col items-center justify-center bg-surface-container rounded-lg border border-white/5 hover:bg-surface-variant transition-all hover:border-secondary/50">
+          {displayCategories.map((item: any, i: number) => (
+            <Link key={i} href="/kategori" className="group relative py-12 flex flex-col items-center justify-center bg-surface-container rounded-lg border border-white/5 hover:bg-surface-variant transition-all hover:border-secondary/50">
               <span className="material-symbols-outlined text-4xl mb-4 group-hover:text-secondary group-hover:scale-110 transition-all">{item.icon}</span>
-              <span className="font-label text-xs uppercase tracking-widest font-bold">{item.label}</span>
-            </a>
+              <span className="font-label text-xs uppercase tracking-widest font-bold">{item.name || item.label}</span>
+            </Link>
           ))}
         </div>
       </section>
@@ -172,7 +227,7 @@ export default function HomePage() {
         </div>
       </footer>
 
-      {/* BottomNavBar (Mobile Only) */}
+      {/* BottomNavBar */}
       <nav className="md:hidden fixed bottom-0 left-0 w-full bg-background/95 backdrop-blur-md border-t border-primary/20 h-16 flex items-center justify-around z-50">
         <button className="flex flex-col items-center gap-1 text-primary drop-shadow-[0_0_8px_rgba(255,45,120,0.6)]">
           <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>movie</span>
