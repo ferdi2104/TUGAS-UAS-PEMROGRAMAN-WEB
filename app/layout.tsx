@@ -10,7 +10,7 @@ export default function RootLayout({
   children: ReactNode;
 }) {
   return (
-    <html lang="id">
+    <html lang="id" className="dark">
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -19,7 +19,7 @@ export default function RootLayout({
       </head>
       <body>
         <Navigation />
-        <main className="min-h-screen bg-light">
+        <main className="min-h-screen bg-dark">
           {children}
         </main>
       </body>

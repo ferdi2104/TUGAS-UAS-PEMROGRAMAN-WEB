@@ -2,26 +2,34 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
 * {
   @apply m-0 p-0 box-border;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 html,
 body {
   @apply w-full h-full;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 body {
-  @apply bg-light text-dark;
+  @apply bg-dark text-light;
+}
+
+::selection {
+  @apply bg-primary/30 text-white;
 }
 
 a {
-  @apply text-primary hover:text-blue-700 transition-colors;
+  @apply text-primary hover:text-blue-300 transition-colors duration-200;
 }
 
 /* Scrollbar */
@@ -30,80 +38,146 @@ a {
 }
 
 ::-webkit-scrollbar-track {
-  @apply bg-light;
+  @apply bg-dark;
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-primary rounded-full;
+  @apply bg-surface-light rounded-full hover:bg-border transition-colors;
 }
 
-::-webkit-scrollbar-thumb:hover {
-  @apply bg-blue-700;
-}
-
-/* Animations */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes slideIn {
-  from {
-    transform: translateY(10px);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-
-.animate-fadeIn {
-  animation: fadeIn 0.3s ease-in-out;
-}
-
-.animate-slideIn {
-  animation: slideIn 0.3s ease-in-out;
-}
-
-/* Cards */
+/* Glass Card */
 .card {
-  @apply bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow;
+  @apply bg-surface-light/80 backdrop-blur-sm border border-border/50 rounded-xl p-6
+         shadow-lg shadow-black/10 hover:shadow-xl hover:shadow-black/20
+         transition-all duration-300 hover:border-primary/30;
 }
 
+/* Buttons */
 .btn {
-  @apply px-4 py-2 rounded-lg font-medium transition-all cursor-pointer;
+  @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl
+         font-medium text-sm transition-all duration-200 cursor-pointer
+         focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 focus:ring-offset-dark
+         disabled:opacity-50 disabled:cursor-not-allowed;
 }
 
 .btn-primary {
-  @apply btn bg-primary text-white hover:bg-blue-700;
+  @apply btn bg-primary text-dark font-semibold
+         hover:bg-blue-400 hover:shadow-lg hover:shadow-primary/25
+         active:scale-[0.97];
 }
 
 .btn-secondary {
-  @apply btn bg-secondary text-white hover:bg-green-700;
+  @apply btn bg-secondary text-dark font-semibold
+         hover:bg-emerald-400 hover:shadow-lg hover:shadow-secondary/25
+         active:scale-[0.97];
 }
 
 .btn-outline {
-  @apply btn border-2 border-primary text-primary hover:bg-primary hover:text-white;
+  @apply btn border border-border text-light bg-transparent
+         hover:bg-surface-light hover:border-primary/50 hover:text-primary
+         active:scale-[0.97];
 }
 
 .btn-danger {
-  @apply btn bg-danger text-white hover:bg-red-700;
+  @apply btn bg-danger/10 text-danger border border-danger/20
+         hover:bg-danger hover:text-white hover:border-danger
+         active:scale-[0.97];
 }
 
+.btn-ghost {
+  @apply btn bg-transparent text-muted hover:text-light hover:bg-surface-light
+         active:scale-[0.97];
+}
+
+/* Inputs */
 .input {
-  @apply w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary;
+  @apply w-full px-4 py-3 bg-surface-light border border-border rounded-xl
+         text-light placeholder-muted/60
+         focus:outline-none focus:border-primary/50 focus:ring-2 focus:ring-primary/20
+         transition-all duration-200;
 }
 
 .input:disabled {
-  @apply bg-gray-100 cursor-not-allowed;
+  @apply opacity-50 cursor-not-allowed;
 }
 
-/* Flashcard container */
+/* Flashcard */
 .flashcard-container {
-  perspective: 1000px;
+  perspective: 1200px;
+}
+
+/* Glow effect for active elements */
+.glow {
+  animation: glow 2s ease-in-out infinite alternate;
+}
+
+/* Floating animation */
+.float {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Gradient text */
+.text-gradient {
+  @apply bg-clip-text text-transparent bg-gradient-to-r from-primary via-accent to-secondary;
+}
+
+/* Glass panel */
+.glass {
+  @apply bg-surface-light/60 backdrop-blur-xl border border-border/30 shadow-lg shadow-black/5;
+}
+
+/* Code block */
+code {
+  @apply font-mono text-sm bg-surface-light px-2 py-0.5 rounded-md text-primary;
+}
+
+/* Gradient border */
+.gradient-border {
+  @apply relative;
+}
+
+.gradient-border::before {
+  content: '';
+  @apply absolute inset-0 rounded-xl p-[1px] bg-gradient-to-r from-primary via-accent to-secondary;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+
+/* Divider */
+.divider {
+  @apply w-full h-px bg-gradient-to-r from-transparent via-border to-transparent my-6;
+}
+
+/* Nav links */
+.nav-link {
+  @apply px-4 py-2 text-muted hover:text-light rounded-lg transition-all duration-200
+         hover:bg-surface-light text-sm font-medium;
+}
+
+.mobile-nav-link {
+  @apply block px-4 py-3 text-muted hover:text-light rounded-lg transition-all
+         hover:bg-surface-light text-sm font-medium;
+}
+
+/* Badge */
+.badge {
+  @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+}
+
+.badge-primary {
+  @apply badge bg-primary/10 text-primary border border-primary/20;
+}
+
+.badge-secondary {
+  @apply badge bg-secondary/10 text-secondary border border-secondary/20;
+}
+
+.badge-warning {
+  @apply badge bg-warning/10 text-warning border border-warning/20;
+}
+
+.badge-danger {
+  @apply badge bg-danger/10 text-danger border border-danger/20;
 }

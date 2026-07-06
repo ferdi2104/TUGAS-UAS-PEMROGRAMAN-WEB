@@ -21,23 +21,23 @@ export default function AboutPage() {
 
   return (
     <motion.div
-      className="min-h-screen bg-light py-12 px-4"
+      className="min-h-screen py-12 px-4"
       initial="hidden"
       animate="visible"
       variants={containerVariants}
     >
       <div className="max-w-4xl mx-auto">
         <motion.div className="mb-12" variants={itemVariants}>
-          <h1 className="text-5xl font-bold mb-4">Tentang StudyFlash AI</h1>
-          <p className="text-xl text-gray-600">
+          <h1 className="text-5xl font-bold mb-4 text-light">Tentang StudyFlash AI</h1>
+          <p className="text-xl text-muted">
             Platform SaaS revolusioner untuk pembelajaran yang lebih efisien
           </p>
         </motion.div>
 
         {/* Story Section */}
         <motion.section className="mb-16" variants={itemVariants}>
-          <h2 className="text-3xl font-bold mb-6">Cerita Kami</h2>
-          <div className="bg-white rounded-lg shadow-lg p-8 space-y-4 text-gray-700 leading-relaxed">
+            <h2 className="text-3xl font-bold mb-6 text-light">Cerita Kami</h2>
+          <div className="card space-y-4 text-muted leading-relaxed">
             <p>
               StudyFlash AI lahir dari sebuah ide sederhana: bagaimana cara membuat belajar menjadi lebih efisien dan menyenangkan?
             </p>
@@ -52,7 +52,7 @@ export default function AboutPage() {
 
         {/* Features Section */}
         <motion.section className="mb-16" variants={itemVariants}>
-          <h2 className="text-3xl font-bold mb-6">Fitur Unggulan</h2>
+          <h2 className="text-3xl font-bold mb-6 text-light">Fitur Unggulan</h2>
           <motion.div
             className="grid grid-cols-1 md:grid-cols-2 gap-6"
             variants={containerVariants}
@@ -97,7 +97,7 @@ export default function AboutPage() {
               >
                 <div className="text-4xl mb-4">{feature.icon}</div>
                 <h3 className="font-bold text-lg mb-2">{feature.title}</h3>
-                <p className="text-gray-600">{feature.desc}</p>
+                <p className="text-muted">{feature.desc}</p>
               </motion.div>
             ))}
           </motion.div>
@@ -105,9 +105,9 @@ export default function AboutPage() {
 
         {/* Tech Stack Section */}
         <motion.section className="mb-16" variants={itemVariants}>
-          <h2 className="text-3xl font-bold mb-6">Tech Stack</h2>
+          <h2 className="text-3xl font-bold mb-6 text-light">Tech Stack</h2>
           <motion.div
-            className="bg-white rounded-lg shadow-lg p-8"
+            className="card"
             variants={containerVariants}
           >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -138,7 +138,7 @@ export default function AboutPage() {
 
         {/* Call to Action */}
         <motion.section
-          className="bg-gradient-to-r from-primary to-secondary rounded-xl p-12 text-center text-white"
+          className="glass rounded-xl p-12 text-center"
           variants={itemVariants}
         >
           <h2 className="text-3xl font-bold mb-4">Siap Memulai?</h2>

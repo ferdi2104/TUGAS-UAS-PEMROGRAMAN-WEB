@@ -45,17 +45,17 @@ export default function UploadPage() {
 
   return (
     <motion.div
-      className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 py-12 px-4"
+      className="min-h-screen py-12 px-4"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3 }}
     >
       <div className="max-w-4xl mx-auto">
         <motion.div className="mb-12" initial={{ y: -20 }} animate={{ y: 0 }}>
-          <h1 className="text-4xl font-bold text-center text-gray-900 mb-4">
+          <h1 className="text-4xl font-bold text-center text-light mb-4">
             Upload Catatan Anda
           </h1>
-          <p className="text-center text-gray-600 text-lg">
+          <p className="text-center text-muted text-lg">
             Ubah catatan menjadi flashcard interaktif dengan bantuan AI
           </p>
         </motion.div>
@@ -69,8 +69,8 @@ export default function UploadPage() {
             <div className="animate-spin">
               <div className="text-6xl">🔄</div>
             </div>
-            <p className="mt-4 text-lg text-gray-600">Memproses catatan Anda...</p>
-            <p className="text-sm text-gray-500 mt-2">Ini mungkin memakan waktu beberapa detik</p>
+            <p className="mt-4 text-lg text-muted">Memproses catatan Anda...</p>
+            <p className="text-sm text-muted/70 mt-2">Ini mungkin memakan waktu beberapa detik</p>
           </motion.div>
         ) : (
           <FileUpload onUpload={handleUpload} />
@@ -84,7 +84,7 @@ export default function UploadPage() {
         >
           <div className="card">
             <h3 className="font-bold text-lg mb-4">💡 Format yang Didukung</h3>
-            <ul className="space-y-2 text-gray-600">
+            <ul className="space-y-2 text-muted">
               <li>• PDF Documents</li>
               <li>• Text Files (.txt)</li>
               <li>• Markdown Files (.md)</li>
@@ -93,7 +93,7 @@ export default function UploadPage() {
 
           <div className="card">
             <h3 className="font-bold text-lg mb-4">⚡ Tips Optimal</h3>
-            <ul className="space-y-2 text-gray-600">
+            <ul className="space-y-2 text-muted">
               <li>• Gunakan catatan yang terstruktur</li>
               <li>• Pisahkan konsep dengan jelas</li>
               <li>• File maksimal 10MB</li>

@@ -85,10 +85,10 @@ export default function StudyPage() {
 
   if (flashcards.length === 0) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex items-center justify-center min-h-screen bg-dark">
         <div className="text-center">
           <div className="animate-spin text-4xl mb-4">🔄</div>
-          <p className="text-gray-500">Memuat flashcard...</p>
+          <p className="text-muted">Memuat flashcard...</p>
         </div>
       </div>
     );
@@ -99,12 +99,12 @@ export default function StudyPage() {
 
     return (
       <motion.div
-        className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 flex items-center justify-center px-4"
+        className="min-h-screen flex items-center justify-center px-4"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
       >
         <motion.div
-          className="bg-white rounded-xl shadow-2xl p-12 text-center max-w-md"
+          className="card p-12 text-center max-w-md"
           initial={{ scale: 0.8, y: 20 }}
           animate={{ scale: 1, y: 0 }}
           transition={{ duration: 0.5 }}
@@ -113,23 +113,23 @@ export default function StudyPage() {
             {percentage >= 70 ? '🎉' : percentage >= 50 ? '👍' : '📚'}
           </div>
 
-          <h2 className="text-3xl font-bold mb-4">Selesai!</h2>
+          <h2 className="text-3xl font-bold mb-4 text-light">Selesai!</h2>
 
-          <div className="bg-gray-50 rounded-lg p-6 mb-6 space-y-3">
+          <div className="bg-surface/50 rounded-lg p-6 mb-6 space-y-3">
             <div className="flex justify-between">
-              <span className="text-gray-600">Total Kartu:</span>
+              <span className="text-muted">Total Kartu:</span>
               <span className="font-bold">{stats.total}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-green-600">Benar:</span>
-              <span className="font-bold text-green-600">{stats.correct}</span>
+              <span className="text-secondary">Benar:</span>
+              <span className="font-bold text-secondary">{stats.correct}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-red-600">Salah:</span>
-              <span className="font-bold text-red-600">{stats.incorrect}</span>
+              <span className="text-red-400">Salah:</span>
+              <span className="font-bold text-red-400">{stats.incorrect}</span>
             </div>
             <div className="border-t pt-3 flex justify-between">
-              <span className="text-gray-600">Skor:</span>
+              <span className="text-muted">Skor:</span>
               <span className="font-bold text-lg text-primary">{percentage}%</span>
             </div>
           </div>
@@ -162,7 +162,7 @@ export default function StudyPage() {
 
   return (
     <motion.div
-      className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50 py-12 px-4"
+      className="min-h-screen py-12 px-4"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3 }}
@@ -176,8 +176,8 @@ export default function StudyPage() {
         >
           <div className="flex justify-between items-center mb-4">
             <div>
-              <h1 className="text-3xl font-bold">Belajar Sekarang</h1>
-              <p className="text-gray-600">Kartu {currentIndex + 1} dari {flashcards.length}</p>
+              <h1 className="text-3xl font-bold text-light">Belajar Sekarang</h1>
+              <p className="text-muted">Kartu {currentIndex + 1} dari {flashcards.length}</p>
             </div>
             <motion.button
               className="btn-outline"
@@ -190,12 +190,12 @@ export default function StudyPage() {
           </div>
 
           {/* Progress Bar */}
-          <div className="bg-white rounded-lg p-4 shadow">
-            <div className="flex justify-between text-sm text-gray-600 mb-2">
+          <div className="card">
+            <div className="flex justify-between text-sm text-muted mb-2">
               <span>Progress</span>
               <span>{Math.round(progress)}%</span>
             </div>
-            <div className="w-full bg-gray-200 rounded-full h-2">
+            <div className="w-full bg-border rounded-full h-2">
               <motion.div
                 className="bg-gradient-to-r from-primary to-secondary h-2 rounded-full"
                 initial={{ width: 0 }}
@@ -213,17 +213,17 @@ export default function StudyPage() {
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.1 }}
         >
-          <div className="card bg-green-50 border-2 border-green-200 text-center">
-            <p className="text-2xl font-bold text-green-600">{stats.correct}</p>
-            <p className="text-sm text-gray-600">Benar</p>
+          <div className="card bg-secondary/10 border-2 border-secondary/30 text-center">
+            <p className="text-2xl font-bold text-secondary">{stats.correct}</p>
+            <p className="text-sm text-muted">Benar</p>
           </div>
-          <div className="card bg-blue-50 border-2 border-blue-200 text-center">
-            <p className="text-2xl font-bold text-blue-600">{currentIndex + 1}</p>
-            <p className="text-sm text-gray-600">Kartu</p>
+          <div className="card bg-primary/10 border-2 border-primary/30 text-center">
+            <p className="text-2xl font-bold text-primary">{currentIndex + 1}</p>
+            <p className="text-sm text-muted">Kartu</p>
           </div>
-          <div className="card bg-red-50 border-2 border-red-200 text-center">
-            <p className="text-2xl font-bold text-red-600">{stats.incorrect}</p>
-            <p className="text-sm text-gray-600">Salah</p>
+          <div className="card bg-red-400/10 border-2 border-red-400/30 text-center">
+            <p className="text-2xl font-bold text-red-400">{stats.incorrect}</p>
+            <p className="text-sm text-muted">Salah</p>
           </div>
         </motion.div>
 
@@ -260,7 +260,7 @@ export default function StudyPage() {
             ← Sebelumnya
           </motion.button>
 
-          <span className="text-gray-600 text-sm">
+          <span className="text-muted text-sm">
             {currentIndex + 1} / {flashcards.length}
           </span>
 

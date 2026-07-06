@@ -95,7 +95,7 @@ export default function DashboardPage() {
 
   return (
     <motion.div
-      className="min-h-screen bg-light py-12 px-4"
+      className="min-h-screen py-12 px-4"
       initial="hidden"
       animate="visible"
       variants={containerVariants}
@@ -103,9 +103,9 @@ export default function DashboardPage() {
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <motion.div className="mb-12" variants={itemVariants}>
-          <h1 className="text-4xl font-bold mb-2">Dashboard Belajar</h1>
-          <p className="text-gray-600">
-            Dokumen: <span className="font-semibold">{documentName}</span>
+          <h1 className="text-4xl font-bold mb-2 text-light">Dashboard Belajar</h1>
+          <p className="text-muted">
+            Dokumen: <span className="font-semibold text-light">{documentName}</span>
           </p>
         </motion.div>
 
@@ -115,10 +115,10 @@ export default function DashboardPage() {
           variants={containerVariants}
         >
           {[
-            { label: 'Total Flashcard', value: stats.total, icon: '📚', bg: 'bg-blue-50', border: 'border-blue-200' },
-            { label: 'Sudah Dipelajari', value: stats.learned, icon: '✓', bg: 'bg-green-50', border: 'border-green-200' },
-            { label: 'Sedang Belajar', value: stats.learning, icon: '🔄', bg: 'bg-yellow-50', border: 'border-yellow-200' },
-            { label: 'Sudah Dikuasai', value: stats.mastered, icon: '⭐', bg: 'bg-purple-50', border: 'border-purple-200' },
+            { label: 'Total Flashcard', value: stats.total, icon: '📚', bg: 'bg-primary/10', border: 'border-primary/30' },
+            { label: 'Sudah Dipelajari', value: stats.learned, icon: '✓', bg: 'bg-secondary/10', border: 'border-secondary/30' },
+            { label: 'Sedang Belajar', value: stats.learning, icon: '🔄', bg: 'bg-warning/10', border: 'border-warning/30' },
+            { label: 'Sudah Dikuasai', value: stats.mastered, icon: '⭐', bg: 'bg-accent/10', border: 'border-accent/30' },
           ].map((stat, idx) => (
             <motion.div
               key={idx}
@@ -127,20 +127,20 @@ export default function DashboardPage() {
               whileHover={{ scale: 1.05 }}
             >
               <div className="text-3xl mb-2">{stat.icon}</div>
-              <p className="text-gray-600 text-sm mb-1">{stat.label}</p>
-              <p className="text-3xl font-bold">{stat.value}</p>
+              <p className="text-muted text-sm mb-1">{stat.label}</p>
+              <p className="text-3xl font-bold text-light">{stat.value}</p>
             </motion.div>
           ))}
         </motion.div>
 
         {/* Progress Bar */}
         <motion.div className="mb-12" variants={itemVariants}>
-          <div className="bg-white rounded-lg shadow p-6">
-            <h3 className="font-bold text-lg mb-4">Progress Pembelajaran</h3>
+          <div className="card">
+            <h3 className="font-bold text-lg mb-4 text-light">Progress Pembelajaran</h3>
             <div className="space-y-4">
               <div>
                 <div className="flex justify-between mb-2">
-                  <span className="text-sm text-gray-600">Sudah Dipelajari</span>
+                  <span className="text-sm text-muted">Sudah Dipelajari</span>
                   <span className="text-sm font-semibold">
                     {stats.total > 0 ? Math.round((stats.learned / stats.total) * 100) : 0}%
                   </span>
@@ -156,7 +156,7 @@ export default function DashboardPage() {
               </div>
               <div>
                 <div className="flex justify-between mb-2">
-                  <span className="text-sm text-gray-600">Sudah Dikuasai</span>
+                  <span className="text-sm text-muted">Sudah Dikuasai</span>
                   <span className="text-sm font-semibold">
                     {stats.total > 0 ? Math.round((stats.mastered / stats.total) * 100) : 0}%
                   </span>
@@ -215,7 +215,7 @@ export default function DashboardPage() {
 
         {/* Recent Flashcards Preview */}
         <motion.div className="mt-12" variants={itemVariants}>
-          <h3 className="font-bold text-xl mb-6">Preview Flashcard</h3>
+          <h3 className="font-bold text-xl mb-6 text-light">Preview Flashcard</h3>
           <motion.div
             className="grid grid-cols-1 md:grid-cols-2 gap-6"
             variants={containerVariants}
@@ -227,10 +227,10 @@ export default function DashboardPage() {
                 variants={itemVariants}
                 whileHover={{ y: -5 }}
               >
-                <p className="text-sm text-gray-500 mb-2">Pertanyaan</p>
-                <p className="font-semibold mb-4 line-clamp-2">{card.question}</p>
-                <p className="text-sm text-gray-500 mb-2">Jawaban</p>
-                <p className="text-gray-600 line-clamp-2">{card.answer}</p>
+                <p className="text-sm text-muted/70 mb-2">Pertanyaan</p>
+                <p className="font-semibold mb-4 line-clamp-2 text-light">{card.question}</p>
+                <p className="text-sm text-muted/70 mb-2">Jawaban</p>
+                <p className="text-muted line-clamp-2">{card.answer}</p>
               </motion.div>
             ))}
           </motion.div>
