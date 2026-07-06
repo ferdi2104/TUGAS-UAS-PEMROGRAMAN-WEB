@@ -1,180 +1,196 @@
 'use client';
 
-import Link from 'next/link';
-import { motion } from 'framer-motion';
-
 export default function HomePage() {
-
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.2,
-      },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.6 },
-    },
-  };
-
   return (
-    <motion.div
-      className="min-h-screen"
-      initial="hidden"
-      animate="visible"
-      variants={containerVariants}
-    >
+    <main>
       {/* Hero Section */}
-      <motion.section className="relative pt-24 pb-32 px-4 sm:px-6 lg:px-8 overflow-hidden" variants={itemVariants}>
-        <div className="absolute inset-0 bg-gradient-to-b from-primary/5 via-transparent to-transparent pointer-events-none" />
-        <div className="max-w-6xl mx-auto text-center relative">
-          <motion.h1
-            className="text-5xl sm:text-6xl font-extrabold text-light mb-6 leading-tight"
-            variants={itemVariants}
-          >
-            Belajar <span className="text-gradient">Lebih Cerdas</span> dengan AI
-          </motion.h1>
-          
-          <motion.p
-            className="text-xl text-muted mb-10 max-w-2xl mx-auto leading-relaxed"
-            variants={itemVariants}
-          >
-            Transform catatan Anda menjadi flashcard interaktif dan kuis otomatis menggunakan AI
-          </motion.p>
+      <section className="relative h-[870px] w-full overflow-hidden flex items-center">
+        <div className="absolute inset-0 z-0">
+          <div className="absolute inset-0 bg-gradient-to-r from-background via-background/40 to-transparent z-10"></div>
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent z-10"></div>
+          <img
+            className="w-full h-full object-cover scale-105"
+            alt="Cinematic cyberpunk city"
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuBqebPZKNupem9YckkgsWR1t1ke98XXnVtxyscYWxJasM8WPe-fl4owRHV9BHaB7CvL-UrHz0Xzo98hiLu8-lR0D9g4AUw81RTkyPpWwalYiTrIXCrbP0O5RXSeRn9_r958cXJ2joQjZVzdVH1500ytvRX97Zowi8zrygaDRuVOfw2BY5py18TQ-xUZXefm34-yXrtnp5ELGiJDj8UX9EHnpOmT3AMxzitHPRfug9LAiHZHC-cPNvPhsLNbK0Ypn7wyhZKHyopEMNA"
+          />
+        </div>
+        <div className="relative z-20 px-6 lg:px-12 max-w-4xl">
+          <div className="inline-flex items-center gap-2 bg-primary/20 border border-primary/40 px-3 py-1 rounded-full mb-6 backdrop-blur-sm">
+            <span className="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+            <span className="text-xs font-label text-primary uppercase tracking-widest font-bold">Featured Student Pick</span>
+          </div>
+          <h1 className="text-6xl md:text-8xl font-black font-headline tracking-tighter mb-4 leading-tight">
+            NEON <span className="text-secondary drop-shadow-[0_0_12px_rgba(0,255,204,0.6)]">VENDETTA</span>
+          </h1>
+          <p className="text-lg md:text-xl text-on-surface-variant max-w-2xl mb-8 leading-relaxed font-body">
+            In the heart of Sector 7, a rogue courier must outrun a corporate death squad through the vertical slums of Neo-Tokyo. High-octane action meets raw synth-wave aesthetics.
+          </p>
+          <div className="flex flex-wrap gap-4">
+            <button className="bg-primary text-on-primary font-bold font-label px-8 py-4 flex items-center gap-3 transition-all hover:scale-105 hover:shadow-[0_0_20px_rgba(255,45,120,0.5)] active:scale-95 group">
+              <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>play_arrow</span>
+              WATCH FREE
+            </button>
+            <button className="bg-surface-container-highest/60 backdrop-blur-md border border-outline/30 text-on-surface font-bold font-label px-8 py-4 flex items-center gap-3 transition-all hover:bg-surface-container-highest active:scale-95">
+              <span className="material-symbols-outlined">add</span>
+              MY LIST
+            </button>
+          </div>
+        </div>
+        <div className="absolute bottom-12 right-12 z-20 hidden lg:flex flex-col gap-4 text-right">
+          <div className="font-label text-xs uppercase text-secondary tracking-widest">IMAX Enhanced</div>
+          <div className="font-label text-xs uppercase text-on-surface-variant tracking-widest">Released: 2024</div>
+        </div>
+      </section>
 
-          <motion.div className="flex gap-4 justify-center mb-16" variants={itemVariants}>
-            <Link href="/upload">
-              <button className="btn-primary text-lg px-8 py-3 shadow-lg shadow-primary/20">
-                Mulai Sekarang
-              </button>
-            </Link>
-            <Link href="/about">
-              <button className="btn-outline text-lg px-8 py-3">
-                Pelajari Lebih Lanjut
-              </button>
-            </Link>
-          </motion.div>
+      {/* Trending Now */}
+      <section className="py-16 px-6 lg:px-12 relative overflow-hidden">
+        <div className="grid-bg absolute inset-0 opacity-20 pointer-events-none"></div>
+        <div className="flex justify-between items-end mb-8 relative z-10">
+          <div>
+            <h2 className="text-3xl font-bold font-headline tracking-tight text-white mb-2">Trending Now</h2>
+            <div className="h-1 w-24 bg-primary rounded-full"></div>
+          </div>
+          <a className="text-secondary font-label text-sm flex items-center gap-2 hover:underline" href="/pencarian">
+            EXPLORE ALL <span className="material-symbols-outlined text-sm">arrow_forward</span>
+          </a>
+        </div>
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6 relative z-10">
+          {[
+            { title: 'Circuit Breaker', match: '98%', tags: ['4K', 'Action'], img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuD34hdsZ7WlqMt5gi2k57X5JaGfLoCGlbeB2hnOUZPNaQLoAZKzlAFLfpJHF3PHx_3rROHb9KzBCICibYEU0kBQ6rDAjPSJm_fqmdmLNzvrlkPU2DzKrqFgXy6JCR6x2dov1hMXnfEzbC9XpOYOa8azVTofXp53yhIHVbP3ZtzPm5-uQcsnK4ODt1adNUDY5r389AnkAD2SCfhAGtiUqP5Z0xDOW9Lsni0k_RL5OUvyTsWiYUxAXvCLpTf10qKxulPUycg9n8uRrlU' },
+            { title: 'Sector Silence', match: '94%', tags: ['HD', 'Sci-Fi'], img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAueV56eM9h5b_MnpeCeF9acNCXNtfyffMKZB-0vUr9fSfjNF-tdB7n0qgO1PMyzzdHdw1zgyqs_PGWu-T6AWICLx687I7qsaIoYAtTQ1lGN_dcqxCMDjUGzmbwLzQnIXtwW_AKkTEF0W-b-tmuS8loD_n8PA83dxSYdHIYCAIdnsIu6ObnKu78CnuoXeLNC6oFdcle9NML7GMVgC4QFK-2VsXb0fp5k9fkLjWrPMjpsBEeadPFe91QNJfqGmvT9G5n0xpl5ZjCHtw' },
+            { title: 'Glitch Strike', match: '91%', tags: ['Action'], img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBk4TYfkmWBxaXPoKkYG_5nL1e-fh6s-3SchTMr7DqN0gnVCanmoXODO_XJjQ1NvMJ3qkAKYGeFcKwZgi5iO6oMux8R4WEhuc0DAzQsoPXPUx8aS_y-ECsr5d6yTViZmK5Xq9kfFG06ffaiazoQb6mTHaBnRhG66Y4nAK6yghaQf6y5WR_1PEZUKUNInr1PK_9AYnN1G2ZbLPulfdQRSgM3QDCnyf98cG7CnZdY2kUIpJNOqEzGgU082F-BFnuypAFxGP7bAarCDKU' },
+            { title: 'The Uplink', match: '89%', tags: ['Thriller'], img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDefz6F5XgZFkzQYY6GedMZz3qBsEE-4MZMEDT-403AH11pcac1mMugQy1Ko-qvG3003Q_eLgaLdte3t9G7YW6r-IMDMITAMWQblNNDhcX533q3ZpCbheQBLa49HpOqiO1uG7NxSikJjiLnVrrlp9A4G3Ruf43VQZtMFIJC-hN6nmKvTuQEX1H1UsZWw1lWeeYVb0opkJRAfwZcYBIOWC8tyK0YVhSsZS1EtKhLEZKoQTUMGH79Y9j52HAo7KfKkkuhkYRdB5QE108' },
+            { title: 'Velocity Prime', match: '87%', tags: ['Action'], img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCH8QHCHuTyQQ7GE3qNfk-PqjJ4uojN0AfKgZAMmO4W-AiLoodpApAhX9WY2iw3CgLfeShH0xwhkx9xUDUGjnof-lMkKQm9QzhWMvewxOhpa6sYcvkZhZBO4XEOSGansmJSi_9oyjYKOTxZ6EtLcFmezmag5hY5iYLIJCcdY_XXS9noKLTf7vqIgZOzO_TfkedNsC5zif1Gtean-ng_2598SorheAYyMfMgwZSb_cSx_-dHH7WwxZo_QrhQmfTUJngYzTNIeTR9EP0' },
+          ].map((movie, i) => (
+            <a key={i} href="/detail" className="group relative aspect-[2/3] bg-surface-container rounded-lg overflow-hidden border border-white/5 transition-all hover:border-primary/50 hover:-translate-y-2 cursor-pointer">
+              <img className="w-full h-full object-cover" alt={movie.title} src={movie.img} />
+              <div className="absolute inset-0 bg-gradient-to-t from-background to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-4">
+                <span className="text-primary font-bold text-sm mb-1">{movie.match} Match</span>
+                <h3 className="font-headline font-bold text-lg leading-tight">{movie.title}</h3>
+                <div className="flex gap-2 mt-2">
+                  {movie.tags.map((tag, j) => (
+                    <span key={j} className="text-[10px] bg-white/10 px-1.5 py-0.5 rounded uppercase font-label">{tag}</span>
+                  ))}
+                </div>
+              </div>
+            </a>
+          ))}
+        </div>
+      </section>
 
-          <motion.div
-            className="card !bg-surface-light/60 backdrop-blur-xl border-border/50"
-            variants={itemVariants}
-          >
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <div className="text-center p-4">
-                <div className="text-4xl mb-3">⚡</div>
-                <h3 className="font-bold text-lg mb-2 text-light">Cepat</h3>
-                <p className="text-muted">Generate flashcard dalam hitungan detik</p>
-              </div>
-              <div className="text-center p-4 border-x border-border/50">
-                <div className="text-4xl mb-3">🎯</div>
-                <h3 className="font-bold text-lg mb-2 text-light">Akurat</h3>
-                <p className="text-muted">AI memahami konteks catatan Anda</p>
-              </div>
-              <div className="text-center p-4">
-                <div className="text-4xl mb-3">📈</div>
-                <h3 className="font-bold text-lg mb-2 text-light">Efektif</h3>
-                <p className="text-muted">Spaced repetition untuk hasil optimal</p>
+      {/* Free for Students */}
+      <section className="py-16 px-6 lg:px-12 bg-surface-container-low/50 relative">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-black font-headline tracking-tighter mb-4 uppercase inline-block border-b-4 border-secondary">Free for Students</h2>
+            <p className="text-on-surface-variant font-body">Exclusive access verified through your university portal.</p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 grid-rows-2 gap-4 h-auto md:h-[600px]">
+            <div className="md:col-span-2 md:row-span-2 group relative overflow-hidden rounded-xl border border-secondary/30 bg-surface-container flex flex-col justify-end p-8 transition-all hover:shadow-[0_0_30px_rgba(0,255,204,0.1)]">
+              <img className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt="Orbital station" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDn2bMS6xiz9ElVmbARrNpB9ixSs7ZDmKAnRSHuQhWv8FcZkcBz0JVcNN0HBK_zrWwUzzcvkUZXbKEN3YDp3UAlCYCdtBNco5Ve8F47WCBXi7RmkM4z8BEMHMBZoGXT8qRnTw2jHtxlOBCJOrdUdE9Ujk8uSi0QwYGFs-Vq3KwmAftS86EiGN6ZhAsyt6vMl0zKyYGFL_kB-fEXHny13ohfac78Q5RQ73xaJvIQlrSo6er8k29uJeqHa5HtI7G0iHKm5LNZusACL_w" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent"></div>
+              <div className="relative z-10">
+                <div className="flex items-center gap-2 mb-2 text-secondary">
+                  <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
+                  <span className="font-label text-sm font-bold uppercase tracking-widest">Premium Student Access</span>
+                </div>
+                <h3 className="text-4xl font-black font-headline mb-4">ORBITAL ZERO</h3>
+                <button className="bg-secondary text-on-secondary font-bold font-label px-6 py-3 transition-all hover:scale-105 active:scale-95">START STREAMING</button>
               </div>
             </div>
-          </motion.div>
+            <div className="group relative overflow-hidden rounded-xl border border-white/10 bg-surface-container p-6 transition-all hover:border-primary/50">
+              <img className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-80 transition-opacity" alt="Mech" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB9RGh1_0PdjgVPLPkcxIwUezSN2V7gTJcw-NuyO87k7xP6hqFPguZYSZkiYgfVK1RDsS5_ihAWBy2OfZYzZATPoLTXLe3V9ecCXQx5kM36BWbpaiEkLWArHRIcdQVBMbc4N8UR1dQMCUk90djeDM8Q9RW0_HeQEoOdDgyiWmhq57MDHecHsHNCdcW65He6ORn9aEaebXshjxxC3M4JqBFEJXUgdEIDO9cjQRPIx-8ZwVuejejRr8LbT5DabVcrB9Bo2Ou9-xPsw28" />
+              <div className="relative z-10 h-full flex flex-col justify-end">
+                <h4 className="font-headline font-bold text-xl mb-1">Mech Warriors</h4>
+                <p className="text-xs text-on-surface-variant font-label uppercase">Weekly Student Release</p>
+              </div>
+            </div>
+            <div className="group relative overflow-hidden rounded-xl border border-white/10 bg-surface-container p-6 transition-all hover:border-tertiary/50">
+              <img className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-80 transition-opacity" alt="Hacker" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBIwGBrIi84RytaP612f3szTvKZpaXWVytjQ3vGOtXUwZQm8XDyF4NpeoQhEsIcAwinvjp4WVTVlvm6SJPQip-YOybQ_dHeWV9PazBhGbW5u4m_aiTgbpPHfjUN39S6yrG76OX6onUTSFSRlINfhcGlrxpDnJAbD5AYfc--DlHQVExXMWaJIemVrrlINrG9BBTztRjoSxcCG_TnTxUXOu2xcNUeE17j462Kfwza3iSxwSJUn8TdbPOGA24Xcul3RdMmxvsF21Edus4" />
+              <div className="relative z-10 h-full flex flex-col justify-end">
+                <h4 className="font-headline font-bold text-xl mb-1">The Firewall</h4>
+                <p className="text-xs text-on-surface-variant font-label uppercase">Unlocked: 1080p</p>
+              </div>
+            </div>
+          </div>
         </div>
-      </motion.section>
+      </section>
 
-      {/* Features Section */}
-      <motion.section className="py-24 px-4 sm:px-6 lg:px-8 border-t border-border/30" variants={itemVariants}>
-        <div className="max-w-6xl mx-auto">
-          <motion.h2
-            className="text-4xl font-bold text-center mb-4 text-light"
-            variants={itemVariants}
-          >
-            Fitur Unggulan
-          </motion.h2>
-          <motion.p className="text-center text-muted mb-16 max-w-xl mx-auto" variants={itemVariants}>
-            Semua yang Anda butuhkan untuk belajar lebih efisien
-          </motion.p>
-
-          <motion.div className="grid grid-cols-1 md:grid-cols-2 gap-8" variants={containerVariants}>
-            {[
-              {
-                icon: '📄',
-                title: 'Upload Mudah',
-                desc: 'Upload PDF atau text langsung dari device Anda',
-              },
-              {
-                icon: '🤖',
-                title: 'Powered by AI',
-                desc: 'Google Gemini AI untuk generate Q&A berkualitas tinggi',
-              },
-              {
-                icon: '🎴',
-                title: 'Flashcard Interaktif',
-                desc: 'Belajar dengan flashcard yang cantik dan responsif',
-              },
-              {
-                icon: '📊',
-                title: 'Progress Tracking',
-                desc: 'Pantau progress belajar dengan dashboard detail',
-              },
-              {
-                icon: '🎓',
-                title: 'Mode Quiz',
-                desc: 'Test pengetahuan dengan quiz interaktif',
-              },
-              {
-                icon: '🔄',
-                title: 'Spaced Repetition',
-                desc: 'Algoritma repetisi terjadwal untuk hafalan optimal',
-              },
-            ].map((feature, idx) => (
-              <motion.div
-                key={idx}
-                className="card group"
-                variants={itemVariants}
-                whileHover={{ y: -5 }}
-              >
-                <div className="text-5xl mb-4 group-hover:scale-110 transition-transform duration-300">{feature.icon}</div>
-                <h3 className="font-bold text-xl mb-3 text-light group-hover:text-primary transition-colors">{feature.title}</h3>
-                <p className="text-muted leading-relaxed">{feature.desc}</p>
-              </motion.div>
-            ))}
-          </motion.div>
+      {/* Action Sub-genres */}
+      <section className="py-16 px-6 lg:px-12 bg-background">
+        <h2 className="text-2xl font-bold font-headline mb-8 flex items-center gap-4">
+          <span className="w-1 h-8 bg-tertiary"></span>
+          Action Sub-genres
+        </h2>
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+          {[
+            { icon: 'directions_car', label: 'High-Speed', href: '/kategori' },
+            { icon: 'swords', label: 'Samurai-Punk', href: '/kategori' },
+            { icon: 'explosion', label: 'Explosive', href: '/kategori' },
+            { icon: 'rocket_launch', label: 'Deep Space', href: '/kategori' },
+            { icon: 'precision_manufacturing', label: 'Cyber-Mech', href: '/kategori' },
+            { icon: 'terminal', label: 'Hacker-Thrill', href: '/kategori' },
+          ].map((item, i) => (
+            <a key={i} href={item.href} className="group relative py-12 flex flex-col items-center justify-center bg-surface-container rounded-lg border border-white/5 hover:bg-surface-variant transition-all hover:border-secondary/50">
+              <span className="material-symbols-outlined text-4xl mb-4 group-hover:text-secondary group-hover:scale-110 transition-all">{item.icon}</span>
+              <span className="font-label text-xs uppercase tracking-widest font-bold">{item.label}</span>
+            </a>
+          ))}
         </div>
-      </motion.section>
+      </section>
 
-      {/* CTA Section */}
-      <motion.section className="relative py-24 px-4 sm:px-6 lg:px-8 overflow-hidden" variants={itemVariants}>
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-accent/5 to-secondary/10" />
-        <div className="max-w-4xl mx-auto text-center relative">
-          <motion.h2
-            className="text-4xl font-bold mb-4 text-light"
-            variants={itemVariants}
-          >
-            Siap Mengubah Cara Belajarmu?
-          </motion.h2>
-          
-          <motion.p
-            className="text-lg text-muted mb-10 max-w-lg mx-auto"
-            variants={itemVariants}
-          >
-            Bergabunglah dengan ribuan siswa yang telah merasakan belajar lebih efisien
-          </motion.p>
-
-          <motion.div variants={itemVariants}>
-            <Link href="/upload">
-              <button className="btn-primary text-lg px-10 py-3.5 shadow-lg shadow-primary/30">
-                Mulai Belajar Sekarang
-              </button>
-            </Link>
-          </motion.div>
+      {/* Newsletter */}
+      <section className="py-20 px-6 lg:px-12 relative">
+        <div className="max-w-4xl mx-auto relative z-10 text-center bg-surface-container/60 backdrop-blur-xl p-12 rounded-2xl border border-primary/20 neon-border-pink">
+          <h2 className="text-4xl font-headline font-black mb-4">JOIN THE ACTION REVOLUTION</h2>
+          <p className="text-on-surface-variant mb-8 text-lg">Subscribe to get notified about the latest student drops and exclusive midnight releases.</p>
+          <form className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
+            <input className="flex-grow bg-background border-outline/50 focus:border-primary focus:ring-1 focus:ring-primary rounded px-4 py-3 font-body text-on-surface" placeholder="student@university.edu" type="email" />
+            <button className="bg-primary text-on-primary font-black font-label px-8 py-3 transition-all hover:shadow-[0_0_15px_rgba(255,45,120,0.6)] active:scale-95">JOIN NOW</button>
+          </form>
         </div>
-      </motion.section>
-    </motion.div>
+      </section>
+
+      {/* Footer */}
+      <footer className="w-full py-12 px-8 flex flex-col md:flex-row justify-between items-center gap-8 bg-surface-container-lowest border-t border-secondary/20">
+        <div className="flex flex-col items-center md:items-start gap-4">
+          <div className="text-lg font-black font-headline text-primary">NEON-ACTION UNIVERSE</div>
+          <p className="text-on-surface-variant text-sm font-label uppercase tracking-tighter">© 2024 NEON-ACTION UNIVERSE. ACCESS GRANTED.</p>
+        </div>
+        <div className="flex flex-wrap justify-center gap-6 md:gap-8">
+          {['Cyber-Action', 'High-Octane', 'Student Forums', 'Global Leaderboard', 'Support', 'Legal'].map((item, i) => (
+            <a key={i} className="text-on-surface-variant hover:text-tertiary transition-colors hover:translate-x-1 duration-200 text-sm font-label uppercase tracking-widest" href="#">{item}</a>
+          ))}
+        </div>
+        <div className="flex gap-4">
+          <a className="w-10 h-10 flex items-center justify-center rounded-full bg-surface-variant hover:bg-primary transition-all duration-300" href="#">
+            <span className="material-symbols-outlined text-white">share</span>
+          </a>
+          <a className="w-10 h-10 flex items-center justify-center rounded-full bg-surface-variant hover:bg-secondary transition-all duration-300" href="#">
+            <span className="material-symbols-outlined text-white">groups</span>
+          </a>
+        </div>
+      </footer>
+
+      {/* BottomNavBar (Mobile Only) */}
+      <nav className="md:hidden fixed bottom-0 left-0 w-full bg-background/95 backdrop-blur-md border-t border-primary/20 h-16 flex items-center justify-around z-50">
+        <button className="flex flex-col items-center gap-1 text-primary drop-shadow-[0_0_8px_rgba(255,45,120,0.6)]">
+          <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>movie</span>
+          <span className="text-[10px] font-label font-bold uppercase tracking-widest">Movies</span>
+        </button>
+        <button className="flex flex-col items-center gap-1 text-on-surface-variant">
+          <span className="material-symbols-outlined">tv_gen</span>
+          <span className="text-[10px] font-label font-bold uppercase tracking-widest">Series</span>
+        </button>
+        <button className="flex flex-col items-center gap-1 text-on-surface-variant">
+          <span className="material-symbols-outlined">explore</span>
+          <span className="text-[10px] font-label font-bold uppercase tracking-widest">Live</span>
+        </button>
+        <button className="flex flex-col items-center gap-1 text-on-surface-variant">
+          <span className="material-symbols-outlined">school</span>
+          <span className="text-[10px] font-label font-bold uppercase tracking-widest">Perks</span>
+        </button>
+      </nav>
+    </main>
   );
 }
