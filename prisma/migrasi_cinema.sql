@@ -15,6 +15,7 @@ CREATE TABLE IF NOT EXISTS movies (
   genre TEXT NOT NULL,
   subgenre TEXT,
   "imageUrl" TEXT NOT NULL,
+  videoUrl TEXT,
   tag TEXT,
   featured BOOLEAN NOT NULL DEFAULT false,
   "createdAt" TIMESTAMP DEFAULT NOW(),

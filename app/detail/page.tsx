@@ -14,6 +14,7 @@ const fallbackMovie = {
   rating: 9.2,
   genre: 'Action / Sci-Fi',
   imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCDVSjG6XFM5Sk7dSEaz8iUWOIL4yHTkgbd0ZCcgMf9TqK6R-hB-Bq7bDH6HjjbSMChqFz9r9mCw9kcJCy5DSTGXlXFNHecH4udIBUrBzXObAXpfmDh6F5zgkXLCeR4VBymA5tSCAxJgirIKSeR6dKhMaca5x47LXmMUEogqzlHHUSqpcuTkhHkPNylmn_hCE-6zYUs8VhbOe4rzJMWoyzbkulRBVi-be7UyJf99e4sMqmRNflTKKLyr3r86up-lmMS4XXDUaHEndE',
+  videoUrl: 'https://www.youtube.com/watch?v=Tg7wNK35Aso',
   tag: 'Premium Action',
 };
 
@@ -24,6 +25,7 @@ function DetailContent() {
   const [comments, setComments] = useState<any[]>([]);
   const [related, setRelated] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [playing, setPlaying] = useState(false);
 
   useEffect(() => {
     async function fetchData() {
@@ -71,37 +73,61 @@ function DetailContent() {
 
   const m = movie || fallbackMovie;
 
+  function getEmbedUrl(url: string) {
+    if (!url) return '';
+    const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]+)/);
+    return match ? `https://www.youtube.com/embed/${match[1]}?autoplay=1&rel=0` : url;
+  }
+
   return (
     <main className="pt-16 min-h-screen">
-      <section className="relative w-full aspect-video md:h-[716px] bg-black overflow-hidden group">
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent z-10"></div>
-        <div className="absolute inset-0 flex items-center justify-center z-20">
-          <button className="w-20 h-20 rounded-full bg-primary/20 backdrop-blur-sm border-2 border-primary flex items-center justify-center text-primary hover:scale-110 transition-transform active:scale-95 group-hover:shadow-[0_0_30px_rgba(255,45,120,0.6)]">
-            <span className="material-symbols-outlined text-5xl" style={{ fontVariationSettings: "'FILL' 1" }}>play_arrow</span>
-          </button>
-        </div>
-        <div className="w-full h-full bg-surface-dim relative">
-          <div className="absolute inset-0 scanline opacity-30"></div>
-          <img className="w-full h-full object-cover opacity-60" alt={m.title} src={m.imageUrl} />
-        </div>
-        <div className="absolute bottom-0 left-0 w-full p-8 md:p-12 z-20">
-          <div className="flex flex-wrap items-center gap-3 mb-4">
-            <span className="bg-primary text-on-primary px-3 py-0.5 font-label text-xs font-bold tracking-tighter uppercase">{m.tag || 'Premium Action'}</span>
-            <span className="bg-surface-container-highest text-secondary border border-secondary/30 px-3 py-0.5 font-label text-xs uppercase tracking-tighter">4K Ultra HD</span>
-            <span className="text-tertiary flex items-center gap-1 font-label text-sm">
-              <span className="material-symbols-outlined text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>star</span> {m.rating} Rating
-            </span>
-          </div>
-          <h1 className="text-5xl md:text-7xl font-black font-headline text-on-surface mb-4 tracking-tighter drop-shadow-2xl">{m.title}</h1>
-          <div className="flex gap-4">
-            <button className="bg-primary hover:bg-primary-container text-on-primary font-label px-8 py-3 font-bold flex items-center gap-2 transition-all">
-              <span className="material-symbols-outlined">play_circle</span> WATCH NOW
-            </button>
-            <button className="bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 text-on-surface font-label px-8 py-3 font-bold flex items-center gap-2 transition-all">
-              <span className="material-symbols-outlined">add</span> MY LIST
-            </button>
-          </div>
-        </div>
+      <section className="relative w-full aspect-video md:h-[716px] bg-black overflow-hidden">
+        {playing && m.videoUrl ? (
+          <iframe
+            className="absolute inset-0 w-full h-full"
+            src={getEmbedUrl(m.videoUrl)}
+            allow="autoplay; encrypted-media; fullscreen"
+            allowFullScreen
+          />
+        ) : (
+          <>
+            <div className="absolute inset-0 flex items-center justify-center z-20">
+              {m.videoUrl && (
+                <button onClick={() => setPlaying(true)} className="w-20 h-20 rounded-full bg-primary/20 backdrop-blur-sm border-2 border-primary flex items-center justify-center text-primary hover:scale-110 transition-transform active:scale-95 hover:shadow-[0_0_30px_rgba(255,45,120,0.6)] group">
+                  <span className="material-symbols-outlined text-5xl" style={{ fontVariationSettings: "'FILL' 1" }}>play_arrow</span>
+                </button>
+              )}
+            </div>
+            <div className="w-full h-full bg-surface-dim relative">
+              <div className="absolute inset-0 scanline opacity-30"></div>
+              <img className="w-full h-full object-cover opacity-60" alt={m.title} src={m.imageUrl} />
+            </div>
+            <div className="absolute bottom-0 left-0 w-full p-8 md:p-12 z-20">
+              <div className="flex flex-wrap items-center gap-3 mb-4">
+                <span className="bg-primary text-on-primary px-3 py-0.5 font-label text-xs font-bold tracking-tighter uppercase">{m.tag || 'Premium Action'}</span>
+                <span className="bg-surface-container-highest text-secondary border border-secondary/30 px-3 py-0.5 font-label text-xs uppercase tracking-tighter">4K Ultra HD</span>
+                <span className="text-tertiary flex items-center gap-1 font-label text-sm">
+                  <span className="material-symbols-outlined text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>star</span> {m.rating} Rating
+                </span>
+              </div>
+              <h1 className="text-5xl md:text-7xl font-black font-headline text-on-surface mb-4 tracking-tighter drop-shadow-2xl">{m.title}</h1>
+              <div className="flex gap-4">
+                {m.videoUrl ? (
+                  <button onClick={() => setPlaying(true)} className="bg-primary hover:bg-primary-container text-on-primary font-label px-8 py-3 font-bold flex items-center gap-2 transition-all">
+                    <span className="material-symbols-outlined">play_circle</span> WATCH NOW
+                  </button>
+                ) : (
+                  <button className="bg-primary/40 text-on-primary font-label px-8 py-3 font-bold flex items-center gap-2 transition-all cursor-not-allowed">
+                    <span className="material-symbols-outlined">play_circle</span> NO VIDEO
+                  </button>
+                )}
+                <button className="bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 text-on-surface font-label px-8 py-3 font-bold flex items-center gap-2 transition-all">
+                  <span className="material-symbols-outlined">add</span> MY LIST
+                </button>
+              </div>
+            </div>
+          </>
+        )}
       </section>
 
       <div className="max-w-7xl mx-auto px-6 py-12 grid grid-cols-1 lg:grid-cols-3 gap-12">
