@@ -21,10 +21,13 @@ export default function UploadPage() {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to generate flashcards');
+        let errMsg = 'Gagal memproses file';
+        try { const d = await response.json(); errMsg = d.error || d.details || errMsg; } catch {}
+        throw new Error(errMsg);
       }
 
       const data = await response.json();
+
       localStorage.setItem('flashcards', JSON.stringify(data.flashcards));
       localStorage.setItem('documentName', file.name);
       if (data.documentId) {
@@ -34,7 +37,7 @@ export default function UploadPage() {
       router.push('/dashboard');
     } catch (error) {
       console.error('Error:', error);
-      alert('Gagal memproses file. Silahkan coba lagi.');
+      alert(error instanceof Error ? error.message : 'Gagal memproses file. Silahkan coba lagi.');
     } finally {
       setIsProcessing(false);
     }
