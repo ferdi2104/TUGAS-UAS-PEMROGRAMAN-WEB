@@ -77,7 +77,11 @@ export async function extractTextFromPDF(buffer: Buffer): Promise<string> {
   try {
     const pdfjsLib = await import('pdfjs-dist');
     const uint8Array = new Uint8Array(buffer);
-    const pdf = await pdfjsLib.getDocument({ data: uint8Array, useSystemFonts: true }).promise;
+    const pdf = await pdfjsLib.getDocument({
+      data: uint8Array,
+      disableFontFace: true,
+      useSystemFonts: false,
+    }).promise;
     const pages: string[] = [];
 
     for (let i = 1; i <= pdf.numPages; i++) {
