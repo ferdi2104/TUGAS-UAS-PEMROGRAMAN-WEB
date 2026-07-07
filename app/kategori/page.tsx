@@ -59,8 +59,17 @@ export default function KategoriPage() {
             const isWide = i === 3;
             const heights = isLarge ? 'h-[400px] md:h-auto md:col-span-2 md:row-span-2' : isWide ? 'h-[250px] md:col-span-2' : 'h-[300px]';
             return (
-              <Link key={cat.id || i} href="/pencarian" className={`${heights} category-card group cursor-pointer relative overflow-hidden rounded-xl`}>
-                <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent opacity-80"></div>
+              <Link key={cat.id || i} href={`/pencarian?genre=${cat.name === 'Martial Arts' ? 'Action' : cat.name === 'High-Octane' ? 'Action' : cat.name === 'Cyberpunk' ? 'Sci-Fi' : cat.name === 'Heist' ? 'Thriller' : cat.name === 'Revenge' ? 'Action' : cat.name === 'Superhuman' ? 'Sci-Fi' : ''}`} className={`${heights} category-card group cursor-pointer relative overflow-hidden rounded-xl`}>
+                <img className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt={cat.name} src={
+                  i === 0 ? 'https://img.youtube.com/vi/nkCXmkCmjzA/maxresdefault.jpg' :
+                  i === 1 ? 'https://img.youtube.com/vi/SE-AhAm_EBk/maxresdefault.jpg' :
+                  i === 2 ? 'https://img.youtube.com/vi/xghsjPvOjZA/maxresdefault.jpg' :
+                  i === 3 ? 'https://img.youtube.com/vi/jcAF3yDTVYs/maxresdefault.jpg' :
+                  i === 4 ? 'https://img.youtube.com/vi/cSIsQSnteX4/maxresdefault.jpg' :
+                  'https://img.youtube.com/vi/JDcl3UtX9fQ/maxresdefault.jpg'
+                } />
+                <div className="absolute inset-0 bg-surface-dim/60"></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent opacity-90"></div>
                 <div className={`absolute inset-0 border ${cat.color === 'secondary' ? 'border-secondary/30 group-hover:border-secondary' : 'border-primary/30 group-hover:border-primary group-hover:shadow-[0_0_16px_rgba(255,45,120,0.4)]'} rounded-xl transition-all duration-300`}></div>
                 <div className={`absolute bottom-0 ${isLarge || isWide ? 'p-8' : 'p-6'} w-full`}>
                   {cat.tag && (
