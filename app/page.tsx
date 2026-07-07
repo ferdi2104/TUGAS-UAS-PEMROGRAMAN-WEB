@@ -170,7 +170,7 @@ export default function HomePage() {
                     <span>10 Film/bulan</span>
                   </div>
                 </div>
-                <Link href="/upload">
+                <Link href="/profile">
                   <button className="bg-secondary text-on-secondary font-bold font-label px-6 py-3 transition-all hover:scale-105 active:scale-95">VERIFIKASI SEKARANG</button>
                 </Link>
               </div>

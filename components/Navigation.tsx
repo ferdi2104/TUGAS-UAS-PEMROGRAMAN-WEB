@@ -76,8 +76,8 @@ export default function Navigation() {
             <Link className="text-on-surface-variant hover:text-secondary transition-colors duration-300 font-label text-sm uppercase tracking-wider" href="/pencarian">
               Search
             </Link>
-            <Link className="text-on-surface-variant hover:text-secondary transition-colors duration-300 font-label text-sm uppercase tracking-wider" href="/dashboard">
-              Dashboard
+            <Link className="text-on-surface-variant hover:text-secondary transition-colors duration-300 font-label text-sm uppercase tracking-wider" href="/admin">
+              Admin
             </Link>
           </nav>
         </div>
