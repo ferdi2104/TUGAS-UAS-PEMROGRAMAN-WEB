@@ -24,6 +24,8 @@ export default function HomePage() {
   const [trending, setTrending] = useState<any[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
   const [loaded, setLoaded] = useState(false);
+  const [newsletterEmail, setNewsletterEmail] = useState('');
+  const [newsletterStatus, setNewsletterStatus] = useState<'idle' | 'success' | 'error'>('idle');
 
   useEffect(() => {
     async function fetchData() {
@@ -56,6 +58,15 @@ export default function HomePage() {
     }
     fetchData();
   }, []);
+
+  const handleNewsletterSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newsletterEmail.trim()) return;
+    localStorage.setItem('newsletterEmail', newsletterEmail.trim());
+    setNewsletterStatus('success');
+    setNewsletterEmail('');
+    setTimeout(() => setNewsletterStatus('idle'), 3000);
+  };
 
   if (!loaded) {
     return (
@@ -222,10 +233,22 @@ export default function HomePage() {
         <div className="max-w-4xl mx-auto relative z-10 text-center bg-surface-container/60 backdrop-blur-xl p-12 rounded-2xl border border-primary/20 neon-border-pink">
           <h2 className="text-4xl font-headline font-black mb-4">JOIN THE ACTION REVOLUTION</h2>
           <p className="text-on-surface-variant mb-8 text-lg">Subscribe to get notified about the latest student drops and exclusive midnight releases.</p>
-          <form className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
-            <input className="flex-grow bg-background border-outline/50 focus:border-primary focus:ring-1 focus:ring-primary rounded px-4 py-3 font-body text-on-surface" placeholder="student@university.edu" type="email" />
-            <button className="bg-primary text-on-primary font-black font-label px-8 py-3 transition-all hover:shadow-[0_0_15px_rgba(255,45,120,0.6)] active:scale-95">JOIN NOW</button>
+          <form onSubmit={handleNewsletterSubmit} className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
+            <input
+              className="flex-grow bg-background border-outline/50 focus:border-primary focus:ring-1 focus:ring-primary rounded px-4 py-3 font-body text-on-surface"
+              placeholder="student@university.edu"
+              type="email"
+              value={newsletterEmail}
+              onChange={(e) => setNewsletterEmail(e.target.value)}
+              required
+            />
+            <button type="submit" className="bg-primary text-on-primary font-black font-label px-8 py-3 transition-all hover:shadow-[0_0_15px_rgba(255,45,120,0.6)] active:scale-95">
+              {newsletterStatus === 'success' ? 'SUBSCRIBED!' : 'JOIN NOW'}
+            </button>
           </form>
+          {newsletterStatus === 'success' && (
+            <p className="text-secondary text-sm mt-4 font-label">You are now subscribed to the action revolution!</p>
+          )}
         </div>
       </section>
 

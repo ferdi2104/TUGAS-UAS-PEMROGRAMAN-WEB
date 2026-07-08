@@ -172,8 +172,8 @@ function DetailContent() {
             <p className="text-on-surface-variant leading-relaxed text-lg font-body">{m.description}</p>
             <div className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-4">
               <div className="p-4 bg-surface-container rounded border-l-2 border-primary">
-                <span className="block text-xs font-label text-on-surface-variant uppercase mb-1">Director</span>
-                <span className="text-on-surface font-semibold">K. Yamamoto</span>
+                <span className="block text-xs font-label text-on-surface-variant uppercase mb-1">Tag</span>
+                <span className="text-on-surface font-semibold">{m.tag || m.genre || 'Action'}</span>
               </div>
               <div className="p-4 bg-surface-container rounded border-l-2 border-secondary">
                 <span className="block text-xs font-label text-on-surface-variant uppercase mb-1">Runtime</span>

@@ -1,6 +1,7 @@
 'use client';
 
 import { ReactNode } from 'react';
+import { Toaster } from 'react-hot-toast';
 import Navigation from '@components/Navigation';
 import '@styles/globals.css';
 
@@ -22,6 +23,16 @@ export default function RootLayout({
         <title>NEON-ACTION | Student Access Granted</title>
       </head>
       <body className="antialiased selection:bg-primary/30 selection:text-primary">
+        <Toaster
+          position="top-right"
+          toastOptions={{
+            style: {
+              background: '#141422',
+              color: '#e8e0f0',
+              border: '1px solid rgba(0,255,204,0.2)',
+            },
+          }}
+        />
         <Navigation />
         {children}
       </body>

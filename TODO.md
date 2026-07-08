@@ -1,25 +1,18 @@
-# TODO - StudyFlash AI koreksi Supabase & alur belajar
+# TODO - NEON-ACTION CINEMA
 
-## Step 1 — Persiapan
-- [ ] Pastikan `.env.local` berisi `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, dan `GOOGLE_GENERATIVE_AI_API_KEY`.
+## Perbaikan yang sudah dilakukan
+- [x] Update package.json name/description
+- [x] Update dokumentasi (INDEX, QUICKSTART, PROJECT_COMPLETION_SUMMARY)
+- [x] Fix duplicate BROWSE MOVIES button di profile
+- [x] Fix newsletter form (tambah onSubmit handler)
+- [x] Fix API routes (created_at compatibility)
+- [x] Tambah delete movie di admin panel
+- [x] Tambah Toaster di layout
+- [x] Fix hardcoded director di detail page
+- [x] Fix mobile menu link
+- [x] Fix getClient() helper di API routes
+- [x] Fix year filter (client-side improvement)
 
-## Step 2 — Integrasi upload ke Supabase
-- [ ] Update `app/upload/page.tsx`: setelah generate sukses, panggil `uploadDocument` lalu `createFlashcards`.
-- [ ] Hentikan penyimpanan flashcards/documentName ke `localStorage` untuk alur Supabase.
-
-## Step 3 — Integrasi dashboard
-- [ ] Update `app/dashboard/page.tsx`: ambil `documents` dan flashcards dari Supabase.
-- [ ] Pilih default document (mis. document terbaru) dan tampilkan stats dari Supabase.
-- [ ] Perbaiki Tailwind dynamic class (`bg-${...}`) agar tidak hilang saat build.
-
-## Step 4 — Integrasi study progress (Benar/Salah)
-- [ ] Update `app/study/page.tsx`: ambil flashcards dari Supabase (document terbaru).
-- [ ] Saat klik Benar/Salah: panggil `updateProgress` ke Supabase.
-
-## Step 5 — Testing
-- [ ] Jalankan `npm run build` untuk memastikan tidak ada error TypeScript/Next.
-- [ ] Smoke test alur: `/upload` → `/dashboard` → `/study`.
-
-## Step 6 — Bonus (opsional)
-- [ ] Perbaiki `/api/generate` untuk ekstraksi PDF yang benar (bukan `file.text()`).
-- [ ] Rate limit / batas ukuran konten untuk API.
+## Next Steps
+- [ ] Tambah autentikasi (NextAuth)
+- [ ] Tambah dark/light mode toggle

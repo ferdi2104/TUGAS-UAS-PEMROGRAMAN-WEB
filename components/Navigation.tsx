@@ -169,10 +169,10 @@ export default function Navigation() {
       {isOpen && (
         <div className="fixed inset-0 z-[55] bg-background/95 backdrop-blur-lg flex flex-col items-center justify-center gap-8">
           <Link href="/" className="text-2xl font-headline font-bold text-primary" onClick={() => setIsOpen(false)}>Home</Link>
-          <Link href="/detail" className="text-2xl font-headline font-bold text-on-surface-variant hover:text-secondary transition-colors" onClick={() => setIsOpen(false)}>Detail</Link>
           <Link href="/kategori" className="text-2xl font-headline font-bold text-on-surface-variant hover:text-secondary transition-colors" onClick={() => setIsOpen(false)}>Categories</Link>
           <Link href="/pencarian" className="text-2xl font-headline font-bold text-on-surface-variant hover:text-secondary transition-colors" onClick={() => setIsOpen(false)}>Search</Link>
           <Link href="/profile" className="text-2xl font-headline font-bold text-on-surface-variant hover:text-secondary transition-colors" onClick={() => setIsOpen(false)}>Profile</Link>
+          <Link href="/admin" className="text-2xl font-headline font-bold text-on-surface-variant hover:text-secondary transition-colors" onClick={() => setIsOpen(false)}>Admin</Link>
         </div>
       )}
     </>

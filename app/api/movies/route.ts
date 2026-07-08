@@ -47,6 +47,71 @@ export async function POST(request: NextRequest) {
   }
 }
 
+export async function PUT(request: NextRequest) {
+  const { searchParams } = new URL(request.url);
+  const id = searchParams.get('id');
+
+  if (!id) {
+    return NextResponse.json({ error: 'Movie ID is required' }, { status: 400 });
+  }
+
+  const supabase = getClient();
+  if (!supabase) {
+    return NextResponse.json({ error: 'Supabase not configured' }, { status: 500 });
+  }
+
+  try {
+    const body = await request.json();
+    const { title, description, year, runtime, rating, genre, subgenre, imageUrl, videoUrl, tag } = body;
+
+    const updates: any = {};
+    if (title) updates.title = title;
+    if (description) updates.description = description;
+    if (year) updates.year = year;
+    if (runtime) updates.runtime = runtime;
+    if (rating) updates.rating = rating;
+    if (genre) updates.genre = genre;
+    if (subgenre !== undefined) updates.subgenre = subgenre;
+    if (imageUrl !== undefined) updates.imageUrl = imageUrl;
+    if (videoUrl !== undefined) updates.videoUrl = videoUrl;
+    if (tag !== undefined) updates.tag = tag;
+
+    const { data, error } = await supabase
+      .from('movies')
+      .update(updates)
+      .eq('id', id)
+      .select()
+      .single();
+
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json(data);
+  } catch (err: any) {
+    return NextResponse.json({ error: err.message }, { status: 500 });
+  }
+}
+
+export async function DELETE(request: NextRequest) {
+  const { searchParams } = new URL(request.url);
+  const id = searchParams.get('id');
+
+  if (!id) {
+    return NextResponse.json({ error: 'Movie ID is required' }, { status: 400 });
+  }
+
+  const supabase = getClient();
+  if (!supabase) {
+    return NextResponse.json({ error: 'Supabase not configured' }, { status: 500 });
+  }
+
+  try {
+    const { error } = await supabase.from('movies').delete().eq('id', id);
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ success: true });
+  } catch (err: any) {
+    return NextResponse.json({ error: err.message }, { status: 500 });
+  }
+}
+
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const id = searchParams.get('id');
@@ -54,17 +119,15 @@ export async function GET(request: NextRequest) {
   const trending = searchParams.get('trending');
   const genre = searchParams.get('genre');
   const search = searchParams.get('search');
+  const yearFrom = searchParams.get('yearFrom');
+  const yearTo = searchParams.get('yearTo');
   const page = parseInt(searchParams.get('page') || '1');
   const limit = parseInt(searchParams.get('limit') || '12');
 
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
-
-  if (!supabaseUrl || !supabaseAnonKey) {
+  const supabase = getClient();
+  if (!supabase) {
     return NextResponse.json({ error: 'Supabase not configured' }, { status: 500 });
   }
-
-  const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
   try {
     if (id) {
@@ -93,6 +156,16 @@ export async function GET(request: NextRequest) {
 
     if (genre) {
       query = query.eq('genre', genre);
+    }
+
+    if (yearFrom) {
+      const fromYear = parseInt(yearFrom);
+      if (!isNaN(fromYear)) query = query.gte('year', fromYear);
+    }
+
+    if (yearTo) {
+      const toYear = parseInt(yearTo);
+      if (!isNaN(toYear)) query = query.lte('year', toYear);
     }
 
     const from = (page - 1) * limit;

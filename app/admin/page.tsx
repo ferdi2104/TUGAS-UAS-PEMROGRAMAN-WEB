@@ -37,6 +37,7 @@ export default function AdminPage() {
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [movies, setMovies] = useState<Movie[]>([]);
   const [loading, setLoading] = useState(true);
+  const [editingId, setEditingId] = useState<string | null>(null);
 
   const fetchMovies = async () => {
     try {
@@ -51,6 +52,22 @@ export default function AdminPage() {
   };
 
   useEffect(() => { fetchMovies(); }, []);
+
+  const handleDelete = async (id: string, title: string) => {
+    if (!confirm(`Delete "${title}"?`)) return;
+    try {
+      const res = await fetch(`/api/movies?id=${id}`, { method: 'DELETE' });
+      if (res.ok) {
+        setMessage({ type: 'success', text: `"${title}" deleted successfully` });
+        fetchMovies();
+      } else {
+        const err = await res.json();
+        setMessage({ type: 'error', text: err.error || 'Failed to delete' });
+      }
+    } catch (err: any) {
+      setMessage({ type: 'error', text: err.message || 'Failed to delete' });
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -71,25 +88,52 @@ export default function AdminPage() {
       if (form.videoUrl) body.videoUrl = form.videoUrl;
       if (form.tag) body.tag = form.tag;
 
-      const res = await fetch('/api/movies', {
-        method: 'POST',
+      const url = editingId ? `/api/movies?id=${editingId}` : '/api/movies';
+      const method = editingId ? 'PUT' : 'POST';
+
+      const res = await fetch(url, {
+        method,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
       });
 
       if (res.ok) {
-        setMessage({ type: 'success', text: 'Film berhasil ditambahkan!' });
+        setMessage({ type: 'success', text: editingId ? 'Film berhasil diupdate!' : 'Film berhasil ditambahkan!' });
         setForm(defaultForm);
+        setEditingId(null);
         fetchMovies();
       } else {
         const err = await res.json();
-        setMessage({ type: 'error', text: err.error || 'Gagal menambahkan film' });
+        setMessage({ type: 'error', text: err.error || 'Gagal menyimpan film' });
       }
     } catch (err: any) {
-      setMessage({ type: 'error', text: err.message || 'Gagal menambahkan film' });
+      setMessage({ type: 'error', text: err.message || 'Gagal menyimpan film' });
     } finally {
       setSubmitting(false);
     }
+  };
+
+  const handleEdit = (movie: Movie) => {
+    setForm({
+      title: movie.title,
+      description: movie.description,
+      year: movie.year,
+      runtime: movie.runtime,
+      rating: movie.rating,
+      genre: movie.genre,
+      subgenre: movie.subgenre || '',
+      imageUrl: movie.imageUrl,
+      videoUrl: movie.videoUrl || '',
+      tag: movie.tag || '',
+    });
+    setEditingId(movie.id);
+    setMessage(null);
+  };
+
+  const handleCancelEdit = () => {
+    setForm(defaultForm);
+    setEditingId(null);
+    setMessage(null);
   };
 
   const genres = ['Action', 'Horror', 'Sci-Fi', 'Thriller', 'Comedy', 'Drama', 'Crime'];
@@ -113,8 +157,10 @@ export default function AdminPage() {
           {/* Add Movie Form */}
           <div className="bg-surface-container rounded-xl border border-outline/10 p-6">
             <h2 className="font-headline font-bold text-lg text-on-surface mb-6 flex items-center gap-2">
-              <span className="material-symbols-outlined text-secondary">add_circle</span>
-              ADD NEW MOVIE
+              <span className={`material-symbols-outlined ${editingId ? 'text-tertiary' : 'text-secondary'}`}>
+                {editingId ? 'edit' : 'add_circle'}
+              </span>
+              {editingId ? 'EDIT MOVIE' : 'ADD NEW MOVIE'}
             </h2>
 
             {message && (
@@ -190,13 +236,28 @@ export default function AdminPage() {
                 </div>
               </div>
 
-              <button
-                type="submit"
-                disabled={submitting}
-                className="w-full bg-secondary text-on-secondary font-label font-bold py-3 transition-all hover:shadow-[0_0_15px_rgba(0,255,204,0.4)] active:scale-95 disabled:opacity-40"
-              >
-                {submitting ? 'ADDING...' : 'ADD MOVIE'}
-              </button>
+              <div className="flex gap-2">
+                {editingId && (
+                  <button
+                    type="button"
+                    onClick={handleCancelEdit}
+                    className="flex-1 bg-surface-container-highest border border-outline/30 text-on-surface font-label font-bold py-3 transition-all hover:bg-surface-variant active:scale-95"
+                  >
+                    CANCEL
+                  </button>
+                )}
+                <button
+                  type="submit"
+                  disabled={submitting}
+                  className={`flex-1 font-label font-bold py-3 transition-all active:scale-95 disabled:opacity-40 ${
+                    editingId
+                      ? 'bg-tertiary text-on-tertiary hover:shadow-[0_0_15px_rgba(255,224,74,0.4)]'
+                      : 'bg-secondary text-on-secondary hover:shadow-[0_0_15px_rgba(0,255,204,0.4)]'
+                  }`}
+                >
+                  {submitting ? 'SAVING...' : editingId ? 'UPDATE MOVIE' : 'ADD MOVIE'}
+                </button>
+              </div>
             </form>
           </div>
 
@@ -216,8 +277,8 @@ export default function AdminPage() {
             ) : (
               <div className="space-y-3 max-h-[600px] overflow-y-auto pr-2">
                 {movies.map((movie) => (
-                  <Link key={movie.id} href={`/detail?id=${movie.id}`} className="block bg-surface-container-highest rounded-lg p-3 hover:border-secondary/50 border border-transparent transition-all">
-                    <div className="flex items-center gap-3">
+                  <div key={movie.id} className="flex items-center gap-2 bg-surface-container-highest rounded-lg p-3 hover:border-secondary/50 border border-transparent transition-all group">
+                    <Link href={`/detail?id=${movie.id}`} className="flex items-center gap-3 flex-1 min-w-0">
                       <div className="w-12 h-16 rounded bg-surface-variant overflow-hidden flex-shrink-0">
                         <img className="w-full h-full object-cover" alt={movie.title} src={movie.imageUrl} />
                       </div>
@@ -228,8 +289,22 @@ export default function AdminPage() {
                           <span className="text-[10px] bg-primary/20 text-primary px-1.5 py-0.5 rounded font-label">{movie.tag}</span>
                         )}
                       </div>
-                    </div>
-                  </Link>
+                    </Link>
+                    <button
+                      onClick={() => handleEdit(movie)}
+                      className="opacity-0 group-hover:opacity-100 w-8 h-8 flex items-center justify-center rounded bg-tertiary/10 text-tertiary hover:bg-tertiary hover:text-on-tertiary transition-all"
+                      title="Edit movie"
+                    >
+                      <span className="material-symbols-outlined text-sm">edit</span>
+                    </button>
+                    <button
+                      onClick={() => handleDelete(movie.id, movie.title)}
+                      className="opacity-0 group-hover:opacity-100 w-8 h-8 flex items-center justify-center rounded bg-primary/10 text-primary hover:bg-primary hover:text-on-primary transition-all"
+                      title="Delete movie"
+                    >
+                      <span className="material-symbols-outlined text-sm">delete</span>
+                    </button>
+                  </div>
                 ))}
               </div>
             )}

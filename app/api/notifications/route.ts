@@ -45,13 +45,6 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
-
-  if (!supabaseUrl || !supabaseAnonKey) {
-    return NextResponse.json({ error: 'Supabase not configured' }, { status: 500 });
-  }
-
   try {
     const body = await request.json();
     const { title, message, type, link } = body;
@@ -60,15 +53,17 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Missing fields' }, { status: 400 });
     }
 
-    const supabase = createClient(supabaseUrl, supabaseAnonKey);
-    const { data, error } = await supabase
-      .from('notifications')
-      .insert([{ title, message, type, link }])
-      .select()
-      .single();
+    const newNotif = {
+      id: String(notifications.length + 1),
+      title,
+      message,
+      type: type || 'info',
+      link: link || '/',
+      createdAt: new Date().toISOString(),
+      read: false,
+    };
 
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-    return NextResponse.json(data, { status: 201 });
+    return NextResponse.json(newNotif, { status: 201 });
   } catch (err: any) {
     return NextResponse.json({ error: err.message }, { status: 500 });
   }

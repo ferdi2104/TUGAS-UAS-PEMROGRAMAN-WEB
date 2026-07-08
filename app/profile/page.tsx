@@ -58,9 +58,9 @@ export default function ProfilePage() {
                   BROWSE MOVIES
                 </button>
               </Link>
-              <Link href="/pencarian">
+              <Link href="/admin">
                 <button className="bg-surface-container-highest border border-outline/30 text-on-surface font-label font-bold px-5 py-2 text-sm transition-all hover:bg-surface-variant active:scale-95">
-                  BROWSE MOVIES
+                  ADMIN PANEL
                 </button>
               </Link>
             </div>

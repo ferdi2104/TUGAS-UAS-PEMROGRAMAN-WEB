@@ -48,23 +48,29 @@ function PencarianContent() {
         params.set('page', String(page));
         params.set('limit', String(limit));
 
+        if (yearFilter.length > 0) {
+          const minYear = Math.min(...yearFilter.map(yf => {
+            if (yf === '2024') return 2024;
+            if (yf === '2020-2023') return 2020;
+            if (yf === 'pre-2020') return 0;
+            return 0;
+          }));
+          const maxYear = Math.max(...yearFilter.map(yf => {
+            if (yf === '2024') return 9999;
+            if (yf === '2020-2023') return 2023;
+            if (yf === 'pre-2020') return 2019;
+            return 9999;
+          }));
+          params.set('yearFrom', String(minYear));
+          params.set('yearTo', String(maxYear));
+        }
+
         const res = await fetch(`/api/movies?${params.toString()}`);
         if (res.ok) {
           const result = await res.json();
-          let data = result.data || [];
-          const totalCount = result.total || 0;
-
-          if (yearFilter.length > 0) {
-            data = data.filter((m: any) =>
-              yearFilter.some(yf => {
-                const range = yearRanges.find(r => r.value === yf);
-                return range ? range.filter(m.year) : false;
-              })
-            );
-          }
-
+          const data = result.data || [];
           setMovies(data.length > 0 ? data : fallbackMovies);
-          setTotal(totalCount);
+          setTotal(result.total || 0);
         } else {
           setMovies(fallbackMovies);
           setTotal(fallbackMovies.length);

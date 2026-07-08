@@ -1,7 +1,7 @@
 {
-  "name": "studyflash-ai",
+  "name": "neon-action-cinema",
   "version": "1.0.0",
-  "description": "AI Flashcard/Quiz Generator - Platform SaaS untuk generate flashcard dari catatan/PDF",
+  "description": "NEON-ACTION CINEMA - Platform streaming film cyberpunk dengan tema neon",
   "private": true,
   "scripts": {
     "dev": "next dev",
