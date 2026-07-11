@@ -11,6 +11,11 @@ function getClient() {
   return createClient(supabaseUrl, supabaseAnonKey);
 }
 
+function getWriteClient() {
+  if (!supabaseUrl || !serviceRoleKey) return null;
+  return createClient(supabaseUrl, serviceRoleKey);
+}
+
 async function verifyOwner(request: NextRequest): Promise<boolean> {
   if (!supabaseUrl || !serviceRoleKey) return false;
   const authHeader = request.headers.get('authorization');
@@ -27,7 +32,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Only the owner can add movies' }, { status: 403 });
   }
 
-  const supabase = getClient();
+  const supabase = getWriteClient();
   if (!supabase) {
     return NextResponse.json({ error: 'Supabase not configured' }, { status: 500 });
   }
@@ -78,7 +83,7 @@ export async function PUT(request: NextRequest) {
     return NextResponse.json({ error: 'Movie ID is required' }, { status: 400 });
   }
 
-  const supabase = getClient();
+  const supabase = getWriteClient();
   if (!supabase) {
     return NextResponse.json({ error: 'Supabase not configured' }, { status: 500 });
   }
@@ -128,7 +133,7 @@ export async function DELETE(request: NextRequest) {
     return NextResponse.json({ error: 'Movie ID is required' }, { status: 400 });
   }
 
-  const supabase = getClient();
+  const supabase = getWriteClient();
   if (!supabase) {
     return NextResponse.json({ error: 'Supabase not configured' }, { status: 500 });
   }
