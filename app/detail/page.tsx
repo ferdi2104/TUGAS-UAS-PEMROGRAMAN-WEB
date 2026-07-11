@@ -110,7 +110,9 @@ function DetailContent() {
         setCommentText('');
         localStorage.setItem('commentUsername', commentUsername.trim());
       }
-    } catch {} finally {
+    } catch (err) {
+      console.error('Failed to post comment:', err);
+    } finally {
       setPosting(false);
     }
   };
@@ -177,7 +179,7 @@ function DetailContent() {
                   onClick={() => {
                     const watchlist = JSON.parse(localStorage.getItem('watchlist') || '[]') as { id: string; title: string; imageUrl: string; rating: number; genre: string }[];
                     if (isInWatchlist) {
-                      const updated = watchlist.filter((m) => m.id !== m.id);
+                      const updated = watchlist.filter((item) => item.id !== movie.id);
                       localStorage.setItem('watchlist', JSON.stringify(updated));
                       setIsInWatchlist(false);
                     } else {
@@ -269,10 +271,24 @@ function DetailContent() {
                       </div>
                       <p className="text-on-surface-variant text-sm">{comment.content}</p>
                       <div className="flex items-center gap-4 text-on-surface-variant">
-                        <button className="flex items-center gap-1 text-xs hover:text-primary transition-colors">
+                        <button
+                          onClick={() => {
+                            const liked = JSON.parse(localStorage.getItem('likedComments') || '[]') as string[];
+                            if (liked.includes(comment.id)) return;
+                            liked.push(comment.id);
+                            localStorage.setItem('likedComments', JSON.stringify(liked));
+                          }}
+                          className="flex items-center gap-1 text-xs hover:text-primary transition-colors"
+                        >
                           <span className="material-symbols-outlined text-sm">thumb_up</span> {comment.likes || 0}
                         </button>
-                        <button className="flex items-center gap-1 text-xs hover:text-secondary transition-colors">
+                        <button
+                          onClick={() => {
+                            setCommentText(`@${comment.username} `);
+                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                          }}
+                          className="flex items-center gap-1 text-xs hover:text-secondary transition-colors"
+                        >
                           <span className="material-symbols-outlined text-sm">reply</span> Reply
                         </button>
                       </div>
@@ -319,7 +335,14 @@ function DetailContent() {
               <span className="text-tertiary font-label text-[10px] uppercase font-bold tracking-[0.2em] block mb-2">Exclusive Student Offer</span>
               <h4 className="text-xl font-headline font-extrabold text-on-surface leading-none mb-4">UNLOCK THE <span className="text-primary">ULTRA-PASS</span></h4>
               <p className="text-xs text-on-surface-variant mb-6 leading-relaxed">Join the global elite. Get access to pre-release screenings, physical action figures, and hidden lore content.</p>
-              <button className="w-full py-3 bg-primary/10 border border-primary text-primary font-label font-bold text-sm hover:bg-primary hover:text-on-primary transition-all uppercase tracking-widest">Upgrade Now</button>
+              <button
+                onClick={() => {
+                  alert('Coming Soon! Upgrade ke Ultra-Pass akan segera tersedia.');
+                }}
+                className="w-full py-3 bg-primary/10 border border-primary text-primary font-label font-bold text-sm hover:bg-primary hover:text-on-primary transition-all uppercase tracking-widest"
+              >
+                Upgrade Now
+              </button>
             </div>
             <div className="absolute -right-10 -bottom-10 w-32 h-32 bg-primary/20 blur-[60px] rounded-full"></div>
           </div>

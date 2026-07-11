@@ -283,9 +283,9 @@ function PencarianContent() {
           <Link className="text-xs font-label text-on-surface-variant hover:text-tertiary hover:translate-x-1 transition-all duration-200" href="/about">Legal</Link>
         </div>
         <div className="flex gap-4">
-          <span className="material-symbols-outlined text-on-surface-variant hover:text-primary cursor-pointer transition-colors">hub</span>
-          <span className="material-symbols-outlined text-on-surface-variant hover:text-secondary cursor-pointer transition-colors">terminal</span>
-          <span className="material-symbols-outlined text-on-surface-variant hover:text-tertiary cursor-pointer transition-colors">rss_feed</span>
+          <Link href="/pencarian" className="material-symbols-outlined text-on-surface-variant hover:text-primary cursor-pointer transition-colors">hub</Link>
+          <Link href="/kategori" className="material-symbols-outlined text-on-surface-variant hover:text-secondary cursor-pointer transition-colors">terminal</Link>
+          <Link href="/about" className="material-symbols-outlined text-on-surface-variant hover:text-tertiary cursor-pointer transition-colors">rss_feed</Link>
         </div>
       </footer>
 
