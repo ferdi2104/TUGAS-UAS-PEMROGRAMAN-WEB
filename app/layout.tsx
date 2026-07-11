@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { Toaster } from 'react-hot-toast';
 import Navigation from '@components/Navigation';
+import { AuthProvider } from '@lib/auth-context';
 import '@styles/globals.css';
 
 export default function RootLayout({
@@ -31,8 +32,10 @@ export default function RootLayout({
             },
           }}
         />
-        <Navigation />
-        {children}
+        <AuthProvider>
+          <Navigation />
+          {children}
+        </AuthProvider>
       </body>
     </html>
   );
