@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 
 const fallbackTrending = [
@@ -21,6 +22,7 @@ const fallbackCategories = [
 ];
 
 export default function HomePage() {
+  const pathname = usePathname();
   const [trending, setTrending] = useState<any[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
   const [loaded, setLoaded] = useState(false);
@@ -109,7 +111,23 @@ export default function HomePage() {
                 WATCH FREE
               </button>
             </Link>
-            <button className="bg-surface-container-highest/60 backdrop-blur-md border border-outline/30 text-on-surface font-bold font-label px-8 py-4 flex items-center gap-3 transition-all hover:bg-surface-container-highest active:scale-95">
+            <button
+              onClick={() => {
+                const watchlist = JSON.parse(localStorage.getItem('watchlist') || '[]');
+                const firstMovie = displayTrending[0];
+                if (firstMovie) {
+                  const exists = watchlist.find((m: { id: string }) => m.id === firstMovie.id);
+                  if (!exists) {
+                    watchlist.push({ id: firstMovie.id, title: firstMovie.title, imageUrl: firstMovie.imageUrl || firstMovie.img, rating: firstMovie.rating, genre: firstMovie.genre });
+                    localStorage.setItem('watchlist', JSON.stringify(watchlist));
+                    alert('Added to My List!');
+                  } else {
+                    alert('Already in My List!');
+                  }
+                }
+              }}
+              className="bg-surface-container-highest/60 backdrop-blur-md border border-outline/30 text-on-surface font-bold font-label px-8 py-4 flex items-center gap-3 transition-all hover:bg-surface-container-highest active:scale-95"
+            >
               <span className="material-symbols-outlined">add</span>
               MY LIST
             </button>
@@ -259,38 +277,51 @@ export default function HomePage() {
           <p className="text-on-surface-variant text-sm font-label uppercase tracking-tighter">© 2024 NEON-ACTION UNIVERSE. ACCESS GRANTED.</p>
         </div>
         <div className="flex flex-wrap justify-center gap-6 md:gap-8">
-          {['Cyber-Action', 'High-Octane', 'Student Forums', 'Global Leaderboard', 'Support', 'Legal'].map((item, i) => (
-            <a key={i} className="text-on-surface-variant hover:text-tertiary transition-colors hover:translate-x-1 duration-200 text-sm font-label uppercase tracking-widest" href="#">{item}</a>
-          ))}
+          <Link className="text-on-surface-variant hover:text-tertiary transition-colors hover:translate-x-1 duration-200 text-sm font-label uppercase tracking-widest" href="/pencarian?genre=Action">Cyber-Action</Link>
+          <Link className="text-on-surface-variant hover:text-tertiary transition-colors hover:translate-x-1 duration-200 text-sm font-label uppercase tracking-widest" href="/pencarian?genre=Sci-Fi">High-Octane</Link>
+          <Link className="text-on-surface-variant hover:text-tertiary transition-colors hover:translate-x-1 duration-200 text-sm font-label uppercase tracking-widest" href="/kategori">Student Forums</Link>
+          <Link className="text-on-surface-variant hover:text-tertiary transition-colors hover:translate-x-1 duration-200 text-sm font-label uppercase tracking-widest" href="/pencarian">Global Leaderboard</Link>
+          <Link className="text-on-surface-variant hover:text-tertiary transition-colors hover:translate-x-1 duration-200 text-sm font-label uppercase tracking-widest" href="/about">Support</Link>
+          <Link className="text-on-surface-variant hover:text-tertiary transition-colors hover:translate-x-1 duration-200 text-sm font-label uppercase tracking-widest" href="/about">Legal</Link>
         </div>
         <div className="flex gap-4">
-          <a className="w-10 h-10 flex items-center justify-center rounded-full bg-surface-variant hover:bg-primary transition-all duration-300" href="#">
+          <button
+            onClick={() => {
+              if (navigator.share) {
+                navigator.share({ title: 'NEON-ACTION CINEMA', url: window.location.href });
+              } else {
+                navigator.clipboard.writeText(window.location.href);
+                alert('Link copied!');
+              }
+            }}
+            className="w-10 h-10 flex items-center justify-center rounded-full bg-surface-variant hover:bg-primary transition-all duration-300"
+          >
             <span className="material-symbols-outlined text-white">share</span>
-          </a>
-          <a className="w-10 h-10 flex items-center justify-center rounded-full bg-surface-variant hover:bg-secondary transition-all duration-300" href="#">
+          </button>
+          <Link className="w-10 h-10 flex items-center justify-center rounded-full bg-surface-variant hover:bg-secondary transition-all duration-300" href="/kategori">
             <span className="material-symbols-outlined text-white">groups</span>
-          </a>
+          </Link>
         </div>
       </footer>
 
       {/* BottomNavBar */}
       <nav className="md:hidden fixed bottom-0 left-0 w-full bg-background/95 backdrop-blur-md border-t border-primary/20 h-16 flex items-center justify-around z-50">
-        <button className="flex flex-col items-center gap-1 text-primary drop-shadow-[0_0_8px_rgba(255,45,120,0.6)]">
-          <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>movie</span>
+        <Link href="/" className={`flex flex-col items-center gap-1 transition-colors ${pathname === '/' ? 'text-primary drop-shadow-[0_0_8px_rgba(255,45,120,0.6)]' : 'text-on-surface-variant'}`}>
+          <span className="material-symbols-outlined" style={pathname === '/' ? { fontVariationSettings: "'FILL' 1" } : undefined}>movie</span>
           <span className="text-[10px] font-label font-bold uppercase tracking-widest">Movies</span>
-        </button>
-        <button className="flex flex-col items-center gap-1 text-on-surface-variant">
-          <span className="material-symbols-outlined">tv_gen</span>
-          <span className="text-[10px] font-label font-bold uppercase tracking-widest">Series</span>
-        </button>
-        <button className="flex flex-col items-center gap-1 text-on-surface-variant">
-          <span className="material-symbols-outlined">explore</span>
-          <span className="text-[10px] font-label font-bold uppercase tracking-widest">Live</span>
-        </button>
-        <button className="flex flex-col items-center gap-1 text-on-surface-variant">
-          <span className="material-symbols-outlined">school</span>
-          <span className="text-[10px] font-label font-bold uppercase tracking-widest">Perks</span>
-        </button>
+        </Link>
+        <Link href="/kategori" className={`flex flex-col items-center gap-1 transition-colors ${pathname === '/kategori' ? 'text-primary drop-shadow-[0_0_8px_rgba(255,45,120,0.6)]' : 'text-on-surface-variant'}`}>
+          <span className="material-symbols-outlined" style={pathname === '/kategori' ? { fontVariationSettings: "'FILL' 1" } : undefined}>tv_gen</span>
+          <span className="text-[10px] font-label font-bold uppercase tracking-widest">Categories</span>
+        </Link>
+        <Link href="/pencarian" className={`flex flex-col items-center gap-1 transition-colors ${pathname === '/pencarian' ? 'text-primary drop-shadow-[0_0_8px_rgba(255,45,120,0.6)]' : 'text-on-surface-variant'}`}>
+          <span className="material-symbols-outlined" style={pathname === '/pencarian' ? { fontVariationSettings: "'FILL' 1" } : undefined}>explore</span>
+          <span className="text-[10px] font-label font-bold uppercase tracking-widest">Search</span>
+        </Link>
+        <Link href="/profile" className={`flex flex-col items-center gap-1 transition-colors ${pathname === '/profile' ? 'text-primary drop-shadow-[0_0_8px_rgba(255,45,120,0.6)]' : 'text-on-surface-variant'}`}>
+          <span className="material-symbols-outlined" style={pathname === '/profile' ? { fontVariationSettings: "'FILL' 1" } : undefined}>school</span>
+          <span className="text-[10px] font-label font-bold uppercase tracking-widest">Profile</span>
+        </Link>
       </nav>
     </main>
   );

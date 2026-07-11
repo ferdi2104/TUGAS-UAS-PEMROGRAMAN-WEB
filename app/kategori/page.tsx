@@ -119,17 +119,30 @@ export default function KategoriPage() {
           <p className="text-on-surface-variant text-sm font-label uppercase tracking-tighter">© 2024 NEON-ACTION UNIVERSE. ACCESS GRANTED.</p>
         </div>
         <nav className="flex flex-wrap justify-center gap-6">
-          {['Cyber-Action', 'High-Octane', 'Student Forums', 'Global Leaderboard', 'Support', 'Legal'].map((item, i) => (
-            <a key={i} className="text-on-surface-variant hover:text-tertiary transition-colors duration-200 font-label text-xs uppercase tracking-widest hover:translate-x-1" href="#">{item}</a>
-          ))}
+          <Link className="text-on-surface-variant hover:text-tertiary transition-colors duration-200 font-label text-xs uppercase tracking-widest hover:translate-x-1" href="/pencarian?genre=Action">Cyber-Action</Link>
+          <Link className="text-on-surface-variant hover:text-tertiary transition-colors duration-200 font-label text-xs uppercase tracking-widest hover:translate-x-1" href="/pencarian?genre=Sci-Fi">High-Octane</Link>
+          <Link className="text-on-surface-variant hover:text-tertiary transition-colors duration-200 font-label text-xs uppercase tracking-widest hover:translate-x-1" href="/kategori">Student Forums</Link>
+          <Link className="text-on-surface-variant hover:text-tertiary transition-colors duration-200 font-label text-xs uppercase tracking-widest hover:translate-x-1" href="/pencarian">Global Leaderboard</Link>
+          <Link className="text-on-surface-variant hover:text-tertiary transition-colors duration-200 font-label text-xs uppercase tracking-widest hover:translate-x-1" href="/about">Support</Link>
+          <Link className="text-on-surface-variant hover:text-tertiary transition-colors duration-200 font-label text-xs uppercase tracking-widest hover:translate-x-1" href="/about">Legal</Link>
         </nav>
         <div className="flex gap-4">
-          <a className="w-8 h-8 flex items-center justify-center rounded border border-secondary/30 hover:border-secondary transition-all" href="#">
+          <Link className="w-8 h-8 flex items-center justify-center rounded border border-secondary/30 hover:border-secondary transition-all" href="/pencarian">
             <span className="material-symbols-outlined text-secondary text-sm">terminal</span>
-          </a>
-          <a className="w-8 h-8 flex items-center justify-center rounded border border-secondary/30 hover:border-secondary transition-all" href="#">
+          </Link>
+          <button
+            onClick={() => {
+              if (navigator.share) {
+                navigator.share({ title: 'NEON-ACTION Categories', url: window.location.href });
+              } else {
+                navigator.clipboard.writeText(window.location.href);
+                alert('Link copied!');
+              }
+            }}
+            className="w-8 h-8 flex items-center justify-center rounded border border-secondary/30 hover:border-secondary transition-all"
+          >
             <span className="material-symbols-outlined text-secondary text-sm">public</span>
-          </a>
+          </button>
         </div>
       </footer>
     </main>

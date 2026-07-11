@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useState, useRef, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 
 interface Notification {
   id: string;
@@ -14,8 +14,24 @@ interface Notification {
   read: boolean;
 }
 
+const navLinks = [
+  { href: '/', label: 'Movies' },
+  { href: '/kategori', label: 'Categories' },
+  { href: '/pencarian', label: 'Search' },
+  { href: '/admin', label: 'Admin' },
+];
+
+const mobileLinks = [
+  { href: '/', label: 'Home', icon: 'movie' },
+  { href: '/kategori', label: 'Categories', icon: 'category' },
+  { href: '/pencarian', label: 'Search', icon: 'search' },
+  { href: '/profile', label: 'Profile', icon: 'person' },
+  { href: '/admin', label: 'Admin', icon: 'admin_panel_settings' },
+];
+
 export default function Navigation() {
   const router = useRouter();
+  const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [notifOpen, setNotifOpen] = useState(false);
@@ -32,6 +48,10 @@ export default function Navigation() {
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
+
+  useEffect(() => {
+    setIsOpen(false);
+  }, [pathname]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -61,6 +81,11 @@ export default function Navigation() {
 
   const unreadCount = notifications.filter(n => !n.read).length;
 
+  const isActive = (href: string) => {
+    if (href === '/') return pathname === '/';
+    return pathname.startsWith(href);
+  };
+
   return (
     <>
       <header className="fixed top-0 w-full z-50 flex justify-between items-center px-6 h-16 bg-background/90 backdrop-blur-md border-b border-primary/30 shadow-[0_0_20px_rgba(255,45,120,0.1)]">
@@ -69,18 +94,19 @@ export default function Navigation() {
             NEON-ACTION
           </Link>
           <nav className="hidden lg:flex items-center gap-6">
-            <Link className="text-primary font-bold border-b-2 border-primary pb-1 drop-shadow-[0_0_8px_rgba(255,45,120,0.6)] font-label text-sm uppercase tracking-wider" href="/">
-              Movies
-            </Link>
-            <Link className="text-on-surface-variant hover:text-secondary transition-colors duration-300 font-label text-sm uppercase tracking-wider" href="/kategori">
-              Categories
-            </Link>
-            <Link className="text-on-surface-variant hover:text-secondary transition-colors duration-300 font-label text-sm uppercase tracking-wider" href="/pencarian">
-              Search
-            </Link>
-            <Link className="text-on-surface-variant hover:text-secondary transition-colors duration-300 font-label text-sm uppercase tracking-wider" href="/admin">
-              Admin
-            </Link>
+            {navLinks.map((link) => (
+              <Link
+                key={link.href}
+                className={`transition-colors duration-300 font-label text-sm uppercase tracking-wider ${
+                  isActive(link.href)
+                    ? 'text-primary font-bold border-b-2 border-primary pb-1 drop-shadow-[0_0_8px_rgba(255,45,120,0.6)]'
+                    : 'text-on-surface-variant hover:text-secondary'
+                }`}
+                href={link.href}
+              >
+                {link.label}
+              </Link>
+            ))}
           </nav>
         </div>
         <div className="flex items-center gap-4">
@@ -162,19 +188,33 @@ export default function Navigation() {
       </header>
 
       <button
-        className="lg:hidden fixed top-4 right-4 z-[60] p-2 bg-background/80 backdrop-blur-md rounded-lg border border-primary/30 text-primary"
+        className="lg:hidden fixed top-4 right-4 z-[110] p-2 bg-background/80 backdrop-blur-md rounded-lg border border-primary/30 text-primary"
         onClick={() => setIsOpen(!isOpen)}
+        aria-label={isOpen ? 'Close menu' : 'Open menu'}
       >
         <span className="material-symbols-outlined">{isOpen ? 'close' : 'menu'}</span>
       </button>
 
       {isOpen && (
-        <div className="fixed inset-0 z-[55] bg-background/95 backdrop-blur-lg flex flex-col items-center justify-center gap-8">
-          <Link href="/" className="text-2xl font-headline font-bold text-primary" onClick={() => setIsOpen(false)}>Home</Link>
-          <Link href="/kategori" className="text-2xl font-headline font-bold text-on-surface-variant hover:text-secondary transition-colors" onClick={() => setIsOpen(false)}>Categories</Link>
-          <Link href="/pencarian" className="text-2xl font-headline font-bold text-on-surface-variant hover:text-secondary transition-colors" onClick={() => setIsOpen(false)}>Search</Link>
-          <Link href="/profile" className="text-2xl font-headline font-bold text-on-surface-variant hover:text-secondary transition-colors" onClick={() => setIsOpen(false)}>Profile</Link>
-          <Link href="/admin" className="text-2xl font-headline font-bold text-on-surface-variant hover:text-secondary transition-colors" onClick={() => setIsOpen(false)}>Admin</Link>
+        <div className="fixed inset-0 z-[100] bg-background/95 backdrop-blur-lg flex flex-col items-center justify-center gap-6 overflow-y-auto py-20">
+          {mobileLinks.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              onClick={() => setIsOpen(false)}
+              className={`flex items-center gap-3 text-2xl font-headline font-bold transition-colors ${
+                isActive(link.href)
+                  ? 'text-primary drop-shadow-[0_0_12px_rgba(255,45,120,0.6)]'
+                  : 'text-on-surface-variant hover:text-secondary'
+              }`}
+            >
+              <span className="material-symbols-outlined">{link.icon}</span>
+              {link.label}
+              {isActive(link.href) && (
+                <span className="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+              )}
+            </Link>
+          ))}
         </div>
       )}
     </>

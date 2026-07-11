@@ -29,11 +29,30 @@ function DetailContent() {
   const [commentText, setCommentText] = useState('');
   const [commentUsername, setCommentUsername] = useState('');
   const [posting, setPosting] = useState(false);
+  const [isInWatchlist, setIsInWatchlist] = useState(false);
 
   useEffect(() => {
     const savedUsername = localStorage.getItem('commentUsername');
     if (savedUsername) setCommentUsername(savedUsername);
   }, []);
+
+  useEffect(() => {
+    if (!movie) return;
+    const watchlist = JSON.parse(localStorage.getItem('watchlist') || '[]') as { id: string }[];
+    setIsInWatchlist(watchlist.some((m) => m.id === movie.id));
+  }, [movie]);
+
+  useEffect(() => {
+    if (!movie) return;
+    const history = JSON.parse(localStorage.getItem('watchHistory') || '[]') as { id: string; title: string; imageUrl: string; rating: number; genre: string }[];
+    if (!history.some((m) => m.id === movie.id)) {
+      history.unshift({ id: movie.id, title: movie.title, imageUrl: movie.imageUrl, rating: movie.rating, genre: movie.genre });
+      if (history.length > 20) history.pop();
+      localStorage.setItem('watchHistory', JSON.stringify(history));
+      const count = parseInt(localStorage.getItem('streakDays') || '0');
+      localStorage.setItem('streakDays', String(count + 1));
+    }
+  }, [movie]);
 
   useEffect(() => {
     async function fetchData() {
@@ -154,8 +173,26 @@ function DetailContent() {
                     <span className="material-symbols-outlined">play_circle</span> NO VIDEO
                   </button>
                 )}
-                <button className="bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 text-on-surface font-label px-8 py-3 font-bold flex items-center gap-2 transition-all">
-                  <span className="material-symbols-outlined">add</span> MY LIST
+                <button
+                  onClick={() => {
+                    const watchlist = JSON.parse(localStorage.getItem('watchlist') || '[]') as { id: string; title: string; imageUrl: string; rating: number; genre: string }[];
+                    if (isInWatchlist) {
+                      const updated = watchlist.filter((m) => m.id !== m.id);
+                      localStorage.setItem('watchlist', JSON.stringify(updated));
+                      setIsInWatchlist(false);
+                    } else {
+                      watchlist.push({ id: m.id, title: m.title, imageUrl: m.imageUrl, rating: m.rating, genre: m.genre });
+                      localStorage.setItem('watchlist', JSON.stringify(watchlist));
+                      setIsInWatchlist(true);
+                    }
+                  }}
+                  className={`backdrop-blur-md border font-label px-8 py-3 font-bold flex items-center gap-2 transition-all ${
+                    isInWatchlist
+                      ? 'bg-secondary/20 border-secondary text-secondary hover:bg-secondary hover:text-on-secondary'
+                      : 'bg-white/10 hover:bg-white/20 border-white/20 text-on-surface'
+                  }`}
+                >
+                  <span className="material-symbols-outlined">{isInWatchlist ? 'bookmark' : 'add'}</span> {isInWatchlist ? 'IN MY LIST' : 'MY LIST'}
                 </button>
               </div>
             </div>
@@ -295,17 +332,30 @@ function DetailContent() {
           <p className="text-on-surface-variant font-label text-[10px] tracking-widest">© 2024 NEON-ACTION UNIVERSE. ACCESS GRANTED.</p>
         </div>
         <div className="flex flex-wrap justify-center gap-6">
-          {['Cyber-Action', 'High-Octane', 'Student Forums', 'Global Leaderboard', 'Support', 'Legal'].map((item, i) => (
-            <a key={i} className="text-on-surface-variant hover:text-tertiary transition-colors font-label text-xs uppercase tracking-tighter hover:translate-x-1 duration-200" href="#">{item}</a>
-          ))}
+          <Link className="text-on-surface-variant hover:text-tertiary transition-colors font-label text-xs uppercase tracking-tighter hover:translate-x-1 duration-200" href="/pencarian?genre=Action">Cyber-Action</Link>
+          <Link className="text-on-surface-variant hover:text-tertiary transition-colors font-label text-xs uppercase tracking-tighter hover:translate-x-1 duration-200" href="/pencarian?genre=Sci-Fi">High-Octane</Link>
+          <Link className="text-on-surface-variant hover:text-tertiary transition-colors font-label text-xs uppercase tracking-tighter hover:translate-x-1 duration-200" href="/kategori">Student Forums</Link>
+          <Link className="text-on-surface-variant hover:text-tertiary transition-colors font-label text-xs uppercase tracking-tighter hover:translate-x-1 duration-200" href="/pencarian">Global Leaderboard</Link>
+          <Link className="text-on-surface-variant hover:text-tertiary transition-colors font-label text-xs uppercase tracking-tighter hover:translate-x-1 duration-200" href="/about">Support</Link>
+          <Link className="text-on-surface-variant hover:text-tertiary transition-colors font-label text-xs uppercase tracking-tighter hover:translate-x-1 duration-200" href="/about">Legal</Link>
         </div>
         <div className="flex gap-4">
-          <a className="w-10 h-10 flex items-center justify-center border border-outline-variant hover:border-primary hover:text-primary transition-all rounded-full group" href="#">
-            <span className="material-symbols-outlined text-lg">public</span>
-          </a>
-          <a className="w-10 h-10 flex items-center justify-center border border-outline-variant hover:border-secondary hover:text-secondary transition-all rounded-full group" href="#">
+          <button
+            onClick={() => {
+              if (navigator.share) {
+                navigator.share({ title: m.title, url: window.location.href });
+              } else {
+                navigator.clipboard.writeText(window.location.href);
+                alert('Link copied!');
+              }
+            }}
+            className="w-10 h-10 flex items-center justify-center border border-outline-variant hover:border-primary hover:text-primary transition-all rounded-full group"
+          >
             <span className="material-symbols-outlined text-lg">share</span>
-          </a>
+          </button>
+          <Link className="w-10 h-10 flex items-center justify-center border border-outline-variant hover:border-secondary hover:text-secondary transition-all rounded-full group" href="/kategori">
+            <span className="material-symbols-outlined text-lg">public</span>
+          </Link>
         </div>
       </footer>
     </main>

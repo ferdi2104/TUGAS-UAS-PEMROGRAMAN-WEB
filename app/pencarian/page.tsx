@@ -275,9 +275,12 @@ function PencarianContent() {
           <p className="text-xs font-label text-on-surface-variant tracking-widest uppercase">© 2024 NEON-ACTION UNIVERSE. ACCESS GRANTED.</p>
         </div>
         <div className="flex flex-wrap justify-center gap-6">
-          {['Cyber-Action', 'High-Octane', 'Student Forums', 'Global Leaderboard', 'Support', 'Legal'].map((item, i) => (
-            <a key={i} className="text-xs font-label text-on-surface-variant hover:text-tertiary hover:translate-x-1 transition-all duration-200" href="#">{item}</a>
-          ))}
+          <Link className="text-xs font-label text-on-surface-variant hover:text-tertiary hover:translate-x-1 transition-all duration-200" href="/pencarian?genre=Action">Cyber-Action</Link>
+          <Link className="text-xs font-label text-on-surface-variant hover:text-tertiary hover:translate-x-1 transition-all duration-200" href="/pencarian?genre=Sci-Fi">High-Octane</Link>
+          <Link className="text-xs font-label text-on-surface-variant hover:text-tertiary hover:translate-x-1 transition-all duration-200" href="/kategori">Student Forums</Link>
+          <Link className="text-xs font-label text-on-surface-variant hover:text-tertiary hover:translate-x-1 transition-all duration-200" href="/pencarian">Global Leaderboard</Link>
+          <Link className="text-xs font-label text-on-surface-variant hover:text-tertiary hover:translate-x-1 transition-all duration-200" href="/about">Support</Link>
+          <Link className="text-xs font-label text-on-surface-variant hover:text-tertiary hover:translate-x-1 transition-all duration-200" href="/about">Legal</Link>
         </div>
         <div className="flex gap-4">
           <span className="material-symbols-outlined text-on-surface-variant hover:text-primary cursor-pointer transition-colors">hub</span>
