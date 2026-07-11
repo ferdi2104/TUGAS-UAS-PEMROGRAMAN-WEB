@@ -1,5 +1,6 @@
 import { createServerClient, type CookieOptions } from '@supabase/ssr';
 import { type NextRequest, NextResponse } from 'next/server';
+import { createClient } from '@supabase/supabase-js';
 
 export async function updateSession(request: NextRequest) {
   let response = NextResponse.next({ request: { headers: request.headers } });
@@ -41,6 +42,25 @@ export async function updateSession(request: NextRequest) {
     const homeUrl = request.nextUrl.clone();
     homeUrl.pathname = '/';
     return NextResponse.redirect(homeUrl);
+  }
+
+  if (user && request.nextUrl.pathname.startsWith('/admin')) {
+    const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    const serviceUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    if (serviceKey && serviceUrl) {
+      const adminClient = createClient(serviceUrl, serviceKey);
+      const { data: profile } = await adminClient
+        .from('profiles')
+        .select('role')
+        .eq('id', user.id)
+        .single();
+
+      if (!profile || profile.role !== 'admin') {
+        const homeUrl = request.nextUrl.clone();
+        homeUrl.pathname = '/';
+        return NextResponse.redirect(homeUrl);
+      }
+    }
   }
 
   return response;

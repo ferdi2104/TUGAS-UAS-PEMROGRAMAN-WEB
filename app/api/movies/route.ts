@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
+import { createServerClient, type CookieOptions } from '@supabase/ssr';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -15,7 +16,38 @@ function getWriteClient() {
   return createClient(supabaseUrl, supabaseServiceKey);
 }
 
+async function verifyAdmin(request: NextRequest): Promise<boolean> {
+  if (!supabaseUrl || !supabaseAnonKey || !supabaseServiceKey) return false;
+
+  const supabase = createServerClient(supabaseUrl, supabaseAnonKey, {
+    cookies: {
+      get(name: string) {
+        return request.cookies.get(name)?.value;
+      },
+      set(_name: string, _value: string, _options: CookieOptions) {},
+      remove(_name: string, _options: CookieOptions) {},
+    },
+  });
+
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return false;
+
+  const adminClient = createClient(supabaseUrl, supabaseServiceKey);
+  const { data: profile } = await adminClient
+    .from('profiles')
+    .select('role')
+    .eq('id', user.id)
+    .single();
+
+  return profile?.role === 'admin';
+}
+
 export async function POST(request: NextRequest) {
+  const allowed = await verifyAdmin(request);
+  if (!allowed) {
+    return NextResponse.json({ error: 'Admin access required' }, { status: 403 });
+  }
+
   const supabase = getWriteClient();
   if (!supabase) {
     return NextResponse.json({ error: 'Supabase not configured' }, { status: 500 });
@@ -55,6 +87,11 @@ export async function POST(request: NextRequest) {
 }
 
 export async function PUT(request: NextRequest) {
+  const allowed = await verifyAdmin(request);
+  if (!allowed) {
+    return NextResponse.json({ error: 'Admin access required' }, { status: 403 });
+  }
+
   const { searchParams } = new URL(request.url);
   const id = searchParams.get('id');
 
@@ -100,6 +137,11 @@ export async function PUT(request: NextRequest) {
 }
 
 export async function DELETE(request: NextRequest) {
+  const allowed = await verifyAdmin(request);
+  if (!allowed) {
+    return NextResponse.json({ error: 'Admin access required' }, { status: 403 });
+  }
+
   const { searchParams } = new URL(request.url);
   const id = searchParams.get('id');
 
