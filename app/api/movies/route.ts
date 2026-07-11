@@ -3,14 +3,20 @@ import { createClient } from '@supabase/supabase-js';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
 function getClient() {
   if (!supabaseUrl || !supabaseAnonKey) return null;
   return createClient(supabaseUrl, supabaseAnonKey);
 }
 
+function getWriteClient() {
+  if (!supabaseUrl || !supabaseServiceKey) return null;
+  return createClient(supabaseUrl, supabaseServiceKey);
+}
+
 export async function POST(request: NextRequest) {
-  const supabase = getClient();
+  const supabase = getWriteClient();
   if (!supabase) {
     return NextResponse.json({ error: 'Supabase not configured' }, { status: 500 });
   }
@@ -56,7 +62,7 @@ export async function PUT(request: NextRequest) {
     return NextResponse.json({ error: 'Movie ID is required' }, { status: 400 });
   }
 
-  const supabase = getClient();
+  const supabase = getWriteClient();
   if (!supabase) {
     return NextResponse.json({ error: 'Supabase not configured' }, { status: 500 });
   }
@@ -101,7 +107,7 @@ export async function DELETE(request: NextRequest) {
     return NextResponse.json({ error: 'Movie ID is required' }, { status: 400 });
   }
 
-  const supabase = getClient();
+  const supabase = getWriteClient();
   if (!supabase) {
     return NextResponse.json({ error: 'Supabase not configured' }, { status: 500 });
   }
