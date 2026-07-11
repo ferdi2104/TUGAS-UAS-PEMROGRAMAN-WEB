@@ -49,20 +49,15 @@ function PencarianContent() {
         params.set('limit', String(limit));
 
         if (yearFilter.length > 0) {
-          const minYear = Math.min(...yearFilter.map(yf => {
-            if (yf === '2024') return 2024;
-            if (yf === '2020-2023') return 2020;
-            if (yf === 'pre-2020') return 0;
-            return 0;
-          }));
-          const maxYear = Math.max(...yearFilter.map(yf => {
-            if (yf === '2024') return 9999;
-            if (yf === '2020-2023') return 2023;
-            if (yf === 'pre-2020') return 2019;
-            return 9999;
-          }));
-          params.set('yearFrom', String(minYear));
-          params.set('yearTo', String(maxYear));
+          let yearFrom = Infinity;
+          let yearTo = -Infinity;
+          for (const yf of yearFilter) {
+            if (yf === '2024') { yearFrom = Math.min(yearFrom, 2024); yearTo = Math.max(yearTo, 9999); }
+            else if (yf === '2020-2023') { yearFrom = Math.min(yearFrom, 2020); yearTo = Math.max(yearTo, 2023); }
+            else if (yf === 'pre-2020') { yearFrom = Math.min(yearFrom, 0); yearTo = Math.max(yearTo, 2019); }
+          }
+          params.set('yearFrom', String(yearFrom === Infinity ? 0 : yearFrom));
+          params.set('yearTo', String(yearTo === -Infinity ? 9999 : yearTo));
         }
 
         const res = await fetch(`/api/movies?${params.toString()}`);
@@ -189,7 +184,7 @@ function PencarianContent() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {displayMovies.map((movie: any, i: number) => (
-              <Link key={movie.id || i} href={`/detail?id=${movie.id}`} className="group relative bg-surface-container rounded-lg overflow-hidden transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(255,45,120,0.15)] neon-border-pink border-opacity-0 hover:border-opacity-100">
+              <Link key={movie.id || i} href={`/detail?id=${movie.id}`} className="group relative bg-surface-container rounded-lg overflow-hidden transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(255,45,120,0.15)] neon-border-pink">
                 <div className="relative aspect-[2/3] overflow-hidden">
                   <img className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" alt={movie.title} src={movie.imageUrl} />
                   <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent opacity-60"></div>

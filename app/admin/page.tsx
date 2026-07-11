@@ -29,6 +29,7 @@ const defaultForm = {
   imageUrl: '',
   videoUrl: '',
   tag: '',
+  featured: false,
 };
 
 export default function AdminPage() {
@@ -46,7 +47,9 @@ export default function AdminPage() {
         const result = await res.json();
         setMovies(result.data || result || []);
       }
-    } catch {} finally {
+    } catch (err) {
+      console.error('Failed to fetch movies:', err);
+    } finally {
       setLoading(false);
     }
   };
@@ -64,8 +67,9 @@ export default function AdminPage() {
         const err = await res.json();
         setMessage({ type: 'error', text: err.error || 'Failed to delete' });
       }
-    } catch (err: any) {
-      setMessage({ type: 'error', text: err.message || 'Failed to delete' });
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Failed to delete';
+      setMessage({ type: 'error', text: msg });
     }
   };
 
@@ -75,13 +79,14 @@ export default function AdminPage() {
     setMessage(null);
 
     try {
-      const body: any = {
+      const body: Record<string, unknown> = {
         title: form.title,
         description: form.description,
         year: form.year,
         runtime: form.runtime,
         rating: form.rating,
         genre: form.genre,
+        featured: form.featured,
       };
       if (form.subgenre) body.subgenre = form.subgenre;
       if (form.imageUrl) body.imageUrl = form.imageUrl;
@@ -106,8 +111,9 @@ export default function AdminPage() {
         const err = await res.json();
         setMessage({ type: 'error', text: err.error || 'Gagal menyimpan film' });
       }
-    } catch (err: any) {
-      setMessage({ type: 'error', text: err.message || 'Gagal menyimpan film' });
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Gagal menyimpan film';
+      setMessage({ type: 'error', text: msg });
     } finally {
       setSubmitting(false);
     }
@@ -125,6 +131,7 @@ export default function AdminPage() {
       imageUrl: movie.imageUrl,
       videoUrl: movie.videoUrl || '',
       tag: movie.tag || '',
+      featured: movie.featured || false,
     });
     setEditingId(movie.id);
     setMessage(null);
@@ -233,6 +240,17 @@ export default function AdminPage() {
                     <option value="Premium">Premium</option>
                     <option value="HOT">HOT</option>
                   </select>
+                </div>
+                <div className="flex items-end pb-1">
+                  <label className="flex items-center gap-3 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      className="form-checkbox bg-surface-container-highest border-outline-variant text-secondary rounded-sm focus:ring-secondary/50"
+                      checked={form.featured}
+                      onChange={(e) => setForm({ ...form, featured: e.target.checked })}
+                    />
+                    <span className="font-label text-xs text-on-surface-variant uppercase tracking-widest">Featured Movie</span>
+                  </label>
                 </div>
               </div>
 

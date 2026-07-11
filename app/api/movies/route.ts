@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
 function getClient() {
   if (!supabaseUrl || !supabaseAnonKey) return null;
@@ -42,8 +42,9 @@ export async function POST(request: NextRequest) {
 
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
     return NextResponse.json(data, { status: 201 });
-  } catch (err: any) {
-    return NextResponse.json({ error: err.message }, { status: 500 });
+  } catch (err: unknown) {
+    const errorMsg = err instanceof Error ? err.message : 'Unknown error';
+    return NextResponse.json({ error: errorMsg }, { status: 500 });
   }
 }
 
@@ -62,9 +63,9 @@ export async function PUT(request: NextRequest) {
 
   try {
     const body = await request.json();
-    const { title, description, year, runtime, rating, genre, subgenre, imageUrl, videoUrl, tag } = body;
+    const { title, description, year, runtime, rating, genre, subgenre, imageUrl, videoUrl, tag, featured } = body;
 
-    const updates: any = {};
+    const updates: Record<string, unknown> = {};
     if (title) updates.title = title;
     if (description) updates.description = description;
     if (year) updates.year = year;
@@ -75,6 +76,7 @@ export async function PUT(request: NextRequest) {
     if (imageUrl !== undefined) updates.imageUrl = imageUrl;
     if (videoUrl !== undefined) updates.videoUrl = videoUrl;
     if (tag !== undefined) updates.tag = tag;
+    if (featured !== undefined) updates.featured = featured;
 
     const { data, error } = await supabase
       .from('movies')
@@ -85,8 +87,9 @@ export async function PUT(request: NextRequest) {
 
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
     return NextResponse.json(data);
-  } catch (err: any) {
-    return NextResponse.json({ error: err.message }, { status: 500 });
+  } catch (err: unknown) {
+    const errorMsg = err instanceof Error ? err.message : 'Unknown error';
+    return NextResponse.json({ error: errorMsg }, { status: 500 });
   }
 }
 
@@ -107,8 +110,9 @@ export async function DELETE(request: NextRequest) {
     const { error } = await supabase.from('movies').delete().eq('id', id);
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
     return NextResponse.json({ success: true });
-  } catch (err: any) {
-    return NextResponse.json({ error: err.message }, { status: 500 });
+  } catch (err: unknown) {
+    const errorMsg = err instanceof Error ? err.message : 'Unknown error';
+    return NextResponse.json({ error: errorMsg }, { status: 500 });
   }
 }
 
@@ -121,8 +125,8 @@ export async function GET(request: NextRequest) {
   const search = searchParams.get('search');
   const yearFrom = searchParams.get('yearFrom');
   const yearTo = searchParams.get('yearTo');
-  const page = parseInt(searchParams.get('page') || '1');
-  const limit = parseInt(searchParams.get('limit') || '12');
+  const page = Math.max(1, parseInt(searchParams.get('page') || '1') || 1);
+  const limit = Math.max(1, Math.min(100, parseInt(searchParams.get('limit') || '12') || 12));
 
   const supabase = getClient();
   if (!supabase) {
@@ -138,7 +142,7 @@ export async function GET(request: NextRequest) {
 
     if (featured === 'true') {
       const { data, error } = await supabase.from('movies').select('*').eq('featured', true).limit(1).single();
-      if (error) return NextResponse.json(null);
+      if (error) return NextResponse.json({ error: 'No featured movie found' }, { status: 404 });
       return NextResponse.json(data);
     }
 
@@ -151,7 +155,10 @@ export async function GET(request: NextRequest) {
     let query = supabase.from('movies').select('*', { count: 'exact' });
 
     if (search) {
-      query = query.or(`title.ilike.%${search}%,description.ilike.%${search}%`);
+      const safeSearch = search.replace(/[\\%()]/g, '');
+      if (safeSearch) {
+        query = query.or(`title.ilike.%${safeSearch}%,description.ilike.%${safeSearch}%`);
+      }
     }
 
     if (genre) {
@@ -177,7 +184,8 @@ export async function GET(request: NextRequest) {
 
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
     return NextResponse.json({ data, total: count || 0, page, limit });
-  } catch (err: any) {
-    return NextResponse.json({ error: err.message }, { status: 500 });
+  } catch (err: unknown) {
+    const errorMsg = err instanceof Error ? err.message : 'Unknown error';
+    return NextResponse.json({ error: errorMsg }, { status: 500 });
   }
 }

@@ -15,12 +15,12 @@ export default function ProfilePage() {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [saved, setSaved] = useState(false);
-  const [watchHistory] = useState<WatchHistoryItem[]>([]);
-  const [stats] = useState({
-    moviesWatched: 3,
-    commentsPosted: 1,
-    watchlistCount: 2,
-    streakDays: 5,
+  const [watchHistory, setWatchHistory] = useState<WatchHistoryItem[]>([]);
+  const [stats, setStats] = useState({
+    moviesWatched: 0,
+    commentsPosted: 0,
+    watchlistCount: 0,
+    streakDays: 0,
   });
 
   useEffect(() => {
@@ -28,6 +28,22 @@ export default function ProfilePage() {
     const savedEmail = localStorage.getItem('profileEmail');
     if (savedName) setUsername(savedName);
     if (savedEmail) setEmail(savedEmail);
+
+    const historyRaw = localStorage.getItem('watchHistory');
+    if (historyRaw) {
+      try {
+        const history = JSON.parse(historyRaw) as WatchHistoryItem[];
+        setWatchHistory(history);
+        setStats({
+          moviesWatched: history.length,
+          commentsPosted: parseInt(localStorage.getItem('commentCount') || '0'),
+          watchlistCount: parseInt(localStorage.getItem('watchlistCount') || '0'),
+          streakDays: parseInt(localStorage.getItem('streakDays') || '0'),
+        });
+      } catch {
+        setStats({ moviesWatched: 0, commentsPosted: 0, watchlistCount: 0, streakDays: 0 });
+      }
+    }
   }, []);
 
   const handleSave = () => {

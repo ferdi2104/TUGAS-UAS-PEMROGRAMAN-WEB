@@ -1,7 +1,14 @@
 import { NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
 
-const notifications = [
+const notifications: {
+  id: string;
+  title: string;
+  message: string;
+  type: string;
+  link: string;
+  createdAt: string;
+  read: boolean;
+}[] = [
   {
     id: '1',
     title: 'Film Baru Dirilis!',
@@ -54,7 +61,7 @@ export async function POST(request: Request) {
     }
 
     const newNotif = {
-      id: String(notifications.length + 1),
+      id: String(Date.now()),
       title,
       message,
       type: type || 'info',
@@ -63,8 +70,11 @@ export async function POST(request: Request) {
       read: false,
     };
 
+    notifications.unshift(newNotif);
+
     return NextResponse.json(newNotif, { status: 201 });
-  } catch (err: any) {
-    return NextResponse.json({ error: err.message }, { status: 500 });
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : 'Unknown error';
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }

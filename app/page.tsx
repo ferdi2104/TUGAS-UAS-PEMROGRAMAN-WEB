@@ -235,7 +235,7 @@ export default function HomePage() {
           <p className="text-on-surface-variant mb-8 text-lg">Subscribe to get notified about the latest student drops and exclusive midnight releases.</p>
           <form onSubmit={handleNewsletterSubmit} className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
             <input
-              className="flex-grow bg-background border-outline/50 focus:border-primary focus:ring-1 focus:ring-primary rounded px-4 py-3 font-body text-on-surface"
+              className="flex-grow bg-background border border-outline/50 focus:border-primary focus:ring-1 focus:ring-primary rounded px-4 py-3 font-body text-on-surface"
               placeholder="student@university.edu"
               type="email"
               value={newsletterEmail}

@@ -1,6 +1,4 @@
-'use client';
-
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { Toaster } from 'react-hot-toast';
 import Navigation from '@components/Navigation';
 import '@styles/globals.css';

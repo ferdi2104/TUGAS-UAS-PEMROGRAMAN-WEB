@@ -51,7 +51,9 @@ export default function Navigation() {
           const data = await res.json();
           setNotifications(data);
         }
-      } catch {} finally {
+      } catch (err) {
+        console.error('Failed to fetch notifications:', err);
+      } finally {
         setNotifLoading(false);
       }
     }

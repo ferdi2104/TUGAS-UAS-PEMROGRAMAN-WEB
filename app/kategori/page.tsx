@@ -58,8 +58,16 @@ export default function KategoriPage() {
             const isLarge = i === 0;
             const isWide = i === 3;
             const heights = isLarge ? 'h-[400px] md:h-auto md:col-span-2 md:row-span-2' : isWide ? 'h-[250px] md:col-span-2' : 'h-[300px]';
+            const genreMap: Record<string, string> = {
+              'High-Octane': 'Action',
+              'Martial Arts': 'Action',
+              'Cyberpunk': 'Sci-Fi',
+              'Heist': 'Thriller',
+              'Revenge': 'Action',
+              'Superhuman': 'Sci-Fi',
+            };
             return (
-              <Link key={cat.id || i} href={`/pencarian?genre=${cat.name === 'Martial Arts' ? 'Action' : cat.name === 'High-Octane' ? 'Action' : cat.name === 'Cyberpunk' ? 'Sci-Fi' : cat.name === 'Heist' ? 'Thriller' : cat.name === 'Revenge' ? 'Action' : cat.name === 'Superhuman' ? 'Sci-Fi' : ''}`} className={`${heights} category-card group cursor-pointer relative overflow-hidden rounded-xl`}>
+              <Link key={cat.id || i} href={`/pencarian?genre=${genreMap[cat.name] || cat.name || 'Action'}`} className={`${heights} category-card group cursor-pointer relative overflow-hidden rounded-xl`}>
                 <img className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt={cat.name} src={
                   i === 0 ? 'https://img.youtube.com/vi/nkCXmkCmjzA/maxresdefault.jpg' :
                   i === 1 ? 'https://img.youtube.com/vi/SE-AhAm_EBk/maxresdefault.jpg' :
