@@ -25,7 +25,7 @@ export async function GET(request: NextRequest) {
     .single();
 
   if (profileError || !profile) {
-    return NextResponse.json({ isAdmin: false });
+    return NextResponse.json({ isAdmin: false, error: profileError?.message });
   }
 
   return NextResponse.json({ isAdmin: profile.role === 'admin' });

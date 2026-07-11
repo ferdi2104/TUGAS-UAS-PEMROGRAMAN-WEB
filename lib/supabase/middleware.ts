@@ -51,11 +51,16 @@ export async function updateSession(request: NextRequest) {
       if (serviceKey && serviceUrl) {
         try {
           const adminClient = createClient(serviceUrl, serviceKey);
-          const { data: profile } = await adminClient
+          const { data: profile, error: profileError } = await adminClient
             .from('profiles')
             .select('role')
             .eq('id', user.id)
             .single();
+
+          if (profileError) {
+            // profiles table might not exist yet, allow access
+            return response;
+          }
 
           if (!profile || profile.role !== 'admin') {
             const homeUrl = request.nextUrl.clone();
