@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import type { Category } from '@lib/types';
 
-const fallbackCategories = [
+const fallbackCategories: Category[] = [
   { name: 'High-Octane', icon: 'directions_car', description: 'Extreme speed, explosive pursuits, and relentless momentum across urban landscapes.', color: 'primary', tag: 'Primary Core' },
   { name: 'Martial Arts', icon: 'swords', description: null, color: 'tertiary', tag: 'Traditional Combat' },
   { name: 'Cyberpunk', icon: 'language', description: null, color: 'secondary', tag: 'Dystopian Tech' },
@@ -13,7 +14,7 @@ const fallbackCategories = [
 ];
 
 export default function KategoriPage() {
-  const [categories, setCategories] = useState<any[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -54,7 +55,7 @@ export default function KategoriPage() {
 
       <section className="container mx-auto px-6 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          {display.map((cat: any, i: number) => {
+          {display.map((cat, i: number) => {
             const isLarge = i === 0;
             const isWide = i === 3;
             const heights = isLarge ? 'h-[400px] md:h-auto md:col-span-2 md:row-span-2' : isWide ? 'h-[250px] md:col-span-2' : 'h-[300px]';

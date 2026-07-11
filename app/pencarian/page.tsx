@@ -3,14 +3,15 @@
 import { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
+import type { Movie } from '@lib/types';
 
-const fallbackMovies = [
-  { id: '1', title: 'DIGITAL HAVOC', year: 2024, runtime: '124 MIN', rating: 8.9, description: 'In the year 2099, a rogue AI takes control of the city\'s power grid.', genre: 'Action', imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDlz9aiMyCvD2uIKmJNtqjy-mDS1VeJuhfpgR3zrqLKCaxiTk8MUBgrU9W4wm9uExaX3Sfi6EDQ37QhzpaxMnge5qX2u9zyD2Dqob4KYMCz8a16hFklDtmpGeGiSdwT_yHBh1y8YUjZs_MF3JlZ_VANEqB5GFWJtwMq4k4khPDMFlBw_W0FJuFeSoryzAhgrRP8lwM8J1xBzH5Xfv2Wx2gawsV0ORKkB2blJTkdmJ1BzXCrxGOH6NzQoLwz5bAKyrSyf3nCfqsCtdg', tag: 'HOT' },
-  { id: '2', title: 'VELOCITY PROTOCOL', year: 2023, runtime: '108 MIN', rating: 9.2, description: 'Illegal hover-racing in the stratosphere. High stakes, zero gravity.', genre: 'Sci-Fi', imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuA71gWcC87GaanXTDGBuoKnpxxCKkWoPPxG1bAihfDlSN826NaqizbUxJJVOXdXbeYVxyaLDbZGQMYIMz0dZWzbiAtQFbNep-NfmrP3lCbkrFOoX01isXPq8pcSlUj7ffMyYEmj8a2WBeoW3emY4vKz_DoNFO6Wb2RtAVMGbeotYSgta8uD-b3db_YNPkmyTWQPNKSEef0Kho1pff8labhHUZ7afvZkzvi0MebujBCdsyC0uEKxCQ032rQxwnTl1qfh-geH27Im9OE' },
-  { id: '3', title: 'CIRCUIT BREAKER', year: 2024, runtime: '115 MIN', rating: 8.5, description: 'Cyber-enhanced martial arts in the lawless sectors of District 9.', genre: 'Action', imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBwC1m6uXiwSbU4-2ugKku1ls0To6_ZvnIEg3TbkeRaxRi5G4zlEaL6ErZ9XXhDNrzz8nGYLrJ6mzYv9oOp_KV1D-b1-Q4mKDUea02szMOQ1DruqCyShGJGuxmsS8Q54lVEr0Y1EM2v4-rKceIT9T3vKZHzRwqwUFNhYJHesCQPEYwAXiAM5ENgLDA6zFFtwQ1sFEOtCgNoBa9hx0RLlfETy-3EzVAq-nxCTONFJ81EpLV8V2J5MF6cgbEf3wwQDMJwvPNDFLonz3M' },
-  { id: '4', title: 'NEON SYNDICATE', year: 2022, runtime: '142 MIN', rating: 8.1, description: 'Power struggles within the city\'s largest tech conglomerate.', genre: 'Thriller', imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCjWM2hqanHVEmHtovHcSt2wq-Wgkl8dkHjpfTjWx9WtjM51xsAtJesLFJah-DhicOZxJ38wy6pJl284OTZmpQctv7OVo6zDAndlGbh6merq-AAgsYW90MqP8mYZO8q8V-kIpt3xBg7Jnxm9Nquo5xEtX3gcZVjIkxBgOOFTCxxT0HajwgCB329GZ0yc9Evqpj2BDWVhFAcVATYM12ZHBTMZvkG737KDsb_Ksfj4FAxjwhsxcakD2PctkAiVfFwwj9bMACQ7lHDaJ4' },
-  { id: '5', title: 'STATIC VOID', year: 2021, runtime: '95 MIN', rating: 7.8, description: 'Lost in the outer rim, a salvage crew discovers a derelict station.', genre: 'Sci-Fi', imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBc4yWtiyAKbrtHwbdlCpGAtPKQu96lY5b7nMGXW7UwDxVRWFQj7O-bdukDhd65IeTz3ufZXagV8OjeeHjL_6AMTZyVKfCxXFUGsb1gEBVfi0Wt5qszhFr4bO4UIg45a7usAjK_Hqlo6w7ikIRUyCDg2tI4W9NyqvvkGkCEYrjdX2_oGt0YMjcfYXSCCmQZ87fLzx2dphG4g3LMB_BP09WkyWqHU_SXUd-_20s0f_TbqPaKfMhz2FaPhuHWTI643Pi3txIxmmYJaCc' },
-  { id: '6', title: 'ECHOES OF CHROME', year: 2024, runtime: '131 MIN', rating: 8.3, description: 'A detective investigates crimes committed by digital ghosts.', genre: 'Thriller', imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuC5cFy8y8ALQM9DmVwnJgpwS0O-aCkKx-mbBsB7RR-L2O0V6loPbgi_e-3a-vJHDIDH_2bQRh2A18IYlY1dU62xBzKS_yuDjl7Zid52j9RiGzFUdPaMd2ktROuHkdJ7kyrJkMLJbnVG4lsqH6zlKPdFWcjEst2txtazrBsMEHQ7o7ddLKLuege3aK3eoYn8dlN3Q3GTPY9ldA3IDhCbwm3xFvoLwzEFjjihCJq55Rc55ANDJcaLeDab9-Ib6hGearUm943CvQKhq88' },
+const fallbackMovies: Movie[] = [
+  { id: '1', title: 'DIGITAL HAVOC', year: 2024, runtime: '124 MIN', rating: 8.9, description: 'In the year 2099, a rogue AI takes control of the city\'s power grid.', genre: 'Action', imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDlz9aiMyCvD2uIKmJNtqjy-mDS1VeJuhfpgR3zrqLKCaxiTk8MUBgrU9W4wm9uExaX3Sfi6EDQ37QhzpaxMnge5qX2u9zyD2Dqob4KYMCz8a16hFklDtmpGeGiSdwT_yHBh1y8YUjZs_MF3JlZ_VANEqB5GFWJtwMq4k4khPDMFlBw_W0FJuFeSoryzAhgrRP8lwM8J1xBzH5Xfv2Wx2gawsV0ORKkB2blJTkdmJ1BzXCrxGOH6NzQoLwz5bAKyrSyf3nCfqsCtdg', tag: 'HOT', subgenre: null, videoUrl: null, featured: true },
+  { id: '2', title: 'VELOCITY PROTOCOL', year: 2023, runtime: '108 MIN', rating: 9.2, description: 'Illegal hover-racing in the stratosphere. High stakes, zero gravity.', genre: 'Sci-Fi', imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuA71gWcC87GaanXTDGBuoKnpxxCKkWoPPxG1bAihfDlSN826NaqizbUxJJVOXdXbeYVxyaLDbZGQMYIMz0dZWzbiAtQFbNep-NfmrP3lCbkrFOoX01isXPq8pcSlUj7ffMyYEmj8a2WBeoW3emY4vKz_DoNFO6Wb2RtAVMGbeotYSgta8uD-b3db_YNPkmyTWQPNKSEef0Kho1pff8labhHUZ7afvZkzvi0MebujBCdsyC0uEKxCQ032rQxwnTl1qfh-geH27Im9OE', tag: null, subgenre: null, videoUrl: null, featured: false },
+  { id: '3', title: 'CIRCUIT BREAKER', year: 2024, runtime: '115 MIN', rating: 8.5, description: 'Cyber-enhanced martial arts in the lawless sectors of District 9.', genre: 'Action', imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBwC1m6uXiwSbU4-2ugKku1ls0To6_ZvnIEg3TbkeRaxRi5G4zlEaL6ErZ9XXhDNrzz8nGYLrJ6mzYv9oOp_KV1D-b1-Q4mKDUea02szMOQ1DruqCyShGJGuxmsS8Q54lVEr0Y1EM2v4-rKceIT9T3vKZHzRwqwUFNhYJHesCQPEYwAXiAM5ENgLDA6zFFtwQ1sFEOtCgNoBa9hx0RLlfETy-3EzVAq-nxCTONFJ81EpLV8V2J5MF6cgbEf3wwQDMJwvPNDFLonz3M', tag: null, subgenre: null, videoUrl: null, featured: false },
+  { id: '4', title: 'NEON SYNDICATE', year: 2022, runtime: '142 MIN', rating: 8.1, description: 'Power struggles within the city\'s largest tech conglomerate.', genre: 'Thriller', imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCjWM2hqanHVEmHtovHcSt2wq-Wgkl8dkHjpfTjWx9WtjM51xsAtJesLFJah-DhicOZxJ38wy6pJl284OTZmpQctv7OVo6zDAndlGbh6merq-AAgsYW90MqP8mYZO8q8V-kIpt3xBg7Jnxm9Nquo5xEtX3gcZVjIkxBgOOFTCxxT0HajwgCB329GZ0yc9Evqpj2BDWVhFAcVATYM12ZHBTMZvkG737KDsb_Ksfj4FAxjwhsxcakD2PctkAiVfFwwj9bMACQ7lHDaJ4', tag: null, subgenre: null, videoUrl: null, featured: false },
+  { id: '5', title: 'STATIC VOID', year: 2021, runtime: '95 MIN', rating: 7.8, description: 'Lost in the outer rim, a salvage crew discovers a derelict station.', genre: 'Sci-Fi', imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBc4yWtiyAKbrtHwbdlCpGAtPKQu96lY5b7nMGXW7UwDxVRWFQj7O-bdukDhd65IeTz3ufZXagV8OjeeHjL_6AMTZyVKfCxXFUGsb1gEBVfi0Wt5qszhFr4bO4UIg45a7usAjK_Hqlo6w7ikIRUyCDg2tI4W9NyqvvkGkCEYrjdX2_oGt0YMjcfYXSCCmQZ87fLzx2dphG4g3LMB_BP09WkyWqHU_SXUd-_20s0f_TbqPaKfMhz2FaPhuHWTI643Pi3txIxmmYJaCc', tag: null, subgenre: null, videoUrl: null, featured: false },
+  { id: '6', title: 'ECHOES OF CHROME', year: 2024, runtime: '131 MIN', rating: 8.3, description: 'A detective investigates crimes committed by digital ghosts.', genre: 'Thriller', imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuC5cFy8y8ALQM9DmVwnJgpwS0O-aCkKx-mbBsB7RR-L2O0V6loPbgi_e-3a-vJHDIDH_2bQRh2A18IYlY1dU62xBzKS_yuDjl7Zid52j9RiGzFUdPaMd2ktROuHkdJ7kyrJkMLJbnVG4lsqH6zlKPdFWcjEst2txtazrBsMEHQ7o7ddLKLuege3aK3eoYn8dlN3Q3GTPY9ldA3IDhCbwm3xFvoLwzEFjjihCJq55Rc55ANDJcaLeDab9-Ib6hGearUm943CvQKhq88', tag: null, subgenre: null, videoUrl: null, featured: false },
 ];
 
 const allGenres = ['Action', 'Sci-Fi', 'Thriller', 'Horror', 'Comedy', 'Drama'];
@@ -19,7 +20,7 @@ function PencarianContent() {
   const searchParams = useSearchParams();
   const initialSearch = searchParams.get('search') || '';
 
-  const [movies, setMovies] = useState<any[]>([]);
+  const [movies, setMovies] = useState<Movie[]>([]);
   const [loading, setLoading] = useState(true);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
@@ -183,7 +184,7 @@ function PencarianContent() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {displayMovies.map((movie: any, i: number) => (
+            {displayMovies.map((movie, i: number) => (
               <Link key={movie.id || i} href={`/detail?id=${movie.id}`} className="group relative bg-surface-container rounded-lg overflow-hidden transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(255,45,120,0.15)] neon-border-pink">
                 <div className="relative aspect-[2/3] overflow-hidden">
                   <img className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" alt={movie.title} src={movie.imageUrl} />

@@ -4,8 +4,9 @@ import { Suspense } from 'react';
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
+import type { Movie, Comment } from '@lib/types';
 
-const fallbackMovie = {
+const fallbackMovie: Movie = {
   id: '1',
   title: 'Jackie Chan: International Justice',
   description: 'Jackie Chan and a female assassin team up to take down international crime syndicates in this action-packed blockbuster.',
@@ -13,17 +14,19 @@ const fallbackMovie = {
   runtime: '120 Mins',
   rating: 8.5,
   genre: 'Action',
+  subgenre: null,
   imageUrl: 'https://img.youtube.com/vi/xghsjPvOjZA/maxresdefault.jpg',
   videoUrl: 'https://www.youtube.com/watch?v=xghsjPvOjZA',
   tag: 'Featured',
+  featured: true,
 };
 
 function DetailContent() {
   const searchParams = useSearchParams();
   const movieId = searchParams.get('id');
-  const [movie, setMovie] = useState<any>(null);
-  const [comments, setComments] = useState<any[]>([]);
-  const [related, setRelated] = useState<any[]>([]);
+  const [movie, setMovie] = useState<Movie | null>(null);
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [related, setRelated] = useState<Movie[]>([]);
   const [loading, setLoading] = useState(true);
   const [playing, setPlaying] = useState(false);
   const [commentText, setCommentText] = useState('');
@@ -78,7 +81,7 @@ function DetailContent() {
           if (allMoviesRes.ok) {
             const allMovies = await allMoviesRes.json();
             const movieList = Array.isArray(allMovies) ? allMovies : (allMovies.data || []);
-            setRelated(movieList.filter((m: any) => m.id !== movieData.id).slice(0, 3));
+            setRelated(movieList.filter((m: Movie) => m.id !== movieData.id).slice(0, 3));
           }
         } else {
           setMovie(fallbackMovie);
@@ -177,13 +180,14 @@ function DetailContent() {
                 )}
                 <button
                   onClick={() => {
+                    if (!movie) return;
                     const watchlist = JSON.parse(localStorage.getItem('watchlist') || '[]') as { id: string; title: string; imageUrl: string; rating: number; genre: string }[];
                     if (isInWatchlist) {
                       const updated = watchlist.filter((item) => item.id !== movie.id);
                       localStorage.setItem('watchlist', JSON.stringify(updated));
                       setIsInWatchlist(false);
                     } else {
-                      watchlist.push({ id: m.id, title: m.title, imageUrl: m.imageUrl, rating: m.rating, genre: m.genre });
+                      watchlist.push({ id: movie.id, title: movie.title, imageUrl: movie.imageUrl, rating: movie.rating, genre: movie.genre });
                       localStorage.setItem('watchlist', JSON.stringify(watchlist));
                       setIsInWatchlist(true);
                     }
@@ -259,7 +263,7 @@ function DetailContent() {
                 </div>
               </div>
               <div className="space-y-6">
-                {comments.length > 0 ? comments.map((comment: any, i: number) => (
+                {comments.length > 0 ? comments.map((comment, i: number) => (
                   <div key={comment.id || i} className="flex gap-4">
                     <div className="w-12 h-12 rounded-full border border-secondary shrink-0 overflow-hidden bg-surface-variant flex items-center justify-center font-label text-xs text-secondary">
                       {comment.username?.charAt(0) || 'U'}
@@ -308,7 +312,7 @@ function DetailContent() {
             <Link className="text-xs font-label text-on-surface-variant hover:text-secondary uppercase underline underline-offset-4" href="/pencarian">View All</Link>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4">
-            {(related.length > 0 ? related : []).map((movie: any, i: number) => (
+            {(related.length > 0 ? related : []).map((movie, i: number) => (
               <Link key={movie.id || i} href={`/detail?id=${movie.id}`} className="group relative bg-surface-container rounded overflow-hidden border border-outline-variant hover:border-secondary transition-all cursor-pointer">
                 <div className="aspect-video w-full relative">
                   <img className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" alt={movie.title} src={movie.imageUrl} />

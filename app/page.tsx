@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
+import type { Movie, Category } from '@lib/types';
 
 const fallbackTrending = [
   { title: 'Jackie Chan: International Justice', match: '85%', tags: ['Action'], img: 'https://img.youtube.com/vi/xghsjPvOjZA/maxresdefault.jpg', id: '1', rating: 8.5, genre: 'Action', imageUrl: 'https://img.youtube.com/vi/xghsjPvOjZA/maxresdefault.jpg' },
@@ -12,19 +13,19 @@ const fallbackTrending = [
   { title: 'Fast & Furious: Full Throttle', match: '90%', tags: ['Action'], img: 'https://img.youtube.com/vi/nkCXmkCmjzA/maxresdefault.jpg', id: '5', rating: 9.0, genre: 'Action', imageUrl: 'https://img.youtube.com/vi/nkCXmkCmjzA/maxresdefault.jpg' },
 ];
 
-const fallbackCategories = [
-  { icon: 'directions_car', label: 'High-Speed', color: 'secondary' },
-  { icon: 'swords', label: 'Samurai-Punk', color: 'primary' },
-  { icon: 'explosion', label: 'Explosive', color: 'tertiary' },
-  { icon: 'rocket_launch', label: 'Deep Space', color: 'secondary' },
-  { icon: 'precision_manufacturing', label: 'Cyber-Mech', color: 'primary' },
-  { icon: 'terminal', label: 'Hacker-Thrill', color: 'tertiary' },
+const fallbackCategories: Category[] = [
+  { icon: 'directions_car', name: 'High-Speed', description: null, color: 'secondary', tag: 'Speed' },
+  { icon: 'swords', name: 'Samurai-Punk', description: null, color: 'primary', tag: 'Combat' },
+  { icon: 'explosion', name: 'Explosive', description: null, color: 'tertiary', tag: 'Action' },
+  { icon: 'rocket_launch', name: 'Deep Space', description: null, color: 'secondary', tag: 'Sci-Fi' },
+  { icon: 'precision_manufacturing', name: 'Cyber-Mech', description: null, color: 'primary', tag: 'Tech' },
+  { icon: 'terminal', name: 'Hacker-Thrill', description: null, color: 'tertiary', tag: 'Thriller' },
 ];
 
 export default function HomePage() {
   const pathname = usePathname();
-  const [trending, setTrending] = useState<any[]>([]);
-  const [categories, setCategories] = useState<any[]>([]);
+  const [trending, setTrending] = useState<(Partial<Movie> & { title: string; id: string; rating: number; genre: string; imageUrl: string; match?: string; img?: string; tags?: string[] })[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [loaded, setLoaded] = useState(false);
   const [newsletterEmail, setNewsletterEmail] = useState('');
   const [newsletterStatus, setNewsletterStatus] = useState<'idle' | 'success' | 'error'>('idle');
@@ -152,7 +153,7 @@ export default function HomePage() {
           </Link>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6 relative z-10">
-          {displayTrending.slice(0, 5).map((movie: any, i: number) => (
+          {displayTrending.slice(0, 5).map((movie, i: number) => (
             <Link key={i} href={`/detail?id=${movie.id}`} className="group relative aspect-[2/3] bg-surface-container rounded-lg overflow-hidden border border-white/5 transition-all hover:border-primary/50 hover:-translate-y-2 cursor-pointer">
               <img className="w-full h-full object-cover" alt={movie.title} src={movie.img || movie.imageUrl} />
               <div className="absolute inset-0 bg-gradient-to-t from-background to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-4">
@@ -237,10 +238,10 @@ export default function HomePage() {
           Action Sub-genres
         </h2>
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-          {displayCategories.map((item: any, i: number) => (
+          {displayCategories.map((item, i: number) => (
             <Link key={i} href="/kategori" className="group relative py-12 flex flex-col items-center justify-center bg-surface-container rounded-lg border border-white/5 hover:bg-surface-variant transition-all hover:border-secondary/50">
               <span className="material-symbols-outlined text-4xl mb-4 group-hover:text-secondary group-hover:scale-110 transition-all">{item.icon}</span>
-              <span className="font-label text-xs uppercase tracking-widest font-bold">{item.name || item.label}</span>
+              <span className="font-label text-xs uppercase tracking-widest font-bold">{item.name}</span>
             </Link>
           ))}
         </div>
