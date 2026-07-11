@@ -3,36 +3,14 @@ import { createClient } from '@supabase/supabase-js';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-const OWNER_EMAIL = process.env.OWNER_EMAIL || 'ferdi2104@students.omb.ac.id';
 
 function getClient() {
   if (!supabaseUrl || !supabaseAnonKey) return null;
   return createClient(supabaseUrl, supabaseAnonKey);
 }
 
-function getWriteClient() {
-  if (!supabaseUrl || !serviceRoleKey) return null;
-  return createClient(supabaseUrl, serviceRoleKey);
-}
-
-async function verifyOwner(request: NextRequest): Promise<boolean> {
-  if (!supabaseUrl || !serviceRoleKey) return false;
-  const authHeader = request.headers.get('authorization');
-  if (!authHeader) return false;
-  const token = authHeader.replace('Bearer ', '');
-  const adminClient = createClient(supabaseUrl, serviceRoleKey);
-  const { data: { user } } = await adminClient.auth.getUser(token);
-  return user?.email === OWNER_EMAIL;
-}
-
 export async function POST(request: NextRequest) {
-  const isOwner = await verifyOwner(request);
-  if (!isOwner) {
-    return NextResponse.json({ error: 'Only the owner can add movies' }, { status: 403 });
-  }
-
-  const supabase = getWriteClient();
+  const supabase = getClient();
   if (!supabase) {
     return NextResponse.json({ error: 'Supabase not configured' }, { status: 500 });
   }
@@ -71,11 +49,6 @@ export async function POST(request: NextRequest) {
 }
 
 export async function PUT(request: NextRequest) {
-  const isOwner = await verifyOwner(request);
-  if (!isOwner) {
-    return NextResponse.json({ error: 'Only the owner can edit movies' }, { status: 403 });
-  }
-
   const { searchParams } = new URL(request.url);
   const id = searchParams.get('id');
 
@@ -83,7 +56,7 @@ export async function PUT(request: NextRequest) {
     return NextResponse.json({ error: 'Movie ID is required' }, { status: 400 });
   }
 
-  const supabase = getWriteClient();
+  const supabase = getClient();
   if (!supabase) {
     return NextResponse.json({ error: 'Supabase not configured' }, { status: 500 });
   }
@@ -121,11 +94,6 @@ export async function PUT(request: NextRequest) {
 }
 
 export async function DELETE(request: NextRequest) {
-  const isOwner = await verifyOwner(request);
-  if (!isOwner) {
-    return NextResponse.json({ error: 'Only the owner can delete movies' }, { status: 403 });
-  }
-
   const { searchParams } = new URL(request.url);
   const id = searchParams.get('id');
 
@@ -133,7 +101,7 @@ export async function DELETE(request: NextRequest) {
     return NextResponse.json({ error: 'Movie ID is required' }, { status: 400 });
   }
 
-  const supabase = getWriteClient();
+  const supabase = getClient();
   if (!supabase) {
     return NextResponse.json({ error: 'Supabase not configured' }, { status: 500 });
   }

@@ -3,7 +3,6 @@
 import Link from 'next/link';
 import { useState, useRef, useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
-import { useAuth } from '@lib/auth-context';
 
 interface Notification {
   id: string;
@@ -33,7 +32,6 @@ const mobileLinks = [
 export default function Navigation() {
   const router = useRouter();
   const pathname = usePathname();
-  const { user, isOwner, signOut } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [notifOpen, setNotifOpen] = useState(false);
@@ -88,13 +86,6 @@ export default function Navigation() {
     return pathname.startsWith(href);
   };
 
-  const handleLogout = async () => {
-    await signOut();
-    router.push('/login');
-  };
-
-  const userInitial = user?.email?.charAt(0).toUpperCase() || '?';
-
   return (
     <>
       <header className="fixed top-0 w-full z-50 flex justify-between items-center px-6 h-16 bg-background/90 backdrop-blur-md border-b border-primary/30 shadow-[0_0_20px_rgba(255,45,120,0.1)]">
@@ -103,9 +94,7 @@ export default function Navigation() {
             NEON-ACTION
           </Link>
           <nav className="hidden lg:flex items-center gap-6">
-            {navLinks
-              .filter((link) => isOwner || link.href !== '/admin')
-              .map((link) => (
+            {navLinks.map((link) => (
               <Link
                 key={link.href}
                 className={`transition-colors duration-300 font-label text-sm uppercase tracking-wider ${
@@ -189,32 +178,12 @@ export default function Navigation() {
             )}
           </div>
 
-          {user ? (
-            <div className="flex items-center gap-3">
-              <Link
-                href="/profile"
-                className="w-8 h-8 rounded-full border border-secondary/50 overflow-hidden cursor-pointer active:scale-95 duration-150 bg-primary/20 flex items-center justify-center hover:border-primary transition-colors"
-                title={user.email || ''}
-              >
-                <span className="text-xs font-bold text-primary">{userInitial}</span>
-              </Link>
-              <button
-                onClick={handleLogout}
-                className="hidden sm:flex items-center gap-1.5 text-xs font-label font-bold uppercase tracking-wider text-on-surface-variant hover:text-error transition-colors"
-              >
-                <span className="material-symbols-outlined text-sm">logout</span>
-                Logout
-              </button>
-            </div>
-          ) : (
-            <Link
-              href="/login"
-              className="flex items-center gap-1.5 bg-primary/10 border border-primary/30 text-primary font-label text-xs font-bold uppercase tracking-wider px-4 py-2 rounded-full hover:bg-primary hover:text-on-primary transition-all"
-            >
-              <span className="material-symbols-outlined text-sm">login</span>
-              Sign In
-            </Link>
-          )}
+          <Link
+            href="/profile"
+            className="w-8 h-8 rounded-full border border-secondary/50 overflow-hidden cursor-pointer active:scale-95 duration-150 bg-surface-variant flex items-center justify-center hover:border-primary transition-colors"
+          >
+            <span className="material-symbols-outlined text-sm text-on-surface-variant">person</span>
+          </Link>
         </div>
       </header>
 
@@ -228,9 +197,7 @@ export default function Navigation() {
 
       {isOpen && (
         <div className="fixed inset-0 z-[100] bg-background/95 backdrop-blur-lg flex flex-col items-center justify-center gap-6 overflow-y-auto py-20">
-          {mobileLinks
-            .filter((link) => isOwner || link.href !== '/admin')
-            .map((link) => (
+          {mobileLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
@@ -248,15 +215,6 @@ export default function Navigation() {
               )}
             </Link>
           ))}
-          {user && (
-            <button
-              onClick={() => { handleLogout(); setIsOpen(false); }}
-              className="flex items-center gap-3 text-2xl font-headline font-bold text-error mt-4"
-            >
-              <span className="material-symbols-outlined">logout</span>
-              Logout
-            </button>
-          )}
         </div>
       )}
     </>
