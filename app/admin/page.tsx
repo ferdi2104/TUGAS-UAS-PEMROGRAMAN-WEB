@@ -2,9 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { useAuth } from '@lib/auth-context';
-import { createClient } from '@lib/supabase/client';
 
 interface Movie {
   id: string;
@@ -36,45 +33,12 @@ const defaultForm = {
 };
 
 export default function AdminPage() {
-  const { user, loading: authLoading } = useAuth();
-  const router = useRouter();
-  const supabase = createClient();
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [checking, setChecking] = useState(true);
   const [form, setForm] = useState(defaultForm);
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [movies, setMovies] = useState<Movie[]>([]);
   const [loading, setLoading] = useState(true);
   const [editingId, setEditingId] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (authLoading) return;
-    if (!user) {
-      router.push('/login');
-      return;
-    }
-
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (!session?.access_token) {
-        setIsAdmin(false);
-        setChecking(false);
-        return;
-      }
-      fetch('/api/auth/check-admin', {
-        headers: { Authorization: `Bearer ${session.access_token}` },
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          setIsAdmin(data.isAdmin);
-          setChecking(false);
-        })
-        .catch(() => {
-          setIsAdmin(false);
-          setChecking(false);
-        });
-    });
-  }, [user, authLoading, router, supabase]);
 
   const fetchMovies = async () => {
     try {
@@ -90,7 +54,7 @@ export default function AdminPage() {
     }
   };
 
-  useEffect(() => { if (isAdmin) fetchMovies(); }, [isAdmin]);
+  useEffect(() => { fetchMovies(); }, []);
 
   const handleDelete = async (id: string, title: string) => {
     if (!confirm(`Delete "${title}"?`)) return;
@@ -181,25 +145,10 @@ export default function AdminPage() {
 
   const genres = ['Action', 'Horror', 'Sci-Fi', 'Thriller', 'Comedy', 'Drama', 'Crime'];
 
-  if (authLoading || checking) {
+  if (loading) {
     return (
       <main className="pt-24 pb-12 min-h-screen bg-background flex items-center justify-center">
         <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
-      </main>
-    );
-  }
-
-  if (!isAdmin) {
-    return (
-      <main className="pt-24 pb-12 min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center">
-          <span className="material-symbols-outlined text-6xl text-primary mb-4 block">admin_panel_settings</span>
-          <h1 className="text-2xl font-headline font-bold text-on-surface mb-2">ACCESS DENIED</h1>
-          <p className="text-on-surface-variant font-label text-sm mb-6">You don&apos;t have permission to access this page.</p>
-          <Link href="/" className="bg-primary text-on-primary font-label font-bold px-6 py-3 inline-block hover:shadow-[0_0_20px_rgba(255,45,120,0.5)] transition-all">
-            BACK TO HOME
-          </Link>
-        </div>
       </main>
     );
   }
