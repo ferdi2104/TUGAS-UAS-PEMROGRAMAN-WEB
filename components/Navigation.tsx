@@ -33,7 +33,7 @@ const mobileLinks = [
 export default function Navigation() {
   const router = useRouter();
   const pathname = usePathname();
-  const { user, signOut } = useAuth();
+  const { user, isOwner, signOut } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [notifOpen, setNotifOpen] = useState(false);
@@ -103,7 +103,9 @@ export default function Navigation() {
             NEON-ACTION
           </Link>
           <nav className="hidden lg:flex items-center gap-6">
-            {navLinks.map((link) => (
+            {navLinks
+              .filter((link) => isOwner || link.href !== '/admin')
+              .map((link) => (
               <Link
                 key={link.href}
                 className={`transition-colors duration-300 font-label text-sm uppercase tracking-wider ${
@@ -226,7 +228,9 @@ export default function Navigation() {
 
       {isOpen && (
         <div className="fixed inset-0 z-[100] bg-background/95 backdrop-blur-lg flex flex-col items-center justify-center gap-6 overflow-y-auto py-20">
-          {mobileLinks.map((link) => (
+          {mobileLinks
+            .filter((link) => isOwner || link.href !== '/admin')
+            .map((link) => (
             <Link
               key={link.href}
               href={link.href}

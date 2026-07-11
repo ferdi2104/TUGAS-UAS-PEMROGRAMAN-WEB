@@ -2,6 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@lib/auth-context';
+import { createClient } from '@lib/supabase/client';
 
 interface Movie {
   id: string;
@@ -33,12 +36,40 @@ const defaultForm = {
 };
 
 export default function AdminPage() {
+  const router = useRouter();
+  const { user, isOwner, loading: authLoading } = useAuth();
   const [form, setForm] = useState(defaultForm);
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [movies, setMovies] = useState<Movie[]>([]);
   const [loading, setLoading] = useState(true);
   const [editingId, setEditingId] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!authLoading && (!user || !isOwner)) {
+      router.push('/');
+    }
+  }, [user, isOwner, authLoading, router]);
+
+  if (authLoading || !user || !isOwner) {
+    return (
+      <main className="pt-24 pb-12 min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-10 h-10 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-on-surface-variant font-label text-sm">Checking access...</p>
+        </div>
+      </main>
+    );
+  }
+
+  const supabase = createClient();
+
+  const getAuthHeaders = async (): Promise<Record<string, string>> => {
+    const { data: { session } } = await supabase.auth.getSession();
+    return session?.access_token
+      ? { Authorization: `Bearer ${session.access_token}` }
+      : {};
+  };
 
   const fetchMovies = async () => {
     try {
@@ -59,7 +90,8 @@ export default function AdminPage() {
   const handleDelete = async (id: string, title: string) => {
     if (!confirm(`Delete "${title}"?`)) return;
     try {
-      const res = await fetch(`/api/movies?id=${id}`, { method: 'DELETE' });
+      const headers = await getAuthHeaders();
+      const res = await fetch(`/api/movies?id=${id}`, { method: 'DELETE', headers });
       if (res.ok) {
         setMessage({ type: 'success', text: `"${title}" deleted successfully` });
         fetchMovies();
@@ -96,9 +128,10 @@ export default function AdminPage() {
       const url = editingId ? `/api/movies?id=${editingId}` : '/api/movies';
       const method = editingId ? 'PUT' : 'POST';
 
+      const authHeaders = await getAuthHeaders();
       const res = await fetch(url, {
         method,
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...authHeaders },
         body: JSON.stringify(body),
       });
 
