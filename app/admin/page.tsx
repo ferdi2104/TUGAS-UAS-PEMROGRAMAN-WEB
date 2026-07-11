@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@lib/auth-context';
@@ -35,9 +35,13 @@ const defaultForm = {
   featured: false,
 };
 
+const genres = ['Action', 'Horror', 'Sci-Fi', 'Thriller', 'Comedy', 'Drama', 'Crime'];
+
 export default function AdminPage() {
   const router = useRouter();
   const { user, isOwner, loading: authLoading } = useAuth();
+  const supabase = createClient();
+
   const [form, setForm] = useState(defaultForm);
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
@@ -45,33 +49,14 @@ export default function AdminPage() {
   const [loading, setLoading] = useState(true);
   const [editingId, setEditingId] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (!authLoading && (!user || !isOwner)) {
-      router.push('/');
-    }
-  }, [user, isOwner, authLoading, router]);
-
-  if (authLoading || !user || !isOwner) {
-    return (
-      <main className="pt-24 pb-12 min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-10 h-10 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-on-surface-variant font-label text-sm">Checking access...</p>
-        </div>
-      </main>
-    );
-  }
-
-  const supabase = createClient();
-
-  const getAuthHeaders = async (): Promise<Record<string, string>> => {
+  const getAuthHeaders = useCallback(async (): Promise<Record<string, string>> => {
     const { data: { session } } = await supabase.auth.getSession();
     return session?.access_token
       ? { Authorization: `Bearer ${session.access_token}` }
       : {};
-  };
+  }, [supabase]);
 
-  const fetchMovies = async () => {
+  const fetchMovies = useCallback(async () => {
     try {
       const res = await fetch('/api/movies');
       if (res.ok) {
@@ -83,9 +68,19 @@ export default function AdminPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  useEffect(() => { fetchMovies(); }, []);
+  useEffect(() => {
+    if (!authLoading && (!user || !isOwner)) {
+      router.push('/');
+    }
+  }, [user, isOwner, authLoading, router]);
+
+  useEffect(() => {
+    if (user && isOwner) {
+      fetchMovies();
+    }
+  }, [user, isOwner, fetchMovies]);
 
   const handleDelete = async (id: string, title: string) => {
     if (!confirm(`Delete "${title}"?`)) return;
@@ -176,7 +171,18 @@ export default function AdminPage() {
     setMessage(null);
   };
 
-  const genres = ['Action', 'Horror', 'Sci-Fi', 'Thriller', 'Comedy', 'Drama', 'Crime'];
+  if (authLoading || !user || !isOwner) {
+    return (
+      <main className="pt-24 pb-12 min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-10 h-10 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-on-surface-variant font-label text-sm">
+            {authLoading ? 'Checking access...' : 'Access denied'}
+          </p>
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main className="pt-24 pb-12 min-h-screen bg-background">
