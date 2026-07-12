@@ -82,3 +82,16 @@ a {
 .font-headline { font-family: 'Sora', sans-serif; }
 .font-label { font-family: 'Space Grotesk', sans-serif; }
 .font-body { font-family: 'Inter', sans-serif; }
+
+/* Google Translate - remove shadow on translated text */
+.font,
+.font * {
+  text-shadow: none !important;
+  filter: none !important;
+  -webkit-text-stroke: 0 !important;
+}
+
+.drop-shadow-none-fix .drop-shadow-2xl,
+.drop-shadow-none-fix [class*="drop-shadow"] {
+  filter: none !important;
+}
