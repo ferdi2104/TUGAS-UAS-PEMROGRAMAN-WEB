@@ -6,23 +6,23 @@ import Link from 'next/link';
 export default function AboutPage() {
   return (
     <main className="pt-24 pb-12 min-h-screen bg-background">
-      <div className="max-w-5xl mx-auto px-6">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6">
         <motion.div
           className="text-center mb-16"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
         >
-          <h1 className="text-5xl md:text-7xl font-black font-headline text-on-surface tracking-tighter mb-4">
+          <h1 className="text-3xl sm:text-5xl md:text-7xl font-black font-headline text-on-surface tracking-tighter mb-4">
             ABOUT <span className="text-primary neon-text-pink">NEON-ACTION</span>
           </h1>
-          <p className="text-on-surface-variant font-body text-lg max-w-2xl mx-auto">
+          <p className="text-on-surface-variant font-body text-base sm:text-lg max-w-2xl mx-auto">
             Student-exclusive cinema platform. Premium action movies, free for verified students.
           </p>
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
           <motion.div
-            className="bg-surface-container rounded-xl border border-outline/10 p-8"
+            className="bg-surface-container rounded-xl border border-outline/10 p-6 sm:p-8"
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.1 }}
@@ -36,7 +36,7 @@ export default function AboutPage() {
           </motion.div>
 
           <motion.div
-            className="bg-surface-container rounded-xl border border-outline/10 p-8"
+            className="bg-surface-container rounded-xl border border-outline/10 p-6 sm:p-8"
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.2 }}
@@ -51,13 +51,13 @@ export default function AboutPage() {
         </div>
 
         <motion.div
-          className="bg-surface-container rounded-xl border border-secondary/20 p-8 mb-16"
+          className="bg-surface-container rounded-xl border border-secondary/20 p-6 sm:p-8 mb-16"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
         >
           <h2 className="text-2xl font-bold font-headline text-on-surface mb-6">Tech Stack</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
             <div>
               <h3 className="font-label font-bold text-primary text-sm uppercase tracking-widest mb-4">Frontend</h3>
               <ul className="space-y-2 text-on-surface-variant font-body">
@@ -79,15 +79,15 @@ export default function AboutPage() {
         </motion.div>
 
         <motion.div
-          className="text-center bg-surface-container/50 border border-primary/20 rounded-2xl p-12 backdrop-blur-sm"
+          className="text-center bg-surface-container/50 border border-primary/20 rounded-2xl p-6 sm:p-12 backdrop-blur-sm"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
         >
-          <h2 className="text-3xl font-black font-headline text-on-surface mb-4">Ready to Watch?</h2>
-          <p className="text-on-surface-variant mb-8 text-lg">Access granted for all students. No payment needed.</p>
+          <h2 className="text-2xl sm:text-3xl font-black font-headline text-on-surface mb-4">Ready to Watch?</h2>
+          <p className="text-on-surface-variant mb-8 text-base sm:text-lg">Access granted for all students. No payment needed.</p>
           <Link href="/pencarian">
-            <button className="bg-primary text-on-primary font-label font-bold px-8 py-4 transition-all hover:shadow-[0_0_20px_rgba(255,45,120,0.5)] active:scale-95">
+            <button className="bg-primary text-on-primary font-label font-bold px-6 sm:px-8 py-3 sm:py-4 transition-all hover:shadow-[0_0_20px_rgba(255,45,120,0.5)] active:scale-95">
               EXPLORE MOVIES
             </button>
           </Link>

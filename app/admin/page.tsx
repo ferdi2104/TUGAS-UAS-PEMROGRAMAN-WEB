@@ -155,23 +155,23 @@ export default function AdminPage() {
 
   return (
     <main className="pt-24 pb-12 min-h-screen bg-background">
-      <div className="max-w-6xl mx-auto px-6">
-        <div className="flex items-center justify-between mb-8">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 sm:mb-8">
           <div>
-            <h1 className="text-3xl font-black font-headline text-on-surface">ADMIN PANEL</h1>
-            <p className="text-on-surface-variant font-label text-sm">Add and manage movies</p>
+            <h1 className="text-2xl sm:text-3xl font-black font-headline text-on-surface">ADMIN PANEL</h1>
+            <p className="text-on-surface-variant font-label text-xs sm:text-sm">Add and manage movies</p>
           </div>
           <Link href="/">
-            <button className="bg-surface-container-highest border border-outline/30 text-on-surface font-label font-bold px-4 py-2 text-sm transition-all hover:bg-surface-variant">
+            <button className="bg-surface-container-highest border border-outline/30 text-on-surface font-label font-bold px-4 py-2 text-xs sm:text-sm transition-all hover:bg-surface-variant">
               BACK TO HOME
             </button>
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
           {/* Add Movie Form */}
-          <div className="bg-surface-container rounded-xl border border-outline/10 p-6">
-            <h2 className="font-headline font-bold text-lg text-on-surface mb-6 flex items-center gap-2">
+          <div className="bg-surface-container rounded-xl border border-outline/10 p-5 sm:p-6">
+            <h2 className="font-headline font-bold text-base sm:text-lg text-on-surface mb-4 sm:mb-6 flex items-center gap-2">
               <span className={`material-symbols-outlined ${editingId ? 'text-tertiary' : 'text-secondary'}`}>
                 {editingId ? 'edit' : 'add_circle'}
               </span>
@@ -179,7 +179,7 @@ export default function AdminPage() {
             </h2>
 
             {message && (
-              <div className={`p-3 rounded-lg mb-4 text-sm font-label ${
+              <div className={`p-3 rounded-lg mb-4 text-xs sm:text-sm font-label ${
                 message.type === 'success'
                   ? 'bg-secondary/10 text-secondary border border-secondary/30'
                   : 'bg-primary/10 text-primary border border-primary/30'
@@ -188,60 +188,60 @@ export default function AdminPage() {
               </div>
             )}
 
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
               <div>
-                <label className="font-label text-xs text-on-surface-variant uppercase tracking-widest block mb-1">Title *</label>
-                <input className="w-full bg-surface-container-highest border border-outline/30 rounded-lg px-3 py-2 text-sm text-on-surface focus:border-secondary focus:ring-1 focus:ring-secondary/50" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} required />
+                <label className="font-label text-[10px] sm:text-xs text-on-surface-variant uppercase tracking-widest block mb-1">Title *</label>
+                <input className="w-full bg-surface-container-highest border border-outline/30 rounded-lg px-3 py-2.5 text-sm text-on-surface focus:border-secondary focus:ring-1 focus:ring-secondary/50" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} required />
               </div>
 
               <div>
-                <label className="font-label text-xs text-on-surface-variant uppercase tracking-widest block mb-1">Description *</label>
-                <textarea className="w-full bg-surface-container-highest border border-outline/30 rounded-lg px-3 py-2 text-sm text-on-surface focus:border-secondary focus:ring-1 focus:ring-secondary/50 h-24" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} required />
+                <label className="font-label text-[10px] sm:text-xs text-on-surface-variant uppercase tracking-widest block mb-1">Description *</label>
+                <textarea className="w-full bg-surface-container-highest border border-outline/30 rounded-lg px-3 py-2.5 text-sm text-on-surface focus:border-secondary focus:ring-1 focus:ring-secondary/50 h-24" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} required />
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 <div>
-                  <label className="font-label text-xs text-on-surface-variant uppercase tracking-widest block mb-1">Year</label>
-                  <input type="number" className="w-full bg-surface-container-highest border border-outline/30 rounded-lg px-3 py-2 text-sm text-on-surface focus:border-secondary focus:ring-1 focus:ring-secondary/50" value={form.year} onChange={(e) => setForm({ ...form, year: parseInt(e.target.value) || 2024 })} />
+                  <label className="font-label text-[10px] sm:text-xs text-on-surface-variant uppercase tracking-widest block mb-1">Year</label>
+                  <input type="number" className="w-full bg-surface-container-highest border border-outline/30 rounded-lg px-3 py-2.5 text-sm text-on-surface focus:border-secondary focus:ring-1 focus:ring-secondary/50" value={form.year} onChange={(e) => setForm({ ...form, year: parseInt(e.target.value) || 2024 })} />
                 </div>
                 <div>
-                  <label className="font-label text-xs text-on-surface-variant uppercase tracking-widest block mb-1">Rating</label>
-                  <input type="number" step="0.1" min="0" max="10" className="w-full bg-surface-container-highest border border-outline/30 rounded-lg px-3 py-2 text-sm text-on-surface focus:border-secondary focus:ring-1 focus:ring-secondary/50" value={form.rating} onChange={(e) => setForm({ ...form, rating: parseFloat(e.target.value) || 0 })} />
+                  <label className="font-label text-[10px] sm:text-xs text-on-surface-variant uppercase tracking-widest block mb-1">Rating</label>
+                  <input type="number" step="0.1" min="0" max="10" className="w-full bg-surface-container-highest border border-outline/30 rounded-lg px-3 py-2.5 text-sm text-on-surface focus:border-secondary focus:ring-1 focus:ring-secondary/50" value={form.rating} onChange={(e) => setForm({ ...form, rating: parseFloat(e.target.value) || 0 })} />
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 <div>
-                  <label className="font-label text-xs text-on-surface-variant uppercase tracking-widest block mb-1">Genre *</label>
-                  <select className="w-full bg-surface-container-highest border border-outline/30 rounded-lg px-3 py-2 text-sm text-on-surface focus:border-secondary focus:ring-1 focus:ring-secondary/50" value={form.genre} onChange={(e) => setForm({ ...form, genre: e.target.value })}>
+                  <label className="font-label text-[10px] sm:text-xs text-on-surface-variant uppercase tracking-widest block mb-1">Genre *</label>
+                  <select className="w-full bg-surface-container-highest border border-outline/30 rounded-lg px-3 py-2.5 text-sm text-on-surface focus:border-secondary focus:ring-1 focus:ring-secondary/50" value={form.genre} onChange={(e) => setForm({ ...form, genre: e.target.value })}>
                     {genres.map((g) => <option key={g} value={g}>{g}</option>)}
                   </select>
                 </div>
                 <div>
-                  <label className="font-label text-xs text-on-surface-variant uppercase tracking-widest block mb-1">Runtime</label>
-                  <input className="w-full bg-surface-container-highest border border-outline/30 rounded-lg px-3 py-2 text-sm text-on-surface focus:border-secondary focus:ring-1 focus:ring-secondary/50" value={form.runtime} onChange={(e) => setForm({ ...form, runtime: e.target.value })} placeholder="120 Mins" />
+                  <label className="font-label text-[10px] sm:text-xs text-on-surface-variant uppercase tracking-widest block mb-1">Runtime</label>
+                  <input className="w-full bg-surface-container-highest border border-outline/30 rounded-lg px-3 py-2.5 text-sm text-on-surface focus:border-secondary focus:ring-1 focus:ring-secondary/50" value={form.runtime} onChange={(e) => setForm({ ...form, runtime: e.target.value })} placeholder="120 Mins" />
                 </div>
               </div>
 
               <div>
-                <label className="font-label text-xs text-on-surface-variant uppercase tracking-widest block mb-1">Subgenre</label>
-                <input className="w-full bg-surface-container-highest border border-outline/30 rounded-lg px-3 py-2 text-sm text-on-surface focus:border-secondary focus:ring-1 focus:ring-secondary/50" value={form.subgenre} onChange={(e) => setForm({ ...form, subgenre: e.target.value })} placeholder="Martial Arts, Zombie, Crime..." />
+                <label className="font-label text-[10px] sm:text-xs text-on-surface-variant uppercase tracking-widest block mb-1">Subgenre</label>
+                <input className="w-full bg-surface-container-highest border border-outline/30 rounded-lg px-3 py-2.5 text-sm text-on-surface focus:border-secondary focus:ring-1 focus:ring-secondary/50" value={form.subgenre} onChange={(e) => setForm({ ...form, subgenre: e.target.value })} placeholder="Martial Arts, Zombie, Crime..." />
               </div>
 
               <div>
-                <label className="font-label text-xs text-on-surface-variant uppercase tracking-widest block mb-1">Image URL</label>
-                <input className="w-full bg-surface-container-highest border border-outline/30 rounded-lg px-3 py-2 text-sm text-on-surface focus:border-secondary focus:ring-1 focus:ring-secondary/50" value={form.imageUrl} onChange={(e) => setForm({ ...form, imageUrl: e.target.value })} placeholder="https://img.youtube.com/vi/.../maxresdefault.jpg" />
+                <label className="font-label text-[10px] sm:text-xs text-on-surface-variant uppercase tracking-widest block mb-1">Image URL</label>
+                <input className="w-full bg-surface-container-highest border border-outline/30 rounded-lg px-3 py-2.5 text-sm text-on-surface focus:border-secondary focus:ring-1 focus:ring-secondary/50" value={form.imageUrl} onChange={(e) => setForm({ ...form, imageUrl: e.target.value })} placeholder="https://img.youtube.com/vi/.../maxresdefault.jpg" />
               </div>
 
               <div>
-                <label className="font-label text-xs text-on-surface-variant uppercase tracking-widest block mb-1">Video URL (YouTube)</label>
-                <input className="w-full bg-surface-container-highest border border-outline/30 rounded-lg px-3 py-2 text-sm text-on-surface focus:border-secondary focus:ring-1 focus:ring-secondary/50" value={form.videoUrl} onChange={(e) => setForm({ ...form, videoUrl: e.target.value })} placeholder="https://www.youtube.com/watch?v=..." />
+                <label className="font-label text-[10px] sm:text-xs text-on-surface-variant uppercase tracking-widest block mb-1">Video URL (YouTube)</label>
+                <input className="w-full bg-surface-container-highest border border-outline/30 rounded-lg px-3 py-2.5 text-sm text-on-surface focus:border-secondary focus:ring-1 focus:ring-secondary/50" value={form.videoUrl} onChange={(e) => setForm({ ...form, videoUrl: e.target.value })} placeholder="https://www.youtube.com/watch?v=..." />
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 <div>
-                  <label className="font-label text-xs text-on-surface-variant uppercase tracking-widest block mb-1">Tag</label>
-                  <select className="w-full bg-surface-container-highest border border-outline/30 rounded-lg px-3 py-2 text-sm text-on-surface focus:border-secondary focus:ring-1 focus:ring-secondary/50" value={form.tag} onChange={(e) => setForm({ ...form, tag: e.target.value })}>
+                  <label className="font-label text-[10px] sm:text-xs text-on-surface-variant uppercase tracking-widest block mb-1">Tag</label>
+                  <select className="w-full bg-surface-container-highest border border-outline/30 rounded-lg px-3 py-2.5 text-sm text-on-surface focus:border-secondary focus:ring-1 focus:ring-secondary/50" value={form.tag} onChange={(e) => setForm({ ...form, tag: e.target.value })}>
                     <option value="">None</option>
                     <option value="Featured">Featured</option>
                     <option value="Trending">Trending</option>
@@ -257,7 +257,7 @@ export default function AdminPage() {
                       checked={form.featured}
                       onChange={(e) => setForm({ ...form, featured: e.target.checked })}
                     />
-                    <span className="font-label text-xs text-on-surface-variant uppercase tracking-widest">Featured Movie</span>
+                    <span className="font-label text-[10px] sm:text-xs text-on-surface-variant uppercase tracking-widest">Featured Movie</span>
                   </label>
                 </div>
               </div>
@@ -267,7 +267,7 @@ export default function AdminPage() {
                   <button
                     type="button"
                     onClick={handleCancelEdit}
-                    className="flex-1 bg-surface-container-highest border border-outline/30 text-on-surface font-label font-bold py-3 transition-all hover:bg-surface-variant active:scale-95"
+                    className="flex-1 bg-surface-container-highest border border-outline/30 text-on-surface font-label font-bold py-3 transition-all hover:bg-surface-variant active:scale-95 text-sm"
                   >
                     CANCEL
                   </button>
@@ -275,7 +275,7 @@ export default function AdminPage() {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className={`flex-1 font-label font-bold py-3 transition-all active:scale-95 disabled:opacity-40 ${
+                  className={`flex-1 font-label font-bold py-3 transition-all active:scale-95 disabled:opacity-40 text-sm ${
                     editingId
                       ? 'bg-tertiary text-on-tertiary hover:shadow-[0_0_15px_rgba(255,224,74,0.4)]'
                       : 'bg-secondary text-on-secondary hover:shadow-[0_0_15px_rgba(0,255,204,0.4)]'
@@ -288,8 +288,8 @@ export default function AdminPage() {
           </div>
 
           {/* Movie List */}
-          <div className="bg-surface-container rounded-xl border border-outline/10 p-6">
-            <h2 className="font-headline font-bold text-lg text-on-surface mb-6 flex items-center gap-2">
+          <div className="bg-surface-container rounded-xl border border-outline/10 p-5 sm:p-6">
+            <h2 className="font-headline font-bold text-base sm:text-lg text-on-surface mb-4 sm:mb-6 flex items-center gap-2">
               <span className="material-symbols-outlined text-primary">movie</span>
               MOVIE LIST ({movies.length})
             </h2>
@@ -299,33 +299,33 @@ export default function AdminPage() {
                 <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto"></div>
               </div>
             ) : movies.length === 0 ? (
-              <div className="text-center py-10 text-on-surface-variant font-label">No movies yet</div>
+              <div className="text-center py-10 text-on-surface-variant font-label text-sm">No movies yet</div>
             ) : (
-              <div className="space-y-3 max-h-[600px] overflow-y-auto pr-2">
+              <div className="space-y-2 sm:space-y-3 max-h-[600px] overflow-y-auto pr-2">
                 {movies.map((movie) => (
-                  <div key={movie.id} className="flex items-center gap-2 bg-surface-container-highest rounded-lg p-3 hover:border-secondary/50 border border-transparent transition-all group">
-                    <Link href={`/detail?id=${movie.id}`} className="flex items-center gap-3 flex-1 min-w-0">
-                      <div className="w-12 h-16 rounded bg-surface-variant overflow-hidden flex-shrink-0">
+                  <div key={movie.id} className="flex items-center gap-2 bg-surface-container-highest rounded-lg p-2.5 sm:p-3 hover:border-secondary/50 border border-transparent transition-all">
+                    <Link href={`/detail?id=${movie.id}`} className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0">
+                      <div className="w-10 h-14 sm:w-12 sm:h-16 rounded bg-surface-variant overflow-hidden flex-shrink-0">
                         <img className="w-full h-full object-cover" alt={movie.title} src={movie.imageUrl} />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="font-bold text-sm text-on-surface truncate">{movie.title}</p>
-                        <p className="text-xs text-on-surface-variant">{movie.year} &bull; {movie.genre} &bull; {movie.rating}</p>
+                        <p className="font-bold text-xs sm:text-sm text-on-surface truncate">{movie.title}</p>
+                        <p className="text-[10px] sm:text-xs text-on-surface-variant">{movie.year} &bull; {movie.genre} &bull; {movie.rating}</p>
                         {movie.tag && (
-                          <span className="text-[10px] bg-primary/20 text-primary px-1.5 py-0.5 rounded font-label">{movie.tag}</span>
+                          <span className="text-[9px] sm:text-[10px] bg-primary/20 text-primary px-1.5 py-0.5 rounded font-label">{movie.tag}</span>
                         )}
                       </div>
                     </Link>
                     <button
                       onClick={() => handleEdit(movie)}
-                      className="opacity-0 group-hover:opacity-100 w-8 h-8 flex items-center justify-center rounded bg-tertiary/10 text-tertiary hover:bg-tertiary hover:text-on-tertiary transition-all"
+                      className="w-8 h-8 flex items-center justify-center rounded bg-tertiary/10 text-tertiary hover:bg-tertiary hover:text-on-tertiary transition-all flex-shrink-0"
                       title="Edit movie"
                     >
                       <span className="material-symbols-outlined text-sm">edit</span>
                     </button>
                     <button
                       onClick={() => handleDelete(movie.id, movie.title)}
-                      className="opacity-0 group-hover:opacity-100 w-8 h-8 flex items-center justify-center rounded bg-primary/10 text-primary hover:bg-primary hover:text-on-primary transition-all"
+                      className="w-8 h-8 flex items-center justify-center rounded bg-primary/10 text-primary hover:bg-primary hover:text-on-primary transition-all flex-shrink-0"
                       title="Delete movie"
                     >
                       <span className="material-symbols-outlined text-sm">delete</span>

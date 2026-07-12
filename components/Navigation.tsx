@@ -88,9 +88,9 @@ export default function Navigation() {
 
   return (
     <>
-      <header className="fixed top-0 w-full z-50 flex justify-between items-center px-6 h-16 bg-background/90 backdrop-blur-md border-b border-primary/30 shadow-[0_0_20px_rgba(255,45,120,0.1)]">
-        <div className="flex items-center gap-8">
-          <Link className="text-2xl font-bold font-headline tracking-tighter text-primary drop-shadow-[0_0_8px_rgba(255,45,120,0.8)]" href="/">
+      <header className="fixed top-0 w-full z-50 flex justify-between items-center px-4 sm:px-6 h-16 bg-background/90 backdrop-blur-md border-b border-primary/30 shadow-[0_0_20px_rgba(255,45,120,0.1)]">
+        <div className="flex items-center gap-4 sm:gap-8">
+          <Link className="text-xl sm:text-2xl font-bold font-headline tracking-tighter text-primary drop-shadow-[0_0_8px_rgba(255,45,120,0.8)]" href="/">
             NEON-ACTION
           </Link>
           <nav className="hidden lg:flex items-center gap-6">
@@ -109,8 +109,8 @@ export default function Navigation() {
             ))}
           </nav>
         </div>
-        <div className="flex items-center gap-4">
-          <form onSubmit={handleSearch} className="relative group hidden sm:block">
+        <div className="hidden lg:flex items-center gap-4">
+          <form onSubmit={handleSearch} className="relative group">
             <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant group-focus-within:text-secondary transition-colors">search</span>
             <input
               className="bg-surface-container border-none focus:ring-1 focus:ring-secondary rounded-full pl-10 pr-4 py-1.5 text-sm w-48 lg:w-64 transition-all"
@@ -135,7 +135,7 @@ export default function Navigation() {
             </button>
 
             {notifOpen && (
-              <div className="absolute right-0 top-full mt-2 w-80 bg-surface-container-highest border border-outline/30 rounded-xl shadow-2xl overflow-hidden z-50">
+              <div className="absolute right-0 top-full mt-2 w-72 sm:w-80 bg-surface-container-highest border border-outline/30 rounded-xl shadow-2xl overflow-hidden z-50">
                 <div className="p-4 border-b border-outline/20">
                   <h3 className="font-headline font-bold text-on-surface">Notifications</h3>
                 </div>
