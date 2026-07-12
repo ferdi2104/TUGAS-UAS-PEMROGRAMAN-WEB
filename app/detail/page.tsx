@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import type { Movie, Comment } from '@lib/types';
+import Footer from '@components/Footer';
 
 const fallbackMovie: Movie = {
   id: '1',
@@ -33,10 +34,13 @@ function DetailContent() {
   const [commentUsername, setCommentUsername] = useState('');
   const [posting, setPosting] = useState(false);
   const [isInWatchlist, setIsInWatchlist] = useState(false);
+  const [likedComments, setLikedComments] = useState<string[]>([]);
 
   useEffect(() => {
     const savedUsername = localStorage.getItem('commentUsername');
     if (savedUsername) setCommentUsername(savedUsername);
+    const liked = JSON.parse(localStorage.getItem('likedComments') || '[]') as string[];
+    setLikedComments(liked);
   }, []);
 
   useEffect(() => {
@@ -52,8 +56,18 @@ function DetailContent() {
       history.unshift({ id: movie.id, title: movie.title, imageUrl: movie.imageUrl, rating: movie.rating, genre: movie.genre });
       if (history.length > 20) history.pop();
       localStorage.setItem('watchHistory', JSON.stringify(history));
-      const count = parseInt(localStorage.getItem('streakDays') || '0');
-      localStorage.setItem('streakDays', String(count + 1));
+
+      const today = new Date().toDateString();
+      const lastView = localStorage.getItem('lastViewDate');
+      const streak = parseInt(localStorage.getItem('streakDays') || '0');
+      if (lastView === today) {
+        // already viewed today, no change
+      } else if (lastView === new Date(Date.now() - 86400000).toDateString()) {
+        localStorage.setItem('streakDays', String(streak + 1));
+      } else {
+        localStorage.setItem('streakDays', '1');
+      }
+      localStorage.setItem('lastViewDate', today);
     }
   }, [movie]);
 
@@ -112,6 +126,8 @@ function DetailContent() {
         setComments(prev => [newComment, ...prev]);
         setCommentText('');
         localStorage.setItem('commentUsername', commentUsername.trim());
+        const count = parseInt(localStorage.getItem('commentCount') || '0');
+        localStorage.setItem('commentCount', String(count + 1));
       }
     } catch (err) {
       console.error('Failed to post comment:', err);
@@ -186,10 +202,14 @@ function DetailContent() {
                       const updated = watchlist.filter((item) => item.id !== movie.id);
                       localStorage.setItem('watchlist', JSON.stringify(updated));
                       setIsInWatchlist(false);
+                      const wlCount = parseInt(localStorage.getItem('watchlistCount') || '0');
+                      localStorage.setItem('watchlistCount', String(Math.max(0, wlCount - 1)));
                     } else {
                       watchlist.push({ id: movie.id, title: movie.title, imageUrl: movie.imageUrl, rating: movie.rating, genre: movie.genre });
                       localStorage.setItem('watchlist', JSON.stringify(watchlist));
                       setIsInWatchlist(true);
+                      const wlCount = parseInt(localStorage.getItem('watchlistCount') || '0');
+                      localStorage.setItem('watchlistCount', String(wlCount + 1));
                     }
                   }}
                   className={`backdrop-blur-md border font-label px-4 sm:px-8 py-2.5 sm:py-3 font-bold flex items-center gap-2 transition-all text-sm sm:text-base ${
@@ -239,7 +259,7 @@ function DetailContent() {
               <span className="text-on-surface-variant font-label text-xs sm:text-sm uppercase">{comments.length || 0} Comments</span>
             </div>
             <div className="space-y-4 sm:space-y-6">
-              <div className="bg-surface-container-high p-3 sm:p-4 rounded-xl border border-outline-variant focus-within:border-primary/50 transition-colors">
+              <div id="comment-form" className="bg-surface-container-high p-3 sm:p-4 rounded-xl border border-outline-variant focus-within:border-primary/50 transition-colors">
                 <input
                   className="w-full bg-transparent border-b border-outline/20 focus:border-secondary/50 focus:ring-0 text-on-surface placeholder:text-on-surface-variant/40 pb-2 mb-3 text-sm"
                   placeholder="Your callsign..."
@@ -277,19 +297,19 @@ function DetailContent() {
                       <div className="flex items-center gap-3 sm:gap-4 text-on-surface-variant">
                         <button
                           onClick={() => {
-                            const liked = JSON.parse(localStorage.getItem('likedComments') || '[]') as string[];
-                            if (liked.includes(comment.id)) return;
-                            liked.push(comment.id);
-                            localStorage.setItem('likedComments', JSON.stringify(liked));
+                            if (likedComments.includes(comment.id)) return;
+                            const updated = [...likedComments, comment.id];
+                            setLikedComments(updated);
+                            localStorage.setItem('likedComments', JSON.stringify(updated));
                           }}
-                          className="flex items-center gap-1 text-xs hover:text-primary transition-colors"
+                          className={`flex items-center gap-1 text-xs transition-colors ${likedComments.includes(comment.id) ? 'text-primary' : 'hover:text-primary'}`}
                         >
-                          <span className="material-symbols-outlined text-sm">thumb_up</span> {comment.likes || 0}
+                          <span className="material-symbols-outlined text-sm" style={likedComments.includes(comment.id) ? { fontVariationSettings: "'FILL' 1" } : undefined}>thumb_up</span> {comment.likes || 0}
                         </button>
                         <button
                           onClick={() => {
                             setCommentText(`@${comment.username} `);
-                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                            document.getElementById('comment-form')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
                           }}
                           className="flex items-center gap-1 text-xs hover:text-secondary transition-colors"
                         >
@@ -353,38 +373,7 @@ function DetailContent() {
         </aside>
       </div>
 
-      <footer className="w-full py-8 sm:py-12 px-6 sm:px-8 flex flex-col md:flex-row justify-between items-center gap-6 sm:gap-8 bg-surface-container-lowest border-t border-secondary/20">
-        <div className="flex flex-col items-center md:items-start gap-2">
-          <span className="text-lg font-black font-headline text-primary">NEON-ACTION</span>
-          <p className="text-on-surface-variant font-label text-[10px] tracking-widest">© 2024 NEON-ACTION UNIVERSE. ACCESS GRANTED.</p>
-        </div>
-        <div className="flex flex-wrap justify-center gap-4 sm:gap-6">
-          <Link className="text-on-surface-variant hover:text-tertiary transition-colors font-label text-[10px] sm:text-xs uppercase tracking-tighter hover:translate-x-1 duration-200" href="/pencarian?genre=Action">Cyber-Action</Link>
-          <Link className="text-on-surface-variant hover:text-tertiary transition-colors font-label text-[10px] sm:text-xs uppercase tracking-tighter hover:translate-x-1 duration-200" href="/pencarian?genre=Sci-Fi">High-Octane</Link>
-          <Link className="text-on-surface-variant hover:text-tertiary transition-colors font-label text-[10px] sm:text-xs uppercase tracking-tighter hover:translate-x-1 duration-200" href="/kategori">Student Forums</Link>
-          <Link className="text-on-surface-variant hover:text-tertiary transition-colors font-label text-[10px] sm:text-xs uppercase tracking-tighter hover:translate-x-1 duration-200" href="/pencarian">Global Leaderboard</Link>
-          <Link className="text-on-surface-variant hover:text-tertiary transition-colors font-label text-[10px] sm:text-xs uppercase tracking-tighter hover:translate-x-1 duration-200" href="/about">Support</Link>
-          <Link className="text-on-surface-variant hover:text-tertiary transition-colors font-label text-[10px] sm:text-xs uppercase tracking-tighter hover:translate-x-1 duration-200" href="/about">Legal</Link>
-        </div>
-        <div className="flex gap-4">
-          <button
-            onClick={() => {
-              if (navigator.share) {
-                navigator.share({ title: m.title, url: window.location.href });
-              } else {
-                navigator.clipboard.writeText(window.location.href);
-                alert('Link copied!');
-              }
-            }}
-            className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center border border-outline-variant hover:border-primary hover:text-primary transition-all rounded-full group"
-          >
-            <span className="material-symbols-outlined text-base sm:text-lg">share</span>
-          </button>
-          <Link className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center border border-outline-variant hover:border-secondary hover:text-secondary transition-all rounded-full group" href="/kategori">
-            <span className="material-symbols-outlined text-base sm:text-lg">public</span>
-          </Link>
-        </div>
-      </footer>
+      <Footer />
     </main>
   );
 }

@@ -72,12 +72,12 @@ export async function PUT(request: NextRequest) {
     const { title, description, year, runtime, rating, genre, subgenre, imageUrl, videoUrl, tag, featured } = body;
 
     const updates: Record<string, unknown> = {};
-    if (title) updates.title = title;
-    if (description) updates.description = description;
-    if (year) updates.year = year;
-    if (runtime) updates.runtime = runtime;
-    if (rating) updates.rating = rating;
-    if (genre) updates.genre = genre;
+    if (title !== undefined) updates.title = title;
+    if (description !== undefined) updates.description = description;
+    if (year !== undefined) updates.year = year;
+    if (runtime !== undefined) updates.runtime = runtime;
+    if (rating !== undefined) updates.rating = rating;
+    if (genre !== undefined) updates.genre = genre;
     if (subgenre !== undefined) updates.subgenre = subgenre;
     if (imageUrl !== undefined) updates.imageUrl = imageUrl;
     if (videoUrl !== undefined) updates.videoUrl = videoUrl;

@@ -2,21 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-
-interface Movie {
-  id: string;
-  title: string;
-  description: string;
-  year: number;
-  runtime: string;
-  rating: number;
-  genre: string;
-  subgenre: string | null;
-  imageUrl: string;
-  videoUrl: string | null;
-  tag: string | null;
-  featured: boolean;
-}
+import type { Movie } from '@lib/types';
 
 const defaultForm = {
   title: '',
